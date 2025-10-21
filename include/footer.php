@@ -3,7 +3,7 @@
         <!-- Info Sekolah -->
         <div class="footer-section">
             <div class="footer-logo">
-                <img src="/pkl/assets/logo.png" alt="Logo SMK" class="footer-logo-img">
+                <img src="assets/logo.png" alt="Logo SMK" class="footer-logo-img">
                 <span><b>SMK TI Garuda Nusantara</b></span>
             </div>
             <p>Sekolah Menengah Kejuruan unggulan di bidang Teknologi Informasi yang berkomitmen mencetak lulusan

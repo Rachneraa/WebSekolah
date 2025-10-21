@@ -643,7 +643,7 @@
     <!-- Header Navigation -->
     <header id="header">
         <div class="logo" onclick="window.location.href='index.php'">
-            <img src="/pkl/assets/logo.png" alt="Logo SMK TI Garuda Nusantara" class="logo-img">
+            <img src="assets/logo.png" alt="Logo SMK TI Garuda Nusantara" class="logo-img">
             <span class="logo-text">SMK TI Garuda Nusantara</span>
         </div>
 
