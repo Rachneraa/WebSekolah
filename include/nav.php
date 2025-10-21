@@ -656,7 +656,7 @@
                 <li><a href="contact.php">Kontak</a></li>
             </ul>
             <div class="nav-buttons">
-                <a href="backend/admin.html" class="btn-register">Daftar</a>
+                <a href="backend/admin.php" class="btn-register">Daftar</a>
                 <button class="btn-admin" id="loginBtn" title="Admin Login">
                     <i class="fas fa-user"></i>
                 </button>
@@ -676,30 +676,26 @@
             <button class="modal-close" id="closeModal">
                 <i class="fas fa-times"></i>
             </button>
-            
+
             <div class="login-header">
                 <img src="/pkl/assets/logo.png" alt="Logo Sekolah" class="login-logo">
                 <h2>SMK TI Garuda Nusantara</h2>
                 <p>Selamat datang di<br>Portal Admin Sekolah</p>
             </div>
 
-            <form id="loginForm">
+            <form id="loginForm" action="config/process_login.php" method="POST">
                 <div class="input-group">
                     <label>Username</label>
-                    <input type="text" placeholder="Masukkan Username Anda" required>
+                    <input type="text" name="username" placeholder="Masukkan Username Anda" required>
                 </div>
 
                 <div class="input-group">
                     <label>Kata Sandi</label>
-                    <input type="password" placeholder="Masukkan Kata Sandi" required>
+                    <input type="password" name="password" placeholder="Masukkan Kata Sandi" required>
                 </div>
 
-                <div class="remember-me">
-                    <input type="checkbox" id="remember">
-                    <label for="remember">Remember me</label>
-                </div>
 
-                <a href="backend\backend\guru.html" class="btn-login">Masuk</a>
+                <button type="submit" class="btn-login">Masuk</button>
             </form>
         </div>
     </div>
@@ -716,31 +712,32 @@
             const loginForm = document.getElementById('loginForm');
 
             // ==================== LOGIN MODAL ====================
-            loginBtn.addEventListener('click', function(e) {
+            loginBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 loginModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             });
 
-            closeModal.addEventListener('click', function() {
+            closeModal.addEventListener('click', function () {
                 loginModal.classList.remove('active');
                 document.body.style.overflow = '';
             });
 
             // Close modal when clicking overlay
-            loginModal.addEventListener('click', function(e) {
+            loginModal.addEventListener('click', function (e) {
                 if (e.target === loginModal) {
                     loginModal.classList.remove('active');
                     document.body.style.overflow = '';
                 }
             });
 
-            // Handle login form submit
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                // Add your login logic here
-                alert('Login functionality will be implemented');
-            });
+            // Handling login error messages
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'invalid') {
+                alert('Username atau password salah!');
+                loginModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
 
             // ==================== HAMBURGER MENU ====================
             hamburger.addEventListener('click', function (e) {
