@@ -1,5 +1,6 @@
 <?php
-session_start(); // Add this at the top
+session_start();
+include 'koneksi.php';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -14,18 +15,22 @@ session_start(); // Add this at the top
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
     <link rel="manifest" href="/pkl/manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="/pkl/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/pkl/icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/pkl/icons/apple-touch-icon.png">
     <meta name="theme-color" content="#00499D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* CSS Variables */
         :root {
-            --primary-blue: #00499d;
             --primary-orange: #ff8303;
+            --primary-blue: #00499d;
             --dark-blue: #003366;
+            --text-dark: #0f1724;
+            --text-gray: #6b7280;
+            --border-gray: #e5e7eb;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
+        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -33,85 +38,168 @@ session_start(); // Add this at the top
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            min-height: 100vh;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding-top: 0;
+        }
+
+        /* Hero Section for Form */
+        .form-hero {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            min-height: 350px;
+            background: url('assets/c.jpeg') center/cover;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            /* Tambahkan agar konten di tengah */
-            justify-content: flex-start;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+            padding: 80px 20px 60px;
+            margin-top: -80px;
         }
 
-        html,
-        body {
-            max-width: 100%;
-            overflow-x: hidden;
+        .form-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg,
+                    rgba(0, 73, 157, 0.92) 0%,
+                    rgba(31, 117, 216, 0.88) 100%);
+            z-index: 1;
         }
 
-        /* Form Styles */
+        .form-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .form-hero h1 {
+            font-weight: 800;
+            font-size: 42px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .form-hero p {
+            font-size: 18px;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 900px;
+            margin: -40px auto 80px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
         .form-wrapper {
-            max-width: 700px;
-            width: 100%;
-            margin: 60px auto 40px auto;
-            padding: 0 32px;
-            background: #fff;
+            background: white;
             border-radius: 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* Form di tengah */
+            border: 1px solid var(--border-gray);
         }
 
         .form-header {
-            width: 100%;
-            background: #fff;
-            color: #1e5bb8;
-            padding: 40px 0 30px 0;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: white;
+            padding: 40px;
             text-align: center;
-            border-bottom: 3px solid #1e5bb8;
-            border-radius: 30px 30px 0 0;
+            position: relative;
+            overflow: hidden;
         }
 
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 131, 3, 0.1), transparent);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .form-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Form Content */
         .form-content {
-            width: 100%;
-            padding: 40px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 50px 40px;
         }
 
-        form {
-            width: 100%;
+        .form-step {
+            margin-bottom: 40px;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-orange);
+            display: inline-block;
         }
 
         .form-group {
             margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: 180px 1fr;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
         }
 
-        .form-group.full-width {
-            grid-template-columns: 1fr;
-        }
-
-        label {
+        .form-group label {
+            display: block;
             font-weight: 600;
-            color: #333;
-            font-size: 14px;
-            text-align: right;
-        }
-
-        .full-width label {
-            text-align: center;
+            color: var(--text-dark);
             margin-bottom: 10px;
             font-size: 15px;
+        }
+
+        .form-group label .required {
+            color: var(--primary-orange);
+            margin-left: 3px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            font-size: 16px;
+            pointer-events: none;
         }
 
         input[type="text"],
@@ -119,12 +207,13 @@ session_start(); // Add this at the top
         input[type="tel"],
         select {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
+            padding: 14px 18px 14px 50px;
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
             background: white;
+            font-family: inherit;
         }
 
         input[type="text"]:focus,
@@ -132,107 +221,116 @@ session_start(); // Add this at the top
         input[type="tel"]:focus,
         select:focus {
             outline: none;
-            border-color: #2776d4;
-            box-shadow: 0 0 0 3px rgba(39, 118, 212, 0.1);
-        }
-
-        .input-icon {
-            position: relative;
-        }
-
-        .input-icon::before {
-            content: '👤';
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-        }
-
-        .email-icon::before {
-            content: '✉️';
-        }
-
-        .location-icon::before {
-            content: '🏫';
-        }
-
-        .phone-icon::before {
-            content: '📱';
-        }
-
-        .input-icon input {
-            padding-left: 40px;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(0, 73, 157, 0.1);
         }
 
         .date-group {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
         }
 
-        .error-message {
-            color: #e74c3c;
-            font-size: 12px;
-            margin-top: 5px;
-            grid-column: 2;
+        .date-group select {
+            padding-left: 18px;
+        }
+
+        .error-hint {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .error-hint i {
+            color: var(--primary-orange);
+        }
+
+        /* Submit Button */
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
         }
 
         .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #1e5bb8 0%, #2776d4 100%);
+            background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
             color: white;
             border: none;
-            border-radius: 10px;
+            padding: 16px 60px;
+            border-radius: 50px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255, 131, 3, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(30, 91, 184, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 131, 3, 0.5);
         }
 
-        .btn-kembali {
-            position: absolute;
-            left: 40px;
-            top: 40px;
-            display: inline-flex;
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(0, 73, 157, 0.05), rgba(255, 131, 3, 0.05));
+            border-left: 4px solid var(--primary-orange);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h4 {
+            color: var(--primary-blue);
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
             align-items: center;
             gap: 8px;
-            background: #fff;
-            color: #1e5bb8;
-            border: 2px solid #1e5bb8;
-            border-radius: 30px;
-            padding: 8px 22px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
         }
 
-        .btn-kembali:hover {
-            background: #1e5bb8;
-            color: #fff;
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
         }
 
+        .info-box ul li {
+            padding: 5px 0;
+            color: var(--text-gray);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box ul li i {
+            color: var(--primary-orange);
+            font-size: 12px;
+        }
+
+        /* Footer */
         .footer-bottom {
             background: linear-gradient(135deg, var(--dark-blue), #001a33);
             color: white;
-            padding: 20px;
+            padding: 25px 20px;
             text-align: center;
-            margin-top: 40px;
             width: 100vw;
-            box-sizing: border-box;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            margin-top: 0;
         }
 
         .footer-bottom p {
@@ -244,204 +342,412 @@ session_start(); // Add this at the top
         }
 
         .footer-bottom .fa-heart {
-            color: #ff8303;
+            color: var(--primary-orange);
             animation: heartbeat 1.5s ease infinite;
         }
 
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 0.6;
+            }
+        }
+
         @keyframes heartbeat {
-            0% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
 
             50% {
                 transform: scale(1.2);
             }
-
-            100% {
-                transform: scale(1);
-            }
         }
 
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-hero {
+                min-height: 280px;
+                padding: 60px 20px 40px;
             }
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @media (max-width: 900px) {
-            .form-wrapper {
-                max-width: 98vw;
-                padding: 0 8px;
+            .form-hero h1 {
+                font-size: 28px;
             }
 
-            .form-header,
-            .form-content {
-                padding: 20px 0;
+            .form-hero p {
+                font-size: 15px;
             }
 
-            .btn-kembali {
-                left: 10px;
-                top: 20px;
-                padding: 6px 16px;
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .form-group {
-                grid-template-columns: 1fr;
-            }
-
-            label {
-                text-align: left;
+            .form-container {
+                margin: -30px auto 60px;
+                padding: 0 15px;
             }
 
             .form-header {
+                padding: 30px 20px;
+            }
+
+            .form-header h2 {
+                font-size: 22px;
+            }
+
+            .form-content {
+                padding: 35px 25px;
+            }
+
+            .step-title {
                 font-size: 18px;
+            }
+
+            /* Tanggal lahir tetap sejajar di mobile */
+            .date-group {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .date-group select {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .submit-btn {
+                width: 100%;
+                padding: 15px 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-hero h1 {
+                font-size: 24px;
+            }
+
+            .form-content {
+                padding: 30px 20px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            select {
+                padding: 12px 15px 12px 45px;
+                font-size: 14px;
+            }
+
+            .input-icon {
+                left: 15px;
+                font-size: 14px;
+            }
+
+            /* Tanggal lahir tetap 3 kolom di mobile kecil */
+            .date-group {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .date-group select {
+                padding: 11px 6px;
+                font-size: 12px;
+            }
+        }
+
+        /* Untuk layar sangat kecil */
+        @media (max-width: 360px) {
+            .date-group {
+                gap: 5px;
+            }
+
+            .date-group select {
+                padding: 10px 4px;
+                font-size: 11px;
             }
         }
     </style>
 </head>
 
 <body>
+    <?php include 'include/nav.php'; ?>
 
-
-    <!-- Formulir PPDB -->
-    <a href="javascript:history.back()" class="btn-kembali">
-        <i class="fas fa-arrow-left"></i> Kembali
-    </a>
-    <div class="form-wrapper">
-        <div class="form-header">
-            <h1>Formulir Pendaftaran Peserta Didik Baru</h1>
+    <!-- Hero Section -->
+    <section class="form-hero">
+        <div class="form-hero-content">
+            <h1><i class="fas fa-graduation-cap"></i> Pendaftaran Peserta Didik Baru</h1>
+            <p>Wujudkan masa depan gemilang bersama SMK TI Garuda Nusantara</p>
         </div>
-        <div class="form-content">
-            <form id="ppdbForm">
-                <div class="form-group">
-                    <label for="namaLengkap">Nama Lengkap</label>
-                    <div>
-                        <div class="input-icon">
-                            <input type="text" id="namaLengkap" placeholder="Nama lengkap Calon Siswa" required>
+    </section>
+
+    <!-- Form Container -->
+    <div class="form-container">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h2>Formulir Pendaftaran PPDB 2025/2026</h2>
+                <p>Silakan lengkapi data diri Anda dengan benar</p>
+            </div>
+
+            <div class="form-content">
+                <!-- Info Box -->
+                <div class="info-box">
+                    <h4><i class="fas fa-info-circle"></i> Informasi Penting</h4>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Pastikan semua data yang diisi sudah benar</li>
+                        <li><i class="fas fa-check-circle"></i> Isi sesuai dengan dokumen resmi (Ijazah/Rapor)</li>
+                        <li><i class="fas fa-check-circle"></i> Nomor HP/WhatsApp akan digunakan untuk konfirmasi</li>
+                    </ul>
+                </div>
+
+                <form id="ppdbForm">
+                    <!-- Data Pribadi -->
+                    <div class="form-step">
+                        <h3 class="step-title"><i class="fas fa-user"></i> Data Pribadi Calon Siswa</h3>
+
+                        <div class="form-group">
+                            <label for="namaLengkap">Nama Lengkap <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="namaLengkap" placeholder="Masukkan nama lengkap sesuai ijazah"
+                                    required>
+                            </div>
+                            <div class="error-hint">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Sesuai dengan Ijazah/Akta Kelahiran
+                            </div>
                         </div>
-                        <div class="error-message">*Sesuai dengan Ijazah</div>
+
+                        <div class="form-group">
+                            <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-venus-mars input-icon"></i>
+                                <select id="jenisKelamin" required>
+                                    <option value="">-- Pilih Jenis Kelamin --</option>
+                                    <option value="laki-laki">Laki-laki</option>
+                                    <option value="perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- FIELD AGAMA BARU -->
+                        <div class="form-group">
+                            <label for="agama">Agama <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-pray input-icon"></i>
+                                <select id="agama" required>
+                                    <option value="">-- Pilih Agama --</option>
+                                    <option value="islam">Islam</option>
+                                    <option value="kristen">Kristen</option>
+                                    <option value="katolik">Katolik</option>
+                                    <option value="hindu">Hindu</option>
+                                    <option value="buddha">Buddha</option>
+                                    <option value="konghucu">Konghucu</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tempatLahir">Tempat Kelahiran <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-map-marker-alt input-icon"></i>
+                                <input type="text" id="tempatLahir" placeholder="Contoh: Jakarta" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tanggal Kelahiran <span class="required">*</span></label>
+                            <div class="date-group">
+                                <select id="tanggal" required>
+                                    <option value="">Tanggal</option>
+                                    <script>
+                                        for (let i = 1; i <= 31; i++) {
+                                            document.write(`<option value="${i}">${i}</option>`);
+                                        }
+                                    </script>
+                                </select>
+                                <select id="bulan" required>
+                                    <option value="">Bulan</option>
+                                    <option value="01">Januari</option>
+                                    <option value="02">Februari</option>
+                                    <option value="03">Maret</option>
+                                    <option value="04">April</option>
+                                    <option value="05">Mei</option>
+                                    <option value="06">Juni</option>
+                                    <option value="07">Juli</option>
+                                    <option value="08">Agustus</option>
+                                    <option value="09">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                                <select id="tahun" required>
+                                    <option value="">Tahun</option>
+                                    <script>
+                                        const currentYear = new Date().getFullYear();
+                                        for (let i = currentYear - 5; i >= currentYear - 20; i--) {
+                                            document.write(`<option value="${i}">${i}</option>`);
+                                        }
+                                    </script>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="alamatEmail">Alamat Email</label>
-                    <div class="input-icon email-icon">
-                        <input type="email" id="alamatEmail" placeholder="Alamat Email (Boleh di kosongi)">
+
+                    <!-- Data Kontak -->
+                    <div class="form-step">
+                        <h3 class="step-title"><i class="fas fa-phone"></i> Data Kontak</h3>
+
+                        <div class="form-group">
+                            <label for="alamatEmail">Alamat Email</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="alamatEmail" placeholder="contoh@email.com">
+                            </div>
+                            <div class="error-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Opsional, boleh dikosongkan
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="noHp">Nomor HP/WhatsApp Orang Tua <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-mobile-alt input-icon"></i>
+                                <input type="tel" id="noHp" placeholder="08xxxxxxxxxx" required>
+                            </div>
+                            <div class="error-hint">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Nomor aktif untuk konfirmasi pendaftaran
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="jenisKelamin">Jenis Kelamin</label>
-                    <select id="jenisKelamin" required>
-                        <option value="">Pilih Jenis Kelamin</option>
-                        <option value="laki-laki">Laki-laki</option>
-                        <option value="perempuan">Perempuan</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="tempatLahir">Tempat Kelahiran</label>
-                    <div class="input-icon location-icon">
-                        <input type="text" id="tempatLahir" placeholder="Tempat Kelahiran Calon Siswa" required>
+
+                    <!-- Data Sekolah -->
+                    <div class="form-step">
+                        <h3 class="step-title"><i class="fas fa-school"></i> Data Sekolah & Jurusan</h3>
+
+                        <div class="form-group">
+                            <label for="namaSekolah">Nama Sekolah Asal <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-graduation-cap input-icon"></i>
+                                <input type="text" id="namaSekolah" placeholder="Contoh: SMP Negeri 1 Jakarta"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="namaJurusan">Pilihan Jurusan <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-book input-icon"></i>
+                                <select id="namaJurusan" required>
+                                    <option value="">-- Pilih Jurusan yang Diminati --</option>
+                                    <option value="rpl">Rekayasa Perangkat Lunak (RPL)</option>
+                                    <option value="tkj">Teknik Komputer dan Jaringan (TKJ)</option>
+                                    <option value="animasi">Animasi</option>
+                                    <option value="dkv">Desain Komunikasi Visual (DKV)</option>
+                                    <option value="mp">Managemen Perkantoran (MP)</option>
+                                    <option value="tjat">Teknik Jaringan Akses Telekomunikasi (TJAT)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Tanggal Kelahiran</label>
-                    <div class="date-group">
-                        <select id="tanggal" required>
-                            <option value="">Pilih tanggal</option>
-                            <script>
-                                for (let i = 1; i <= 31; i++) {
-                                    document.write(`<option value="${i}">${i}</option>`);
-                                }
-                            </script>
-                        </select>
-                        <select id="bulan" required>
-                            <option value="">Pilih Bulan</option>
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                        <select id="tahun" required>
-                            <option value="">Pilih Tahun Lahir</option>
-                            <script>
-                                const currentYear = new Date().getFullYear();
-                                for (let i = currentYear - 5; i >= currentYear - 20; i--) {
-                                    document.write(`<option value="${i}">${i}</option>`);
-                                }
-                            </script>
-                        </select>
+
+                    <!-- Submit Button -->
+                    <div class="submit-section">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Kirim Pendaftaran
+                        </button>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="noHp">No.Hp/WhatsApp Orang Tua</label>
-                    <div class="input-icon phone-icon">
-                        <input type="tel" id="noHp" placeholder="No HP/WhatsApp Orang Tua" required>
-                    </div>
-                </div>
-                <div class="form-group full-width">
-                    <label for="namaSekolah">Nama Sekolah Asal</label>
-                    <div class="input-icon location-icon">
-                        <input type="text" id="namaSekolah" placeholder="Nama Asal Sekolah" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="namaJurusan">Nama Jurusan</label>
-                    <select id="namaJurusan" required>
-                        <option value="">Pilih Jurusan</option>
-                        <option value="rpl">Rekayasa Perangkat Lunak</option>
-                        <option value="tkj">Teknik Komputer dan Jaringan</option>
-                        <option value="mm">Multimedia</option>
-                        <option value="akuntansi">Akuntansi</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-btn">Daftar Sekarang</button>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Simplified Footer -->
+    <!-- Footer -->
     <div class="footer-bottom">
         <p>
-            &copy; 2025 SMK TI Garuda Nusantara. All Rights Reserved. | Designed with
-            <i class="fas fa-heart"></i>
-            by Tim IT
+            &copy; 2025 SMK TI Garuda Nusantara. All Rights Reserved.
         </p>
     </div>
 
     <script>
 
-        // Keep only the form submit handler
+        // Form submission handler
         const form = document.getElementById('ppdbForm');
         form.addEventListener('submit', function (e) {
             e.preventDefault();
+
+            // Collect form data
             const formData = {
                 namaLengkap: document.getElementById('namaLengkap').value,
-                alamatEmail: document.getElementById('alamatEmail').value,
                 jenisKelamin: document.getElementById('jenisKelamin').value,
+                agama: document.getElementById('agama').value,
                 tempatLahir: document.getElementById('tempatLahir').value,
                 tanggalLahir: `${document.getElementById('tanggal').value}-${document.getElementById('bulan').value}-${document.getElementById('tahun').value}`,
+                alamatEmail: document.getElementById('alamatEmail').value,
                 noHp: document.getElementById('noHp').value,
                 namaSekolah: document.getElementById('namaSekolah').value,
                 namaJurusan: document.getElementById('namaJurusan').value
             };
+
             console.log('Data Pendaftaran:', formData);
-            alert('Pendaftaran berhasil! Data telah dikirim.\n\nTerima kasih telah mendaftar di SMK TI Garuda Nusantara.');
+
+            // Show success message
+            alert('🎉 Pendaftaran Berhasil!
+Terima kasih telah mendaftar di SMK TI Garuda Nusantara.
+Data Anda telah kami terima dan akan segera kami proses.
+Tim kami akan menghubungi Anda melalui WhatsApp untuk informasi selanjutnya.');
+
+            // Reset form
             form.reset();
+
+            // Optional: Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.form-step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Phone number validation
+        document.getElementById('noHp').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
     </script>
 </body>
