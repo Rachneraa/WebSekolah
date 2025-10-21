@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - SMK TI Garuda Nusantara</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f8ff;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    header h1 { margin: 0; font-size: 22px; }
+    .container {
+      display: flex;
+      min-height: calc(100vh - 60px);
+    }
+    nav {
+      width: 250px;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    }
+    nav h2 {
+      font-size: 16px;
+      margin-top: 0;
+      color: #1565c0;
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e3f2fd;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+    nav li {
+      margin: 8px 0;
+    }
+    nav button {
+      width: 100%;
+      padding: 12px 15px;
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+      color: #555;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    nav button:hover {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    nav button.active {
+      background-color: #1e88e5;
+      color: white;
+      font-weight: 600;
+    }
+    main {
+      flex: 1;
+      padding: 25px;
+      overflow-x: auto;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(30,136,229,0.3);
+    }
+    .stat-card h3 { margin: 0 0 10px 0; font-size: 14px; opacity: 0.9; }
+    .stat-card .number { font-size: 32px; font-weight: bold; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #e3f2fd;
+      color: #1565c0;
+      font-weight: 600;
+    }
+    tr:hover { background-color: #f5f8ff; }
+    button.add-btn, button.action-btn {
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px 5px 15px 0;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    button.add-btn:hover, button.action-btn:hover {
+      background-color: #1565c0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    button.delete-btn {
+      background-color: #ef5350;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    button.delete-btn:hover { background-color: #c62828; }
+    .form-popup {
+      display: none;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      z-index: 10;
+    }
+    .form-popup h3 { margin-top: 0; color: #1565c0; }
+    .form-popup input, .form-popup select, .form-popup textarea {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+    .form-popup label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: 500;
+    }
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .form-buttons button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .form-buttons .save-btn {
+      background-color: #1e88e5;
+      color: white;
+    }
+    .form-buttons .cancel-btn {
+      background-color: #9e9e9e;
+      color: white;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 5;
+    }
+    .filter-box {
+      background: #f5f8ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-box select, .filter-box input {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .absen-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .absen-summary div {
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .hadir { background-color: #c8e6c9; color: #2e7d32; }
+    .sakit { background-color: #fff9c4; color: #f57f17; }
+    .izin { background-color: #b3e5fc; color: #01579b; }
+    .alpha { background-color: #ffcdd2; color: #c62828; }
+    .student-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .student-item {
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid white;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: white;
+      color: #1565c0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎓 SMK TI Garuda Nusantara</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+  <div class="container">
+    <nav>
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><button class="active" onclick="showSection('dashboard', this)">📊 Dashboard</button></li>
+        <li><button onclick="showSection('siswa', this)">👨‍🎓 Data Siswa</button></li>
+        <li><button onclick="showSection('guru', this)">👨‍🏫 Data Guru</button></li>
+        <li><button onclick="showSection('kelas', this)">🏫 Data Kelas</button></li>
+        <li><button onclick="showSection('jurusan', this)">📚 Jurusan</button></li>
+        <li><button onclick="showSection('absensi', this)">✅ Absensi</button></li>
+        <li><button onclick="showSection('jadwal', this)">📅 Jadwal</button></li>
+        <li><button onclick="showSection('nilai', this)">📝 Nilai</button></li>
+        <li><button onclick="showSection('berita', this)">📰 Berita</button></li>
+        <li><button onclick="showSection('laporan', this)">📊 Laporan</button></li>
+      </ul>
+    </nav>
+    <main id="content"></main>
+  </div>
+  
+  <div class="overlay" id="overlay"></div>
+  <div class="form-popup" id="formPopup"></div>
+
+  <script>
+    const data = {
+      siswa: [
+        { id: 1, nama: 'Andi Pratama', nis: '12345', jurusan: 'PPLG', kelas: 'XII PPLG 1' },
+        { id: 2, nama: 'Siti Nurhaliza', nis: '12346', jurusan: 'TKJ', kelas: 'XII TKJ 1' },
+        { id: 3, nama: 'Budi Santoso', nis: '12347', jurusan: 'PPLG', kelas: 'XII PPLG 1' },
+        { id: 4, nama: 'Dewi Lestari', nis: '12348', jurusan: 'TKJ', kelas: 'XI TKJ 1' },
+        { id: 5, nama: 'Ahmad Fauzi', nis: '12349', jurusan: 'PPLG', kelas: 'XI PPLG 1' }
+      ],
+      guru: [
+        { id: 1, nama: 'Budi Santoso S.Kom', nip: '19780101', mapel: 'Pemrograman Web' },
+        { id: 2, nama: 'Dewi Lestari S.T', nip: '19810505', mapel: 'Jaringan Komputer' },
+        { id: 3, nama: 'Ahmad Yani M.Pd', nip: '19850303', mapel: 'Basis Data' }
+      ],
+      kelas: [
+        { id: 1, nama: 'XII PPLG 1', jurusan: 'PPLG', tingkat: 'XII', waliKelas: 'Budi Santoso S.Kom' },
+        { id: 2, nama: 'XII TKJ 1', jurusan: 'TKJ', tingkat: 'XII', waliKelas: 'Dewi Lestari S.T' },
+        { id: 3, nama: 'XI PPLG 1', jurusan: 'PPLG', tingkat: 'XI', waliKelas: 'Ahmad Yani M.Pd' },
+        { id: 4, nama: 'XI TKJ 1', jurusan: 'TKJ', tingkat: 'XI', waliKelas: 'Budi Santoso S.Kom' }
+      ],
+      jurusan: [
+        { id: 1, kode: 'PPLG', nama: 'Pengembangan Perangkat Lunak dan Gim' },
+        { id: 2, kode: 'TKJ', nama: 'Teknik Komputer dan Jaringan' }
+      ],
+      absensi: [
+        { id: 1, tanggal: '2025-01-15', kelas: 'XII PPLG 1', totalSiswa: 3, hadir: 2, sakit: 1, izin: 0, alpha: 0, 
+          detail: [{ siswaId: 2, nama: 'Siti Nurhaliza', status: 'Sakit', keterangan: 'Demam' }] },
+        { id: 2, tanggal: '2025-01-16', kelas: 'XII TKJ 1', totalSiswa: 2, hadir: 1, sakit: 0, izin: 1, alpha: 0,
+          detail: [{ siswaId: 1, nama: 'Andi Pratama', status: 'Izin', keterangan: 'Keperluan keluarga' }] }
+      ],
+      jadwal: [
+        { id: 1, kelas: 'XII PPLG 1', hari: 'Senin', jam: '07:00-09:00', mapel: 'Pemrograman Web', guru: 'Budi Santoso S.Kom' },
+        { id: 2, kelas: 'XII PPLG 1', hari: 'Senin', jam: '09:00-11:00', mapel: 'Basis Data', guru: 'Ahmad Yani M.Pd' },
+        { id: 3, kelas: 'XII TKJ 1', hari: 'Senin', jam: '07:00-09:00', mapel: 'Jaringan Komputer', guru: 'Dewi Lestari S.T' }
+      ],
+      nilai: [
+        { id: 1, siswaId: 1, nama: 'Andi Pratama', mapel: 'Pemrograman Web', tugas: 85, uts: 80, uas: 88 },
+        { id: 2, siswaId: 1, nama: 'Andi Pratama', mapel: 'Basis Data', tugas: 90, uts: 85, uas: 92 },
+        { id: 3, siswaId: 2, nama: 'Siti Nurhaliza', mapel: 'Jaringan Komputer', tugas: 88, uts: 90, uas: 87 }
+      ]
+    };
+
+    let nextId = { siswa: 6, guru: 4, kelas: 5, jurusan: 3, absensi: 3, jadwal: 4, nilai: 4 };
+
+    function showSection(section, btn) {
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const main = document.getElementById('content');
+
+      if(section === 'dashboard') {
+        const totalSiswa = data.siswa.length;
+        const totalGuru = data.guru.length;
+        const totalKelas = data.kelas.length;
+        const totalJurusan = data.jurusan.length;
+        
+        main.innerHTML = `
+          <div class="card">
+            <h2>Dashboard Overview</h2>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <h3>Total Siswa</h3>
+                <div class="number">${totalSiswa}</div>
+              </div>
+              <div class="stat-card">
+                <h3>Total Guru</h3>
+                <div class="number">${totalGuru}</div>
+              </div>
+              <div class="stat-card">
+                <h3>Total Kelas</h3>
+                <div class="number">${totalKelas}</div>
+              </div>
+              <div class="stat-card">
+                <h3>Jurusan</h3>
+                <div class="number">${totalJurusan}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Selamat Datang di Admin Dashboard</h3>
+            <p>Gunakan menu di samping untuk mengelola data sekolah.</p>
+          </div>
+        `;
+      }
+
+      if(section === 'siswa') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Data Siswa</h2>
+            <button class='add-btn' onclick="openForm('siswa')">+ Tambah Siswa</button>
+            ${renderTable('siswa')}
+          </div>
+        `;
+      }
+
+      if(section === 'guru') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Data Guru</h2>
+            <button class='add-btn' onclick="openForm('guru')">+ Tambah Guru</button>
+            ${renderTable('guru')}
+          </div>
+        `;
+      }
+
+      if(section === 'kelas') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Data Kelas</h2>
+            <button class='add-btn' onclick="openForm('kelas')">+ Tambah Kelas</button>
+            ${renderTable('kelas')}
+          </div>
+        `;
+      }
+
+      if(section === 'jurusan') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Data Jurusan</h2>
+            <button class='add-btn' onclick="openForm('jurusan')">+ Tambah Jurusan</button>
+            ${renderTable('jurusan')}
+          </div>
+        `;
+      }
+
+      if(section === 'absensi') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Rekap Absensi</h2>
+            <button class='add-btn' onclick="openForm('absensi')">+ Input Absensi Harian</button>
+            <button class='action-btn' onclick="showRekapAbsensi()">📊 Lihat Rekap Per Kelas</button>
+            ${renderTable('absensi')}
+          </div>
+        `;
+      }
+
+      if(section === 'jadwal') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Jadwal Pelajaran</h2>
+            <button class='add-btn' onclick="openForm('jadwal')">+ Tambah Jadwal</button>
+            ${renderTable('jadwal')}
+          </div>
+        `;
+      }
+
+      if(section === 'nilai') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Data Nilai Siswa</h2>
+            <button class='add-btn' onclick="openForm('nilai')">+ Tambah Nilai</button>
+            ${renderTable('nilai')}
+          </div>
+        `;
+      }
+
+      if(section === 'berita') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Berita & Pengumuman</h2>
+            <p>Fitur ini masih dalam pengembangan.</p>
+          </div>
+        `;
+      }
+
+      if(section === 'laporan') {
+        main.innerHTML = `
+          <div class="card">
+            <h2>Laporan</h2>
+            <p>Fitur laporan akan dihubungkan ke database.</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderTable(type) {
+      let headers = '', rows = '';
+      
+      if(type === 'siswa') {
+        headers = '<tr><th>NIS</th><th>Nama</th><th>Kelas</th><th>Jurusan</th><th>Aksi</th></tr>';
+        rows = data.siswa.map(s => 
+          `<tr>
+            <td>${s.nis}</td>
+            <td>${s.nama}</td>
+            <td>${s.kelas}</td>
+            <td>${s.jurusan}</td>
+            <td><button class="delete-btn" onclick="deleteData('siswa', ${s.id})">Hapus</button></td>
+          </tr>`
+        ).join('');
+      }
+      
+      if(type === 'guru') {
+        headers = '<tr><th>NIP</th><th>Nama</th><th>Mata Pelajaran</th><th>Aksi</th></tr>';
+        rows = data.guru.map(g => 
+          `<tr>
+            <td>${g.nip}</td>
+            <td>${g.nama}</td>
+            <td>${g.mapel}</td>
+            <td><button class="delete-btn" onclick="deleteData('guru', ${g.id})">Hapus</button></td>
+          </tr>`
+        ).join('');
+      }
+      
+      if(type === 'kelas') {
+        headers = '<tr><th>Nama Kelas</th><th>Tingkat</th><th>Jurusan</th><th>Wali Kelas</th><th>Aksi</th></tr>';
+        rows = data.kelas.map(k => 
+          `<tr>
+            <td>${k.nama}</td>
+            <td>${k.tingkat}</td>
+            <td>${k.jurusan}</td>
+            <td>${k.waliKelas}</td>
+            <td><button class="delete-btn" onclick="deleteData('kelas', ${k.id})">Hapus</button></td>
+          </tr>`
+        ).join('');
+      }
+      
+      if(type === 'jurusan') {
+        headers = '<tr><th>Kode</th><th>Nama Jurusan</th><th>Aksi</th></tr>';
+        rows = data.jurusan.map(j => 
+          `<tr>
+            <td>${j.kode}</td>
+            <td>${j.nama}</td>
+            <td><button class="delete-btn" onclick="deleteData('jurusan', ${j.id})">Hapus</button></td>
+          </tr>`
+        ).join('');
+      }
+      
+      if(type === 'absensi') {
+        headers = '<tr><th>Tanggal</th><th>Kelas</th><th>Total</th><th>Hadir</th><th>Sakit</th><th>Izin</th><th>Alpha</th><th>Aksi</th></tr>';
+        rows = data.absensi.map(a => 
+          `<tr>
+            <td>${a.tanggal}</td>
+            <td>${a.kelas}</td>
+            <td>${a.totalSiswa}</td>
+            <td>${a.hadir}</td>
+            <td>${a.sakit}</td>
+            <td>${a.izin}</td>
+            <td>${a.alpha}</td>
+            <td>
+              <button class="action-btn" onclick="showAbsenDetail(${a.id})">Detail</button>
+              <button class="delete-btn" onclick="deleteData('absensi', ${a.id})">Hapus</button>
+            </td>
+          </tr>`
+        ).join('');
+      }
+      
+      if(type === 'jadwal') {
+        headers = '<tr><th>Kelas</th><th>Hari</th><th>Jam</th><th>Mata Pelajaran</th><th>Guru</th><th>Aksi</th></tr>';
+        rows = data.jadwal.map(j => 
+          `<tr>
+            <td>${j.kelas}</td>
+            <td>${j.hari}</td>
+            <td>${j.jam}</td>
+            <td>${j.mapel}</td>
+            <td>${j.guru}</td>
+            <td><button class="delete-btn" onclick="deleteData('jadwal', ${j.id})">Hapus</button></td>
+          </tr>`
+        ).join('');
+      }
+      
+      if(type === 'nilai') {
+        headers = '<tr><th>Nama Siswa</th><th>Mata Pelajaran</th><th>Tugas</th><th>UTS</th><th>UAS</th><th>Rata-rata</th><th>Aksi</th></tr>';
+        rows = data.nilai.map(n => {
+          const avg = ((n.tugas + n.uts + n.uas) / 3).toFixed(1);
+          return `<tr>
+            <td>${n.nama}</td>
+            <td>${n.mapel}</td>
+            <td>${n.tugas}</td>
+            <td>${n.uts}</td>
+            <td>${n.uas}</td>
+            <td><strong>${avg}</strong></td>
+            <td><button class="delete-btn" onclick="deleteData('nilai', ${n.id})">Hapus</button></td>
+          </tr>`;
+        }).join('');
+      }
+      
+      return `<table><thead>${headers}</thead><tbody>${rows || '<tr><td colspan="100%" style="text-align:center;">Belum ada data</td></tr>'}</tbody></table>`;
+    }
+
+    function openForm(type) {
+      const popup = document.getElementById('formPopup');
+      const overlay = document.getElementById('overlay');
+      popup.innerHTML = '';
+      
+      if(type === 'siswa') {
+        const kelasOptions = data.kelas.map(k => `<option value="${k.nama}">${k.nama}</option>`).join('');
+        popup.innerHTML = `
+          <h3>Tambah Siswa</h3>
+          <label>Nama Lengkap</label>
+          <input id='nama' placeholder='Nama Siswa'>
+          <label>NIS</label>
+          <input id='nis' placeholder='Nomor Induk Siswa'>
+          <label>Kelas</label>
+          <select id='kelas'>${kelasOptions}</select>
+          <label>Jurusan</label>
+          <input id='jurusan' placeholder='Kode Jurusan (PPLG/TKJ)'>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('siswa')">Simpan</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+      }
+      
+      if(type === 'guru') {
+        popup.innerHTML = `
+          <h3>Tambah Guru</h3>
+          <label>Nama Lengkap</label>
+          <input id='nama' placeholder='Nama Guru'>
+          <label>NIP</label>
+          <input id='nip' placeholder='Nomor Induk Pegawai'>
+          <label>Mata Pelajaran</label>
+          <input id='mapel' placeholder='Mata Pelajaran yang Diampu'>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('guru')">Simpan</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+      }
+      
+      if(type === 'kelas') {
+        const guruOptions = data.guru.map(g => `<option value="${g.nama}">${g.nama}</option>`).join('');
+        popup.innerHTML = `
+          <h3>Tambah Kelas</h3>
+          <label>Nama Kelas</label>
+          <input id='namaKelas' placeholder='Contoh: XII PPLG 1'>
+          <label>Tingkat</label>
+          <select id='tingkat'>
+            <option value='X'>X</option>
+            <option value='XI'>XI</option>
+            <option value='XII'>XII</option>
+          </select>
+          <label>Jurusan</label>
+          <input id='jurusan' placeholder='Kode Jurusan'>
+          <label>Wali Kelas</label>
+          <select id='waliKelas'>${guruOptions}</select>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('kelas')">Simpan</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+      }
+      
+      if(type === 'jurusan') {
+        popup.innerHTML = `
+          <h3>Tambah Jurusan</h3>
+          <label>Kode Jurusan</label>
+          <input id='kode' placeholder='Contoh: PPLG'>
+          <label>Nama Jurusan</label>
+          <input id='nama' placeholder='Nama lengkap jurusan'>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('jurusan')">Simpan</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+      }
+      
+      if(type === 'absensi') {
+        const kelasOptions = data.kelas.map(k => `<option value="${k.nama}">${k.nama}</option>`).join('');
+        const today = new Date().toISOString().split('T')[0];
+        popup.innerHTML = `
+          <h3>Input Absensi Harian</h3>
+          <label>Tanggal</label>
+          <input type="date" id='tanggal' value="${today}">
+          <label>Kelas</label>
+          <select id='kelas' onchange="loadSiswaForAbsen()">${kelasOptions}</select>
+          <div id="siswaAbsenList"></div>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('absensi')">Simpan Absensi</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+        setTimeout(() => loadSiswaForAbsen(), 100);
+      }
+      
+      if(type === 'jadwal') {
+        const kelasOptions = data.kelas.map(k => `<option value="${k.nama}">${k.nama}</option>`).join('');
+        const guruOptions = data.guru.map(g => `<option value="${g.nama}">${g.nama}</option>`).join('');
+        popup.innerHTML = `
+          <h3>Tambah Jadwal</h3>
+          <label>Kelas</label>
+          <select id='kelas'>${kelasOptions}</select>
+          <label>Hari</label>
+          <select id='hari'>
+            <option value='Senin'>Senin</option>
+            <option value='Selasa'>Selasa</option>
+            <option value='Rabu'>Rabu</option>
+            <option value='Kamis'>Kamis</option>
+            <option value='Jumat'>Jumat</option>
+          </select>
+          <label>Jam</label>
+          <input id='jam' placeholder='Contoh: 07:00-09:00'>
+          <label>Mata Pelajaran</label>
+          <input id='mapel' placeholder='Nama Mata Pelajaran'>
+          <label>Guru Pengampu</label>
+          <select id='guru'>${guruOptions}</select>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('jadwal')">Simpan</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+      }
+      
+      if(type === 'nilai') {
+        const siswaOptions = data.siswa.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
+        popup.innerHTML = `
+          <h3>Input Nilai</h3>
+          <label>Siswa</label>
+          <select id='siswaId'>${siswaOptions}</select>
+          <label>Mata Pelajaran</label>
+          <input id='mapel' placeholder='Nama Mata Pelajaran'>
+          <label>Nilai Tugas</label>
+          <input type='number' id='tugas' placeholder='0-100' min='0' max='100'>
+          <label>Nilai UTS</label>
+          <input type='number' id='uts' placeholder='0-100' min='0' max='100'>
+          <label>Nilai UAS</label>
+          <input type='number' id='uas' placeholder='0-100' min='0' max='100'>
+          <div class="form-buttons">
+            <button class="save-btn" onclick="addData('nilai')">Simpan</button>
+            <button class="cancel-btn" onclick="closeForm()">Batal</button>
+          </div>
+        `;
+      }
+      
+      popup.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+
+    function loadSiswaForAbsen() {
+      const kelasSelect = document.getElementById('kelas');
+      const selectedKelas = kelasSelect.value;
+      const siswaList = data.siswa.filter(s => s.kelas === selectedKelas);
+      
+      let html = '<h4>Daftar Siswa:</h4><div class="student-list">';
+      siswaList.forEach(s => {
+        html += `
+          <div class="student-item">
+            <span>${s.nama}</span>
+            <select id="status-${s.id}" style="padding:5px;border-radius:4px;">
+              <option value="Hadir">Hadir</option>
+              <option value="Sakit">Sakit</option>
+              <option value="Izin">Izin</option>
+              <option value="Alpha">Alpha</option>
+            </select>
+          </div>
+          <input type="text" id="ket-${s.id}" placeholder="Keterangan (opsional)" style="margin-bottom:10px;">
+        `;
+      });
+      html += '</div>';
+      document.getElementById('siswaAbsenList').innerHTML = html;
+    }
+
+    function addData(type) {
+      if(type === 'siswa') {
+        const obj = { 
+          id: nextId.siswa++, 
+          nama: document.getElementById('nama').value, 
+          nis: document.getElementById('nis').value, 
+          kelas: document.getElementById('kelas').value,
+          jurusan: document.getElementById('jurusan').value 
+        };
+        data.siswa.push(obj);
+      }
+      
+      if(type === 'guru') {
+        const obj = { 
+          id: nextId.guru++,
+          nama: document.getElementById('nama').value, 
+          nip: document.getElementById('nip').value, 
+          mapel: document.getElementById('mapel').value 
+        };
+        data.guru.push(obj);
+      }
+      
+      if(type === 'kelas') {
+        const obj = { 
+          id: nextId.kelas++,
+          nama: document.getElementById('namaKelas').value,
+          tingkat: document.getElementById('tingkat').value,
+          jurusan: document.getElementById('jurusan').value, 
+          waliKelas: document.getElementById('waliKelas').value 
+        };
+        data.kelas.push(obj);
+      }
+      
+      if(type === 'jurusan') {
+        const obj = { 
+          id: nextId.jurusan++,
+          kode: document.getElementById('kode').value, 
+          nama: document.getElementById('nama').value 
+        };
+        data.jurusan.push(obj);
+      }
+      
+      if(type === 'absensi') {
+        const kelasVal = document.getElementById('kelas').value;
+        const siswaList = data.siswa.filter(s => s.kelas === kelasVal);
+        
+        let hadir = 0, sakit = 0, izin = 0, alpha = 0;
+        const detail = [];
+        
+        siswaList.forEach(s => {
+          const statusEl = document.getElementById(`status-${s.id}`);
+          const ketEl = document.getElementById(`ket-${s.id}`);
+          const status = statusEl ? statusEl.value : 'Hadir';
+          const keterangan = ketEl ? ketEl.value : '';
+          
+          if(status === 'Hadir') hadir++;
+          else if(status === 'Sakit') sakit++;
+          else if(status === 'Izin') izin++;
+          else if(status === 'Alpha') alpha++;
+          
+          if(status !== 'Hadir') {
+            detail.push({ siswaId: s.id, nama: s.nama, status, keterangan });
+          }
+        });
+        
+        const obj = {
+          id: nextId.absensi++,
+          tanggal: document.getElementById('tanggal').value,
+          kelas: kelasVal,
+          totalSiswa: siswaList.length,
+          hadir, sakit, izin, alpha,
+          detail
+        };
+        data.absensi.push(obj);
+      }
+      
+      if(type === 'jadwal') {
+        const obj = {
+          id: nextId.jadwal++,
+          kelas: document.getElementById('kelas').value,
+          hari: document.getElementById('hari').value,
+          jam: document.getElementById('jam').value,
+          mapel: document.getElementById('mapel').value,
+          guru: document.getElementById('guru').value
+        };
+        data.jadwal.push(obj);
+      }
+      
+      if(type === 'nilai') {
+        const siswaId = parseInt(document.getElementById('siswaId').value);
+        const siswa = data.siswa.find(s => s.id === siswaId);
+        const obj = {
+          id: nextId.nilai++,
+          siswaId,
+          nama: siswa.nama,
+          mapel: document.getElementById('mapel').value,
+          tugas: parseInt(document.getElementById('tugas').value) || 0,
+          uts: parseInt(document.getElementById('uts').value) || 0,
+          uas: parseInt(document.getElementById('uas').value) || 0
+        };
+        data.nilai.push(obj);
+      }
+      
+      closeForm();
+      showSection(type, document.querySelector(`nav button[onclick*="${type}"]`));
+    }
+
+    function deleteData(type, id) {
+      if(confirm('Yakin ingin menghapus data ini?')) {
+        const index = data[type].findIndex(item => item.id === id);
+        if(index > -1) {
+          data[type].splice(index, 1);
+          showSection(type, document.querySelector(`nav button[onclick*="${type}"]`));
+        }
+      }
+    }
+
+    function showAbsenDetail(id) {
+      const absen = data.absensi.find(a => a.id === id);
+      if(!absen) return;
+      
+      const popup = document.getElementById('formPopup');
+      const overlay = document.getElementById('overlay');
+      
+      let detailHtml = '<h4>Siswa Tidak Hadir:</h4>';
+      if(absen.detail.length === 0) {
+        detailHtml += '<p>Semua siswa hadir!</p>';
+      } else {
+        detailHtml += '<div class="student-list">';
+        absen.detail.forEach(d => {
+          detailHtml += `
+            <div class="student-item">
+              <div>
+                <strong>${d.nama}</strong><br>
+                <small>Status: ${d.status}</small><br>
+                ${d.keterangan ? `<small>Ket: ${d.keterangan}</small>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        detailHtml += '</div>';
+      }
+      
+      popup.innerHTML = `
+        <h3>Detail Absensi - ${absen.tanggal}</h3>
+        <p><strong>Kelas:</strong> ${absen.kelas}</p>
+        <div class="absen-summary">
+          <div class="hadir">Hadir: ${absen.hadir}</div>
+          <div class="sakit">Sakit: ${absen.sakit}</div>
+          <div class="izin">Izin: ${absen.izin}</div>
+          <div class="alpha">Alpha: ${absen.alpha}</div>
+        </div>
+        ${detailHtml}
+        <div class="form-buttons">
+          <button class="cancel-btn" onclick="closeForm()">Tutup</button>
+        </div>
+      `;
+      
+      popup.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+
+    function showRekapAbsensi() {
+      const popup = document.getElementById('formPopup');
+      const overlay = document.getElementById('overlay');
+      
+      const kelasOptions = data.kelas.map(k => `<option value="${k.nama}">${k.nama}</option>`).join('');
+      
+      popup.innerHTML = `
+        <h3>Rekap Absensi Per Kelas</h3>
+        <div class="filter-box">
+          <select id="filterKelas" onchange="updateRekapAbsen()">
+            ${kelasOptions}
+          </select>
+          <select id="filterBulan" onchange="updateRekapAbsen()">
+            <option value="01">Januari</option>
+            <option value="02">Februari</option>
+            <option value="03">Maret</option>
+            <option value="04">April</option>
+            <option value="05">Mei</option>
+            <option value="06">Juni</option>
+            <option value="07">Juli</option>
+            <option value="08">Agustus</option>
+            <option value="09">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+          </select>
+        </div>
+        <div id="rekapContent"></div>
+        <div class="form-buttons">
+          <button class="cancel-btn" onclick="closeForm()">Tutup</button>
+        </div>
+      `;
+      
+      popup.style.display = 'block';
+      overlay.style.display = 'block';
+      
+      setTimeout(() => updateRekapAbsen(), 100);
+    }
+
+    function updateRekapAbsen() {
+      const kelas = document.getElementById('filterKelas').value;
+      const bulan = document.getElementById('filterBulan').value;
+      const tahun = new Date().getFullYear();
+      
+      const filtered = data.absensi.filter(a => {
+        const [y, m] = a.tanggal.split('-');
+        return a.kelas === kelas && m === bulan;
+      });
+      
+      let totalHadir = 0, totalSakit = 0, totalIzin = 0, totalAlpha = 0;
+      let totalHari = filtered.length;
+      
+      filtered.forEach(a => {
+        totalHadir += a.hadir;
+        totalSakit += a.sakit;
+        totalIzin += a.izin;
+        totalAlpha += a.alpha;
+      });
+      
+      const siswaKelas = data.siswa.filter(s => s.kelas === kelas);
+      const totalSiswa = siswaKelas.length;
+      const persentaseKehadiran = totalHari > 0 ? ((totalHadir / (totalSiswa * totalHari)) * 100).toFixed(1) : 0;
+      
+      let html = `
+        <h4>Statistik Kehadiran</h4>
+        <div class="absen-summary">
+          <div class="hadir">Total Hadir<br><strong>${totalHadir}</strong></div>
+          <div class="sakit">Total Sakit<br><strong>${totalSakit}</strong></div>
+          <div class="izin">Total Izin<br><strong>${totalIzin}</strong></div>
+          <div class="alpha">Total Alpha<br><strong>${totalAlpha}</strong></div>
+        </div>
+        <p><strong>Persentase Kehadiran:</strong> ${persentaseKehadiran}%</p>
+        <p><strong>Total Hari Tercatat:</strong> ${totalHari} hari</p>
+      `;
+      
+      document.getElementById('rekapContent').innerHTML = html;
+    }
+
+    function closeForm() {
+      document.getElementById('formPopup').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+
+    document.getElementById('overlay').onclick = closeForm;
+
+    function logout() {
+      if(confirm('Yakin ingin logout?')) {
+        alert('Logout berhasil!');
+      }
+    }
+
+    // Initialize dashboard
+    showSection('dashboard', document.querySelector('nav button'));
+  </script>
+</body>
+</html>

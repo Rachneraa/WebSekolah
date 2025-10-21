@@ -1,0 +1,20 @@
+{
+  "name": "SMK TI GARUDA NUSANTARA",
+  "short_name": "SMK TI GNC",
+  "start_url": "/pkl/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#00499D",
+  "icons": [
+    {
+      "src": "/pkl/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/pkl/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
