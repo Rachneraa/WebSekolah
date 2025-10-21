@@ -691,7 +691,7 @@ session_start();
                                 <span><i class="far fa-calendar"></i> 10 Oktober 2025</span>
                                 <span><i class="far fa-user"></i> Admin</span>
                             </div>
-                            <h3>Siswa TKJ Raih Juara Nasional Kompetisi Jaringan</h3>
+                            <h3>Siswa TKJ Raih Juara Nasional Kompetisi</h3>
                             <p>Tim siswa SMK TI Garuda Nusantara berhasil meraih juara 1 dalam Lomba Konfigurasi
                                 Jaringan tingkat nasional yang diselenggarakan di Jakarta. Prestasi membanggakan ini
                                 merupakan hasil kerja keras dan dedikasi siswa-siswi kami.</p>
