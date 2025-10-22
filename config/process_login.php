@@ -6,40 +6,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $password = $_POST['password'];
 
-    $query = "SELECT * FROM users WHERE username = ?";
+    // Check student login
+    $query = "SELECT * FROM siswa WHERE username = ?";
     $stmt = mysqli_prepare($db, $query);
     mysqli_stmt_bind_param($stmt, "s", $username);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
-    if ($row = mysqli_fetch_assoc($result)) {
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['user_id'] = $row['id'];
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['level'] = $row['level'];
+    if (mysqli_num_rows($result) > 0) {
+        $siswa = mysqli_fetch_assoc($result);
+        if (password_verify($password, $siswa['password'])) {
+            // Set session
+            $_SESSION['user_id'] = $siswa['id'];
+            $_SESSION['level'] = 'siswa';
+            $_SESSION['kelas_id'] = $siswa['kelas_id'];
 
-            // Set cookie jika remember me dicentang
-            if (isset($_POST['remember'])) {
-                setcookie('user_login', $row['username'], time() + (86400 * 30), "/");
-            }
+            // Update login time and status in siswa table
+            $update = "UPDATE siswa SET login_time = NOW(), login_status = 'success' WHERE id = ?";
+            $stmt = mysqli_prepare($db, $update);
+            mysqli_stmt_bind_param($stmt, "i", $siswa['id']);
+            mysqli_stmt_execute($stmt);
 
-            // Redirect berdasarkan level user
-            if ($row['level'] == 'admin') {
-                header("Location: ../backend/admin.php");
-            } else {
-                header("Location: ../backend/guru.php");
-            }
+            // Insert into login history with correct column name (id_siswa)
+            $insert = "INSERT INTO login_history (id_siswa, login_time, status) VALUES (?, NOW(), 'Hadir')";
+            $stmt = mysqli_prepare($db, $insert);
+            mysqli_stmt_bind_param($stmt, "i", $siswa['id']);
+            $stmt->execute();
+
+            header("Location: ../siswa/dashboard.php");
             exit();
-        } else {
-            header("Location: ../index.php?error=invalid");
         }
-    } else {
-        header("Location: ../index.php?error=invalid");
     }
 
-    mysqli_stmt_close($stmt);
-} else {
+    // Login failed
+    $_SESSION['error'] = "Username atau password salah!";
     header("Location: ../index.php");
+    exit();
 }
 mysqli_close($db);
 ?>

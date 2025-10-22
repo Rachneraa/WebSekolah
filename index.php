@@ -1589,57 +1589,47 @@ session_start();
         <section id="artikel" class="artikel-container fade-in">
             <div class="artikel-header">
                 <h2 class="section-title">Artikel & Berita Terbaru</h2>
-                <button class="btn-view-all" onclick="window.location.href='artikel.php'">
-                    View All Articles <i class="fas fa-arrow-right"></i>
+                <button class="btn-view-all" onclick="window.location.href='article.php'">
+                    Lihat Semua <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
             <div class="artikel-slider">
-                <article class="artikel-card">
-                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800" alt="Prestasi Siswa">
-                    <div class="artikel-content">
-                        <div class="artikel-meta">
-                            <span><i class="far fa-calendar"></i> 10 Oktober 2025</span>
-                            <span><i class="far fa-user"></i> Admin</span>
-                        </div>
-                        <h3>Siswa TKJ Raih Juara Nasional Kompetisi Jaringan</h3>
-                        <p>Tim siswa SMK TI Garuda Nusantara berhasil meraih juara 1 dalam Lomba Konfigurasi
-                            Jaringan
-                            tingkat nasional...</p>
-                        <a href="artikel-detail.php" class="artikel-link">Baca Selengkapnya <i
-                                class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
+                <?php
+                require_once 'config/koneksi.php';
+                require_once 'config/functions.php';
 
-                <article class="artikel-card">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800" alt="Workshop Coding">
-                    <div class="artikel-content">
-                        <div class="artikel-meta">
-                            <span><i class="far fa-calendar"></i> 5 Oktober 2025</span>
-                            <span><i class="far fa-user"></i> Guru RPL</span>
-                        </div>
-                        <h3>Workshop Web Development bersama Industri IT Ternama</h3>
-                        <p>Sekolah mengadakan workshop intensif pengembangan web modern dengan instruktur dari
-                            perusahaan teknologi...</p>
-                        <a href="artikel-detail.php" class="artikel-link">Baca Selengkapnya <i
-                                class="fas fa-arrow-right"></i></a>
+                $berita_terbaru = getBerita($db, 3); // ambil 3 berita terbaru
+                
+                if (empty($berita_terbaru)): ?>
+                    <div class="text-center w-100">
+                        <p>Belum ada berita</p>
                     </div>
-                </article>
-
-                <article class="artikel-card">
-                    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800"
-                        alt="Praktik Industri">
-                    <div class="artikel-content">
-                        <div class="artikel-meta">
-                            <span><i class="far fa-calendar"></i> 1 Oktober 2025</span>
-                            <span><i class="far fa-user"></i> Humas</span>
-                        </div>
-                        <h3>Program Praktek Kerja Industri di 50+ Perusahaan Partner</h3>
-                        <p>Siswa kelas XII berkesempatan mengikuti program PKL di berbagai perusahaan teknologi
-                            terkemuka di Indonesia...</p>
-                        <a href="artikel-detail.php" class="artikel-link">Baca Selengkapnya <i
-                                class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
+                <?php else:
+                    foreach ($berita_terbaru as $berita): ?>
+                        <article class="artikel-card">
+                            <?php if ($berita['gambar']): ?>
+                                <img src="berita/<?= htmlspecialchars($berita['gambar']) ?>"
+                                    alt="<?= htmlspecialchars($berita['judul']) ?>">
+                            <?php endif; ?>
+                            <div class="artikel-content">
+                                <div class="artikel-meta">
+                                    <span><i class="far fa-calendar"></i>
+                                        <?= date('d M Y', strtotime($berita['tanggal'])) ?>
+                                    </span>
+                                    <span><i class="far fa-user"></i>
+                                        <?= htmlspecialchars($berita['penulis']) ?>
+                                    </span>
+                                </div>
+                                <h3><?= htmlspecialchars($berita['judul']) ?></h3>
+                                <p><?= substr(strip_tags(str_replace(['\r\n', '\n', '##'], ' ', $berita['isi'])), 0, 100) ?>...
+                                </p>
+                                <a href="artikel-detail.php?id=<?= $berita['id'] ?>" class="artikel-link">
+                                    Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
+                    <?php endforeach;
+                endif; ?>
             </div>
         </section>
     </main>

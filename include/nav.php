@@ -678,7 +678,7 @@
             </button>
 
             <div class="login-header">
-                <img src="/pkl/assets/logo.png" alt="Logo Sekolah" class="login-logo">
+                <img src="assets/smk.png" alt="Logo Sekolah" class="login-logo">
                 <h2>SMK TI Garuda Nusantara</h2>
                 <p>Selamat datang di<br>Portal Admin Sekolah</p>
             </div>
