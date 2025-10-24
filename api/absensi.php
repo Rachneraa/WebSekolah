@@ -28,20 +28,43 @@ try {
         exit;
     }
 
-    // Check if already attended today
-    $check = $db->prepare("SELECT id FROM absensi WHERE siswa_id = ? AND DATE(tanggal) = CURDATE()");
-    $check->bind_param("i", $_SESSION['user_id']);
-    $check->execute();
+    $kelas_id = $_SESSION['kelas_id'];
+    $siswa_id = $_SESSION['user_id']; // harus sama dengan siswa_id di tabel siswa
+    $tanggal = date('Y-m-d');
 
-    if ($check->get_result()->num_rows > 0) {
+    // 1. Cek absensi harian kelas
+    $absensi_q = $db->prepare("SELECT absensi_id FROM absensi WHERE kelas_id = ? AND tanggal = ?");
+    $absensi_q->bind_param("is", $kelas_id, $tanggal);
+    $absensi_q->execute();
+    $absensi_r = $absensi_q->get_result();
+
+    if ($absensi_r->num_rows > 0) {
+        $absensi_id = $absensi_r->fetch_assoc()['absensi_id'];
+    } else {
+        // Buat absensi harian baru
+        $insert_absensi = $db->prepare("INSERT INTO absensi (tanggal, kelas_id, total_siswa, hadir, sakit, izin, alpha) VALUES (?, ?, 0, 0, 0, 0, 0)");
+        $insert_absensi->bind_param("si", $tanggal, $kelas_id);
+        $insert_absensi->execute();
+        $absensi_id = $db->insert_id;
+    }
+
+    // 2. Cek apakah siswa sudah absen hari ini
+    $cek_q = $db->prepare("SELECT id FROM absensi_detail WHERE absensi_id = ? AND siswa_id = ?");
+    $cek_q->bind_param("ii", $absensi_id, $siswa_id);
+    $cek_q->execute();
+    $cek_r = $cek_q->get_result();
+
+    if ($cek_r->num_rows > 0) {
         echo json_encode(['success' => false, 'message' => 'Anda sudah absen hari ini']);
         exit;
     }
 
-    // Record attendance
-    $stmt = $db->prepare("INSERT INTO absensi (siswa_id, kelas_id, status) VALUES (?, ?, 'Hadir')");
-    $stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['kelas_id']);
-    $stmt->execute();
+    // 3. Insert absensi detail
+    $waktu_absen = date('H:i:s');
+    $nama_siswa = $_SESSION['nama'] ?? '';
+    $save_q = $db->prepare("INSERT INTO absensi_detail (absensi_id, siswa_id, status, kelas_id, tanggal, waktu_absen, nama_siswa) VALUES (?, ?, 'Hadir', ?, ?, ?, ?)");
+    $save_q->bind_param("iiisss", $absensi_id, $siswa_id, $kelas_id, $tanggal, $waktu_absen, $nama_siswa);
+    $save_q->execute();
 
     echo json_encode(['success' => true, 'message' => 'Absensi berhasil']);
 } catch (Exception $e) {

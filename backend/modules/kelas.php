@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', dirname(dirname(__DIR__)));
@@ -46,7 +48,7 @@ function generateQRCode($kelas_id, $nama_kelas)
 // Fungsi CRUD
 function getAllKelas($db, $start = 0, $limit = 10)
 {
-    $query = "SELECT k.*, COUNT(s.id) as jumlah_siswa 
+    $query = "SELECT k.*, COUNT(s.siswa_id) as jumlah_siswa 
               FROM kelas k 
               LEFT JOIN siswa s ON k.id = s.kelas_id 
               GROUP BY k.id 
@@ -60,6 +62,7 @@ function getAllKelas($db, $start = 0, $limit = 10)
 
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // print_r($_POST); // Hapus ini jika ingin redirect!
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'add':
@@ -83,7 +86,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 break;
 
-            // ... handle edit & delete cases
+            case 'edit':
+                try {
+                    $stmt = $db->prepare("UPDATE kelas SET nama = ? WHERE id = ?");
+                    $stmt->bind_param("si", $_POST['nama'], $_POST['id']);
+                    $stmt->execute();
+                    $_SESSION['success'] = "Kelas berhasil diperbarui";
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Error: " . $e->getMessage();
+                }
+                break;
+
+            case 'delete':
+                try {
+                    // Hapus absensi yang terkait kelas
+                    $stmt = $db->prepare("DELETE FROM absensi WHERE kelas_id = ?");
+                    $stmt->bind_param("i", $_POST['id']);
+                    $stmt->execute();
+
+                    // Hapus jadwal yang terkait kelas
+                    $stmt = $db->prepare("DELETE FROM jadwal WHERE kelas_id = ?");
+                    $stmt->bind_param("i", $_POST['id']);
+                    $stmt->execute();
+
+                    // Baru hapus kelas
+                    $stmt = $db->prepare("DELETE FROM kelas WHERE id = ?");
+                    $stmt->bind_param("i", $_POST['id']);
+                    $stmt->execute();
+
+                    $_SESSION['success'] = "Kelas dan data terkait berhasil dihapus";
+                    // Gunakan JS redirect jika sudah ada output
+                    echo "<script>window.location.href='?page=kelas';</script>";
+                    exit();
+                } catch (Exception $e) {
+                    $_SESSION['error'] = "Error: " . $e->getMessage();
+                }
+                break;
         }
     }
 }
@@ -148,6 +186,11 @@ $kelas_list = getAllKelas($db, $start, $limit);
                                         <button class="btn btn-sm btn-danger" onclick="deleteKelas(<?= $row['id'] ?>)">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <br>
+                                        <a href="/Web-Sekolah/backend/modules/absensi.php?kelas=<?= $row['id'] ?>"
+                                            class="btn btn-sm btn-info mt-2">
+                                            <i class="fas fa-clipboard-list"></i> Absensi
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php
@@ -212,6 +255,25 @@ $kelas_list = getAllKelas($db, $start, $limit);
     </div>
 </div>
 
+<!-- Modal Absensi -->
+<div class="modal fade" id="absensiModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Absensi Kelas <span id="absensiKelasNama"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="absensiModalBody">
+                <!-- Data absensi akan dimuat di sini -->
+                <div class="text-center py-5">
+                    <span class="spinner-border"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function editKelas(id) {
         fetch(`get_kelas.php?id=${id}`)
@@ -237,6 +299,7 @@ $kelas_list = getAllKelas($db, $start, $limit);
             if (result.isConfirmed) {
                 const form = document.createElement('form');
                 form.method = 'POST';
+                form.action = ''; // kosongkan, biar POST ke halaman sekarang
                 form.innerHTML = `
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="id" value="${id}">
@@ -292,5 +355,17 @@ $kelas_list = getAllKelas($db, $start, $limit);
             printWindow.print();
             printWindow.close();
         }, 250);
+    }
+
+    function showAbsensiModal(kelasId, kelasNama) {
+        document.getElementById('absensiKelasNama').textContent = kelasNama;
+        const modalBody = document.getElementById('absensiModalBody');
+        modalBody.innerHTML = '<div class="text-center py-5"><span class="spinner-border"></span></div>';
+        fetch(`get_absensi_kelas.php?kelas_id=${kelasId}`)
+            .then(response => response.text())
+            .then(html => {
+                modalBody.innerHTML = html;
+            });
+        new bootstrap.Modal(document.getElementById('absensiModal')).show();
     }
 </script>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php';
+include 'config/koneksi.php';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -17,6 +17,7 @@ include 'koneksi.php';
     <link rel="manifest" href="/pkl/manifest.json">
     <meta name="theme-color" content="#00499D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         /* CSS Variables */
         :root {
@@ -516,7 +517,7 @@ include 'koneksi.php';
                     </ul>
                 </div>
 
-                <form id="ppdbForm">
+                <form action="backend/modules/proses_pendaftaran.php" method="POST">
                     <!-- Data Pribadi -->
                     <div class="form-step">
                         <h3 class="step-title"><i class="fas fa-user"></i> Data Pribadi Calon Siswa</h3>
@@ -525,12 +526,8 @@ include 'koneksi.php';
                             <label for="namaLengkap">Nama Lengkap <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-user input-icon"></i>
-                                <input type="text" id="namaLengkap" placeholder="Masukkan nama lengkap sesuai ijazah"
-                                    required>
-                            </div>
-                            <div class="error-hint">
-                                <i class="fas fa-exclamation-circle"></i>
-                                Sesuai dengan Ijazah/Akta Kelahiran
+                                <input type="text" id="namaLengkap" name="nama_lengkap"
+                                    placeholder="Masukkan nama lengkap sesuai ijazah" required>
                             </div>
                         </div>
 
@@ -538,7 +535,7 @@ include 'koneksi.php';
                             <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-venus-mars input-icon"></i>
-                                <select id="jenisKelamin" required>
+                                <select id="jenisKelamin" name="jenis_kelamin" required>
                                     <option value="">-- Pilih Jenis Kelamin --</option>
                                     <option value="laki-laki">Laki-laki</option>
                                     <option value="perempuan">Perempuan</option>
@@ -546,12 +543,11 @@ include 'koneksi.php';
                             </div>
                         </div>
 
-                        <!-- FIELD AGAMA BARU -->
                         <div class="form-group">
                             <label for="agama">Agama <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-pray input-icon"></i>
-                                <select id="agama" required>
+                                <select id="agama" name="agama" required>
                                     <option value="">-- Pilih Agama --</option>
                                     <option value="islam">Islam</option>
                                     <option value="kristen">Kristen</option>
@@ -567,22 +563,23 @@ include 'koneksi.php';
                             <label for="tempatLahir">Tempat Kelahiran <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-map-marker-alt input-icon"></i>
-                                <input type="text" id="tempatLahir" placeholder="Contoh: Jakarta" required>
+                                <input type="text" id="tempatLahir" name="tempat_lahir" placeholder="Contoh: Jakarta"
+                                    required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label>Tanggal Kelahiran <span class="required">*</span></label>
                             <div class="date-group">
-                                <select id="tanggal" required>
+                                <select id="tanggal" name="tanggal" required>
                                     <option value="">Tanggal</option>
                                     <script>
                                         for (let i = 1; i <= 31; i++) {
-                                            document.write(`<option value="${i}">${i}</option>`);
+                                            document.write(`<option value="${i.toString().padStart(2, '0')}">${i}</option>`);
                                         }
                                     </script>
                                 </select>
-                                <select id="bulan" required>
+                                <select id="bulan" name="bulan" required>
                                     <option value="">Bulan</option>
                                     <option value="01">Januari</option>
                                     <option value="02">Februari</option>
@@ -597,7 +594,7 @@ include 'koneksi.php';
                                     <option value="11">November</option>
                                     <option value="12">Desember</option>
                                 </select>
-                                <select id="tahun" required>
+                                <select id="tahun" name="tahun" required>
                                     <option value="">Tahun</option>
                                     <script>
                                         const currentYear = new Date().getFullYear();
@@ -606,6 +603,14 @@ include 'koneksi.php';
                                         }
                                     </script>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nisn">NISN <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-id-card input-icon"></i>
+                                <input type="text" id="nisn" name="nisn" placeholder="Masukkan NISN" required>
                             </div>
                         </div>
                     </div>
@@ -618,11 +623,7 @@ include 'koneksi.php';
                             <label for="alamatEmail">Alamat Email</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-envelope input-icon"></i>
-                                <input type="email" id="alamatEmail" placeholder="contoh@email.com">
-                            </div>
-                            <div class="error-hint">
-                                <i class="fas fa-info-circle"></i>
-                                Opsional, boleh dikosongkan
+                                <input type="email" id="alamatEmail" name="alamat_email" placeholder="contoh@email.com">
                             </div>
                         </div>
 
@@ -630,11 +631,7 @@ include 'koneksi.php';
                             <label for="noHp">Nomor HP/WhatsApp Orang Tua <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-mobile-alt input-icon"></i>
-                                <input type="tel" id="noHp" placeholder="08xxxxxxxxxx" required>
-                            </div>
-                            <div class="error-hint">
-                                <i class="fas fa-exclamation-circle"></i>
-                                Nomor aktif untuk konfirmasi pendaftaran
+                                <input type="tel" id="noHp" name="no_hp" placeholder="08xxxxxxxxxx" required>
                             </div>
                         </div>
                     </div>
@@ -647,8 +644,8 @@ include 'koneksi.php';
                             <label for="namaSekolah">Nama Sekolah Asal <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-graduation-cap input-icon"></i>
-                                <input type="text" id="namaSekolah" placeholder="Contoh: SMP Negeri 1 Jakarta"
-                                    required>
+                                <input type="text" id="namaSekolah" name="nama_sekolah"
+                                    placeholder="Contoh: SMP Negeri 1 Jakarta" required>
                             </div>
                         </div>
 
@@ -656,7 +653,7 @@ include 'koneksi.php';
                             <label for="namaJurusan">Pilihan Jurusan <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-book input-icon"></i>
-                                <select id="namaJurusan" required>
+                                <select id="namaJurusan" name="jurusan" required>
                                     <option value="">-- Pilih Jurusan yang Diminati --</option>
                                     <option value="rpl">Rekayasa Perangkat Lunak (RPL)</option>
                                     <option value="tkj">Teknik Komputer dan Jaringan (TKJ)</option>
@@ -688,8 +685,8 @@ include 'koneksi.php';
         </p>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-
         // Form submission handler
         const form = document.getElementById('ppdbForm');
         form.addEventListener('submit', function (e) {
@@ -711,10 +708,16 @@ include 'koneksi.php';
             console.log('Data Pendaftaran:', formData);
 
             // Show success message
-            alert('🎉 Pendaftaran Berhasil!
-Terima kasih telah mendaftar di SMK TI Garuda Nusantara.
-Data Anda telah kami terima dan akan segera kami proses.
-Tim kami akan menghubungi Anda melalui WhatsApp untuk informasi selanjutnya.');
+            Swal.fire({
+                icon: 'success',
+                title: '🎉 Pendaftaran Berhasil!',
+                text: 'Terima kasih telah mendaftar di SMK TI Garuda Nusantara. Data Anda telah kami terima dan akan segera kami proses. Tim kami akan menghubungi Anda melalui WhatsApp untuk informasi selanjutnya.',
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
 
             // Reset form
             form.reset();
@@ -722,6 +725,23 @@ Tim kami akan menghubungi Anda melalui WhatsApp untuk informasi selanjutnya.');
             // Optional: Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        // Notifikasi SweetAlert2 setelah submit
+        <?php if (isset($_GET['sukses'])): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Pendaftaran Berhasil!',
+                text: 'Terima kasih telah mendaftar. Data Anda telah kami terima dan akan segera diproses.',
+                confirmButtonText: 'OK'
+            });
+        <?php elseif (isset($_GET['error'])): ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Pendaftaran Gagal!',
+                text: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
+                confirmButtonText: 'OK'
+            });
+        <?php endif; ?>
 
         // Add animation on scroll
         const observerOptions = {

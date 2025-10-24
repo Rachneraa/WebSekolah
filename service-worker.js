@@ -1,14 +1,14 @@
 const CACHE_NAME = 'SMK TI Garuda Nusantara-cache-v2';
 const urlsToCache = [
-  '/pkl/',
-  '/pkl/index.php',
-  '/pkl/ppdb.php',
-  '/pkl/artikel.php',
-  '/pkl/jurusan-rpl.php',
-  '/pkl/pendaftaran.php',
-  '/pkl/artikel-detail.php',
-  '/pkl/icons/android-chrome-192x192.png',
-  '/pkl/icons/android-chrome-512x512.png'
+  '/Web-Sekolah/',
+  '/Web-Sekolah/index.php',
+  '/Web-Sekolah/ppdb.php',
+  '/Web-Sekolah/artikel.php',
+  '/Web-Sekolah/jurusan-rpl.php',
+  '/Web-Sekolah/pendaftaran.php',
+  '/Web-Sekolah/artikel-detail.php',
+  '/Web-Sekolah/icons/android-chrome-192x192.png',
+  '/Web-Sekolah/icons/android-chrome-512x512.png'
 ];
 
 self.addEventListener('install', event => {

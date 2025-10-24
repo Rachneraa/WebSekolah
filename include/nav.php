@@ -542,11 +542,19 @@
             }
 
             .btn-register {
-                width: 100%;
-                justify-content: center;
-                margin-top: 30px;
-                padding: 15px;
-                font-size: 15px;
+                width: calc(100% - 40px);
+                margin: 0 20px;
+                text-align: center;
+            }
+
+            .login-label-mobile {
+                display: block;
+                text-align: center;
+                color: var(--primary-blue);
+                font-size: 13px;
+                font-weight: 500;
+                margin-top: 5px;
+                margin-bottom: 10px;
             }
 
             .btn-admin {
@@ -631,6 +639,76 @@
                 height: 70px;
             }
         }
+
+        /* Tombol full width di mobile */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 18px;
+                width: 100%;
+                padding: 0;
+            }
+
+            .btn-block {
+                width: 100%;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 15px;
+                padding: 14px 0;
+                border-radius: 30px;
+                margin: 0;
+            }
+
+            .btn-register.btn-block {
+                background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
+                color: white;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(255, 131, 3, 0.25);
+                letter-spacing: 0.5px;
+                gap: 8px;
+            }
+
+            .btn-admin.btn-block {
+                background: var(--primary-blue);
+                color: white;
+                font-weight: 600;
+                gap: 8px;
+                box-shadow: 0 4px 12px rgba(0, 73, 157, 0.3);
+                border: none;
+            }
+
+            .btn-admin.btn-block i {
+                font-size: 1.2rem;
+            }
+
+            .btn-admin.btn-block .login-label {
+                font-size: 15px;
+                font-weight: 500;
+            }
+        }
+
+        /* Desktop: tombol tetap seperti semula */
+        @media (min-width: 769px) {
+            .btn-block {
+                width: auto;
+                padding: 12px 28px;
+                font-size: 14px;
+                border-radius: 50px;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn-admin.btn-block .login-label {
+                color: white;
+                font-size: 14px;
+                font-weight: 500;
+                margin-left: 8px;
+            }
+        }
     </style>
 </head>
 
@@ -656,9 +734,10 @@
                 <li><a href="contact.php">Kontak</a></li>
             </ul>
             <div class="nav-buttons">
-                <a href="backend/admin.php" class="btn-register">Daftar</a>
-                <button class="btn-admin" id="loginBtn" title="Admin Login">
+                <a href="pendaftaran.php" class="btn-register btn-block">Daftar</a>
+                <button class="btn-admin btn-block" id="loginBtn">
                     <i class="fas fa-user"></i>
+                    <span class="login-label"><b>Login</b></span>
                 </button>
             </div>
         </nav>
@@ -680,7 +759,7 @@
             <div class="login-header">
                 <img src="assets/smk.png" alt="Logo Sekolah" class="login-logo">
                 <h2>SMK TI Garuda Nusantara</h2>
-                <p>Selamat datang di<br>Portal Admin Sekolah</p>
+                <p>Selamat datang di<br>Portal Login Sekolah</p>
             </div>
 
             <form id="loginForm" action="config/process_login.php" method="POST">
@@ -808,7 +887,7 @@
         // ==================== SERVICE WORKER ====================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/pkl/service-worker.js')
+                navigator.serviceWorker.register('/Web-Sekolah/service-worker.js')
                     .then(registration => {
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;

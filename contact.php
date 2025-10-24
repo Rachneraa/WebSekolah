@@ -1,868 +1,887 @@
-<?php
-session_start();
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Nanti bisa ditambahkan logic untuk menyimpan ke database atau kirim email
-    $nama = htmlspecialchars($_POST['nama']);
-    $email = htmlspecialchars($_POST['email']);
-    $telepon = htmlspecialchars($_POST['telepon']);
-    $subjek = htmlspecialchars($_POST['subjek']);
-    $pesan = htmlspecialchars($_POST['pesan']);
-    
-    // Set success message
-    $_SESSION['success_message'] = "Pesan Anda berhasil dikirim! Kami akan menghubungi Anda segera.";
-    
-    // Redirect to prevent form resubmission
-    header("Location: kontak.php");
-    exit();
-}
-
-$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
-unset($_SESSION['success_message']);
-?>
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kontak Kami - SMK TI Garuda Nusantara</title>
-    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
-    <link rel="shortcut icon" href="icons/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="/pkl/manifest.json">
-    <meta name="theme-color" content="#00499D">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* CSS Variables */
-        :root {
-            --primary-orange: #ff8303;
-            --primary-blue: #00499d;
-            --dark-blue: #003366;
-            --text-dark: #0f1724;
-            --text-gray: #6b7280;
-            --border-gray: #e5e7eb;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background: #f8f9fa;
-        }
-
-        /* Hero Section */
-        .hero-kontak {
-            position: relative;
-            width: 100vw;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            min-height: 400px;
-            background: url('assets/c.jpeg') center/cover;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            overflow: hidden;
-            margin-top: -80px;
-            padding-top: 80px;
-        }
-
-        .hero-kontak::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 73, 157, 0.9), rgba(0, 51, 102, 0.85));
-            z-index: 1;
-        }
-
-        .hero-kontak-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            padding: 40px 20px;
-        }
-
-        .hero-kontak h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            animation: fadeInUp 0.8s ease;
-        }
-
-        .hero-kontak p {
-            font-size: 18px;
-            opacity: 0.95;
-            animation: fadeInUp 1s ease 0.2s both;
-        }
-
-        .breadcrumb {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            font-size: 14px;
-            animation: fadeInUp 1.2s ease 0.4s both;
-        }
-
-        .breadcrumb a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .breadcrumb a:hover {
-            color: var(--primary-orange);
-        }
-
-        .breadcrumb span {
-            opacity: 0.7;
-        }
-
-        /* Main Content */
-        main {
-            max-width: 1200px;
-            margin: -60px auto 60px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Contact Container */
-        .contact-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        /* Contact Form */
-        .contact-form-section {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .contact-form-section h2 {
-            font-size: 28px;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .contact-form-section p {
-            color: var(--text-gray);
-            margin-bottom: 30px;
-            font-size: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .form-group label .required {
-            color: #ef4444;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid var(--border-gray);
-            border-radius: 12px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: #f9fafb;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0, 73, 157, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(255, 131, 3, 0.3);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 131, 3, 0.4);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        /* Contact Info */
-        .contact-info-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .contact-info-card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .contact-info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary-orange);
-        }
-
-        .contact-info-card h3 {
-            font-size: 20px;
-            color: var(--primary-blue);
-            margin-bottom: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .contact-info-card h3 i {
-            color: var(--primary-orange);
-            font-size: 24px;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-gray);
-        }
-
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .info-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, rgba(0, 73, 157, 0.1), rgba(255, 131, 3, 0.1));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .info-icon i {
-            color: var(--primary-blue);
-            font-size: 18px;
-        }
-
-        .info-content {
-            flex: 1;
-        }
-
-        .info-content h4 {
-            font-size: 14px;
-            color: var(--text-gray);
-            margin-bottom: 5px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-content p {
-            color: var(--text-dark);
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .info-content a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .info-content a:hover {
-            color: var(--primary-orange);
-        }
-
-        /* Social Media */
-        .social-media {
-            display: flex;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-            color: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 18px;
-        }
-
-        .social-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 73, 157, 0.3);
-        }
-
-        .social-link.facebook:hover {
-            background: #1877f2;
-        }
-
-        .social-link.instagram:hover {
-            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-        }
-
-        .social-link.twitter:hover {
-            background: #1da1f2;
-        }
-
-        .social-link.youtube:hover {
-            background: #ff0000;
-        }
-
-        .social-link.whatsapp:hover {
-            background: #25d366;
-        }
-
-        /* Map Section */
-        .map-section {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 60px;
-        }
-
-        .map-section h2 {
-            font-size: 28px;
-            color: var(--primary-blue);
-            margin-bottom: 25px;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .map-container {
-            width: 100%;
-            height: 450px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* FAQ Section */
-        .faq-section {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 60px;
-        }
-
-        .faq-section h2 {
-            font-size: 28px;
-            color: var(--primary-blue);
-            margin-bottom: 30px;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .faq-item {
-            border: 2px solid var(--border-gray);
-            border-radius: 12px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .faq-item:hover {
-            border-color: var(--primary-orange);
-        }
-
-        .faq-question {
-            padding: 20px 25px;
-            background: #f9fafb;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            color: var(--text-dark);
-            transition: all 0.3s ease;
-        }
-
-        .faq-question:hover {
-            background: #f3f4f6;
-        }
-
-        .faq-question.active {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .faq-icon {
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .faq-question.active .faq-icon {
-            transform: rotate(180deg);
-        }
-
-        .faq-answer {
-            padding: 0 25px;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            color: var(--text-gray);
-            line-height: 1.8;
-        }
-
-        .faq-answer.active {
-            padding: 20px 25px;
-            max-height: 500px;
-        }
-
-        /* Success Message */
-        .success-message {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            padding: 18px 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            animation: slideInDown 0.5s ease;
-        }
-
-        .success-message i {
-            font-size: 24px;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+    <?php
+    session_start();
+    include 'config/koneksi.php';
+
+    $success_message = '';
+    $error_message = '';
+
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_kontak'])) {
+        $nama = mysqli_real_escape_string($db, trim($_POST['nama']));
+        $email = mysqli_real_escape_string($db, trim($_POST['email']));
+        $telepon = mysqli_real_escape_string($db, trim($_POST['telepon']));
+        $subjek = mysqli_real_escape_string($db, $_POST['subjek']);
+        $pesan = mysqli_real_escape_string($db, trim($_POST['pesan']));
+        
+        // Validate input
+        if (!empty($nama) && !empty($email) && !empty($subjek) && !empty($pesan)) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // Insert into database
+                $query = "INSERT INTO kontak_pesan (nama, email, telepon, subjek, pesan, tanggal, status) 
+                        VALUES ('$nama', '$email', '$telepon', '$subjek', '$pesan', NOW(), 'Baru')";
+                
+                if (mysqli_query($db, $query)) {
+                    $success_message = "Pesan Anda berhasil dikirim! Kami akan segera menghubungi Anda dalam 1x24 jam.";
+                    
+                    // Optional: Send email notification (uncomment if PHPMailer configured)
+                    // sendEmailNotification($nama, $email, $subjek, $pesan);
+                } else {
+                    $error_message = "Terjadi kesalahan sistem. Silakan coba lagi atau hubungi kami langsung.";
+                }
+            } else {
+                $error_message = "Format email tidak valid. Mohon periksa kembali.";
             }
-            to {
+        } else {
+            $error_message = "Mohon lengkapi semua field yang wajib diisi (*)";
+        }
+    }
+    ?>
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kontak Kami - SMK TI Garuda Nusantara</title>
+        <meta name="description" content="Hubungi SMK TI Garuda Nusantara melalui formulir, telepon, email, atau WhatsApp. Kami siap membantu informasi PPDB dan program sekolah.">
+        <meta name="keywords" content="kontak SMK, hubungi sekolah, PPDB, SMK TI Garuda Nusantara">
+        <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- Schema Markup for SEO -->
+        <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "School",
+        "name": "SMK TI Garuda Nusantara",
+        "image": "https://smktignc.sch.id/logo.png",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Jl. Sangkuriang No.34-36",
+            "addressLocality": "Cimahi",
+            "addressRegion": "Jawa Barat",
+            "postalCode": "40512",
+            "addressCountry": "ID"
+        },
+        "telephone": "+62 22 1234 5678",
+        "email": "info@smktignc.sch.id",
+        "url": "https://smktignc.sch.id",
+        "openingHoursSpecification": [
+            {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "07:00",
+            "closes": "16:00"
+            },
+            {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "07:00",
+            "closes": "14:00"
+            }
+        ]
+        }
+        </script>
+        
+        <style>
+            /* CSS Variables */
+            :root {
+                --primary-orange: #ff8303;
+                --primary-blue: #00499d;
+                --dark-blue: #003366;
+                --text-dark: #0f1724;
+                --text-gray: #6b7280;
+                --border-gray: #e5e7eb;
+                --success-green: #10b981;
+                --error-red: #ef4444;
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            }
+
+            /* Base Styles */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                line-height: 1.6;
+                color: var(--text-dark);
+                overflow-x: hidden;
+            }
+
+            /* Page Header with Background Image */
+            .page-header {
+                background-image: 
+                    linear-gradient(135deg, rgba(0, 73, 157, 0.85), rgba(0, 51, 102, 0.85)),
+                    url('assets/smk.png'); /* Ganti dengan path gambar Anda */
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                color: white;
+                padding: 100px 20px 60px;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+                margin-top: 0;
+            }
+
+            /* Animated overlay pattern */
+            .page-header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: 
+                    radial-gradient(circle at 20% 50%, rgba(255, 131, 3, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(255, 131, 3, 0.08) 0%, transparent 50%);
+                animation: movePattern 20s ease-in-out infinite;
+                pointer-events: none;
+            }
+
+            @keyframes movePattern {
+                0%, 100% {
+                    transform: translate(0, 0);
+                }
+                50% {
+                    transform: translate(30px, -30px);
+                }
+            }
+
+            .page-header h1 {
+                font-size: 48px;
+                font-weight: 800;
+                margin-bottom: 15px;
+                position: relative;
+                z-index: 1;
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            }
+
+            .page-header p {
+                font-size: 18px;
+                opacity: 0.95;
+                position: relative;
+                z-index: 1;
+                text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Main Container */
+            .kontak-container {
+                max-width: 1200px;
+                margin: -40px auto 80px;
+                padding: 0 20px;
+                position: relative;
+                z-index: 10;
+            }
+
+            .kontak-grid {
+                display: grid;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 40px;
+                margin-bottom: 60px;
+            }
+
+            /* Contact Info Card */
+            .contact-info-card {
+                background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+                padding: 40px;
+                border-radius: 20px;
+                color: white;
+                box-shadow: var(--shadow);
+                height: fit-content;
+            }
+
+            .contact-info-card h2 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .contact-info-card .subtitle {
+                opacity: 0.9;
+                margin-bottom: 30px;
+                font-size: 15px;
+            }
+
+            .info-item {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 20px;
+                padding: 18px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                transition: all 0.3s ease;
+            }
+
+            .info-item:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateX(5px);
+            }
+
+            .info-icon {
+                width: 45px;
+                height: 45px;
+                background: var(--primary-orange);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                font-size: 18px;
+            }
+
+            .info-content h3 {
+                font-size: 15px;
+                margin-bottom: 5px;
+                font-weight: 600;
+            }
+
+            .info-content p {
+                font-size: 13px;
+                opacity: 0.9;
+                line-height: 1.6;
+            }
+
+            .info-content a {
+                color: white;
+                text-decoration: none;
+                opacity: 0.9;
+                transition: opacity 0.3s ease;
+            }
+
+            .info-content a:hover {
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Scroll to Top Button */
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--primary-orange);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(255, 131, 3, 0.4);
-            z-index: 999;
-        }
-
-        .scroll-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(255, 131, 3, 0.5);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero-kontak {
-                min-height: 300px;
-                margin-top: -70px;
-                padding-top: 70px;
+                text-decoration: underline;
             }
 
-            .hero-kontak h1 {
-                font-size: 32px;
-            }
-
-            .hero-kontak p {
-                font-size: 16px;
-            }
-
-            main {
-                margin: -40px auto 40px;
-            }
-
-            .contact-form-section,
-            .contact-info-card,
-            .map-section,
-            .faq-section {
-                padding: 25px 20px;
-            }
-
-            .contact-form-section h2,
-            .map-section h2,
-            .faq-section h2 {
-                font-size: 24px;
-            }
-
-            .map-container {
-                height: 300px;
-            }
-
+            /* Social Media */
             .social-media {
+                margin-top: 25px;
+                padding-top: 25px;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .social-media h3 {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+
+            .social-links {
+                display: flex;
+                gap: 12px;
                 flex-wrap: wrap;
             }
-        }
 
-        @media (max-width: 480px) {
-            .hero-kontak h1 {
-                font-size: 28px;
+            .social-links a {
+                width: 42px;
+                height: 42px;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                font-size: 16px;
+                color: white;
+                transition: all 0.3s ease;
             }
 
-            .hero-kontak p {
+            .social-links a:hover {
+                background: var(--primary-orange);
+                transform: translateY(-3px);
+            }
+
+            /* Contact Form Card */
+            .contact-form-card {
+                background: white;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border-gray);
+            }
+
+            .contact-form-card h2 {
+                font-size: 28px;
+                color: var(--primary-blue);
+                margin-bottom: 10px;
+            }
+
+            .contact-form-card .subtitle {
+                color: var(--text-gray);
+                margin-bottom: 30px;
+                font-size: 15px;
+            }
+
+            /* Alert Messages */
+            .alert {
+                padding: 15px 20px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 14px;
+                animation: slideDown 0.4s ease;
+            }
+
+            .alert-success {
+                background: #d1fae5;
+                color: #065f46;
+                border: 1px solid #6ee7b7;
+            }
+
+            .alert-error {
+                background: #fee2e2;
+                color: #991b1b;
+                border: 1px solid #fca5a5;
+            }
+
+            .alert i {
+                font-size: 18px;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Form Styles */
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                color: var(--text-dark);
+                margin-bottom: 8px;
                 font-size: 14px;
             }
 
-            .breadcrumb {
+            .form-group label .required {
+                color: var(--error-red);
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                width: 100%;
+                padding: 12px 18px;
+                border: 2px solid var(--border-gray);
+                border-radius: 10px;
+                font-size: 15px;
+                transition: all 0.3s ease;
+                font-family: 'Poppins', sans-serif;
+                background: white;
+            }
+
+            .form-group input:focus,
+            .form-group textarea:focus,
+            .form-group select:focus {
+                outline: none;
+                border-color: var(--primary-blue);
+                box-shadow: 0 0 0 3px rgba(0, 73, 157, 0.1);
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 120px;
+            }
+
+            .btn-submit {
+                background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
+                color: white;
+                border: none;
+                padding: 15px 40px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                box-shadow: 0 4px 15px rgba(255, 131, 3, 0.3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .btn-submit:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(255, 131, 3, 0.4);
+            }
+
+            .btn-submit:active {
+                transform: translateY(-1px);
+            }
+
+            .btn-submit.loading {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+
+            /* Map Section */
+            .map-section {
+                background: white;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border-gray);
+                margin-bottom: 40px;
+            }
+
+            .map-section h2 {
+                font-size: 28px;
+                color: var(--primary-blue);
+                margin-bottom: 10px;
+            }
+
+            .map-section .subtitle {
+                color: var(--text-gray);
+                margin-bottom: 20px;
+                font-size: 15px;
+            }
+
+            .map-container {
+                width: 100%;
+                height: 400px;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                position: relative;
+            }
+
+            .map-container iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+            /* CTA Section */
+            .cta-section {
+                background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+                padding: 60px 20px;
+                text-align: center;
+                color: white;
+                margin: 0;
+            }
+
+            .cta-content {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .cta-section h2 {
+                font-size: 36px;
+                margin-bottom: 15px;
+            }
+
+            .cta-section p {
+                font-size: 18px;
+                opacity: 0.9;
+                margin-bottom: 30px;
+            }
+
+            .cta-buttons {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
                 flex-wrap: wrap;
-                font-size: 12px;
             }
 
-            .contact-form-section,
-            .contact-info-card,
-            .map-section,
-            .faq-section {
-                padding: 20px 15px;
+            .btn-cta {
+                padding: 15px 35px;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
             }
-        }
-    </style>
-</head>
 
-<body>
-    <?php include 'include/nav.php'; ?>
+            .btn-cta-primary {
+                background: var(--primary-orange);
+                color: white;
+                border: 2px solid var(--primary-orange);
+            }
 
-    <!-- Hero Section -->
-    <section class="hero-kontak">
-        <div class="hero-kontak-content">
-            <h1>Hubungi Kami</h1>
-            <p>Kami siap membantu Anda! Jangan ragu untuk menghubungi kami</p>
-            <div class="breadcrumb">
-                <a href="index.php"><i class="fas fa-home"></i> Beranda</a>
-                <span>/</span>
-                <span>Kontak</span>
-            </div>
-        </div>
-    </section>
+            .btn-cta-secondary {
+                background: transparent;
+                color: white;
+                border: 2px solid white;
+            }
 
-    <!-- Main Content -->
-    <main>
-        <!-- Contact Container -->
-        <div class="contact-container fade-in">
-            <!-- Contact Form -->
-            <div class="contact-form-section">
-                <h2>Kirim Pesan</h2>
-                <p>Isi formulir di bawah ini dan kami akan merespons secepat mungkin</p>
+            .btn-cta:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Scroll to Top Button */
+            .scroll-top {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 50px;
+                height: 50px;
+                background: var(--primary-orange);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                box-shadow: 0 4px 15px rgba(255, 131, 3, 0.3);
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+
+            .scroll-top:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(255, 131, 3, 0.4);
+            }
+
+            .scroll-top.show {
+                display: flex;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 968px) {
+                .kontak-grid {
+                    grid-template-columns: 1fr;
+                }
                 
-                <?php if ($success_message): ?>
-                <div class="success-message">
-                    <i class="fas fa-check-circle"></i>
-                    <span><?php echo $success_message; ?></span>
-                </div>
-                <?php endif; ?>
+                .page-header {
+                    background-attachment: scroll;
+                }
+            }
 
-                <form method="POST" action="" id="contactForm">
-                    <div class="form-group">
-                        <label for="nama">Nama Lengkap <span class="required">*</span></label>
-                        <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap Anda">
-                    </div>
+            @media (max-width: 768px) {
+                .page-header {
+                    padding: 80px 20px 40px;
+                    background-attachment: scroll;
+                }
 
-                    <div class="form-group">
-                        <label for="email">Email <span class="required">*</span></label>
-                        <input type="email" id="email" name="email" required placeholder="contoh@email.com">
-                    </div>
+                .page-header h1 {
+                    font-size: 32px;
+                }
 
-                    <div class="form-group">
-                        <label for="telepon">Nomor Telepon</label>
-                        <input type="tel" id="telepon" name="telepon" placeholder="08xxxxxxxxxx">
-                    </div>
+                .page-header p {
+                    font-size: 16px;
+                }
 
-                    <div class="form-group">
-                        <label for="subjek">Subjek <span class="required">*</span></label>
-                        <select id="subjek" name="subjek" required>
-                            <option value="">-- Pilih Subjek --</option>
-                            <option value="Pendaftaran">Informasi Pendaftaran</option>
-                            <option value="Jurusan">Informasi Jurusan</option>
-                            <option value="Fasilitas">Informasi Fasilitas</option>
-                            <option value="Umum">Pertanyaan Umum</option>
-                            <option value="Kerjasama">Kerjasama & Partnership</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
+                .contact-info-card,
+                .contact-form-card,
+                .map-section {
+                    padding: 30px 20px;
+                }
 
-                    <div class="form-group">
-                        <label for="pesan">Pesan <span class="required">*</span></label>
-                        <textarea id="pesan" name="pesan" required placeholder="Tulis pesan Anda di sini..."></textarea>
-                    </div>
+                .map-container {
+                    height: 300px;
+                }
 
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-paper-plane"></i> Kirim Pesan
-                    </button>
-                </form>
-            </div>
+                .cta-section h2 {
+                    font-size: 28px;
+                }
 
-            <!-- Contact Info -->
-            <div class="contact-info-section">
-                <!-- Alamat -->
-                <div class="contact-info-card fade-in">
-                    <h3><i class="fas fa-map-marker-alt"></i> Alamat Kami</h3>
+                .cta-buttons {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .btn-cta {
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .page-header h1 {
+                    font-size: 26px;
+                }
+
+                .contact-info-card h2,
+                .contact-form-card h2,
+                .map-section h2 {
+                    font-size: 22px;
+                }
+
+                .map-container {
+                    height: 250px;
+                }
+
+                .scroll-top {
+                    width: 45px;
+                    height: 45px;
+                    bottom: 20px;
+                    right: 20px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <?php include 'include/nav.php'; ?>
+
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1>Hubungi Kami</h1>
+            <p>Kami siap membantu Anda dengan informasi PPDB, program sekolah, dan kerja sama</p>
+        </section>
+
+        <!-- Contact Container -->
+        <div class="kontak-container">
+            <div class="kontak-grid">
+                <!-- Contact Info -->
+                <div class="contact-info-card">
+                    <h2>Informasi Kontak</h2>
+                    <p class="subtitle">Hubungi kami melalui berbagai saluran komunikasi</p>
+
                     <div class="info-item">
                         <div class="info-icon">
-                            <i class="fas fa-building"></i>
+                            <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div class="info-content">
-                            <h4>Alamat Lengkap</h4>
-                            <p>Jl. Pendidikan No. 123<br>Kelurahan Sukamaju, Kecamatan Cimanggis<br>Kota Depok, Jawa Barat 16451</p>
+                            <h3>Alamat Sekolah</h3>
+                            <p>Jl. Sangkuriang No.34-36, Cimahi<br>Jawa Barat, Indonesia 40512</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Kontak -->
-                <div class="contact-info-card fade-in">
-                    <h3><i class="fas fa-phone-alt"></i> Kontak</h3>
                     <div class="info-item">
                         <div class="info-icon">
                             <i class="fas fa-phone"></i>
                         </div>
                         <div class="info-content">
-                            <h4>Telepon</h4>
-                            <p><a href="tel:+622187654321">(021) 8765-4321</a></p>
+                            <h3>Telepon</h3>
+                            <p>
+                                <a href="tel:+622212345678">+62 22 1234 5678</a> (Kantor)<br>
+                                <a href="tel:+6281234567890">+62 812 3456 7890</a> (Tata Usaha)
+                            </p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fab fa-whatsapp"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>WhatsApp</h4>
-                            <p><a href="https://wa.me/628123456789" target="_blank">+62 812-3456-789</a></p>
-                        </div>
-                    </div>
+
                     <div class="info-item">
                         <div class="info-icon">
                             <i class="fas fa-envelope"></i>
                         </div>
                         <div class="info-content">
-                            <h4>Email</h4>
-                            <p><a href="mailto:info@smktigarudanusantara.sch.id">info@smktigarudanusantara.sch.id</a></p>
+                            <h3>Email</h3>
+                            <p>
+                                <a href="mailto:info@smktignc.sch.id">info@smktignc.sch.id</a>
+                            </p>
                         </div>
                     </div>
-                </div>
 
-                <!-- Jam Operasional -->
-                <div class="contact-info-card fade-in">
-                    <h3><i class="fas fa-clock"></i> Jam Operasional</h3>
                     <div class="info-item">
                         <div class="info-icon">
-                            <i class="fas fa-calendar-day"></i>
+                            <i class="fas fa-clock"></i>
                         </div>
                         <div class="info-content">
-                            <h4>Senin - Jumat</h4>
-                            <p>07:00 - 16:00 WIB</p>
+                            <h3>Jam Operasional</h3>
+                            <p>
+                                <strong>Senin - Jumat:</strong> 07:00 - 16:00 WIB<br>
+                                <strong>Sabtu:</strong> 07:00 - 14:00 WIB<br>
+                                <strong>Minggu & Libur:</strong> Tutup
+                            </p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-calendar-week"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Sabtu</h4>
-                            <p>07:00 - 14:00 WIB</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-calendar-times"></i>
-                        </div>
-                        <div class="info-content">
-                            <h4>Minggu & Libur</h4>
-                            <p>Tutup</p>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Social Media -->
-                <div class="contact-info-card fade-in">
-                    <h3><i class="fas fa-share-alt"></i> Media Sosial</h3>
-                    <div class="info-content">
-                        <p style="margin-bottom: 15px;">Ikuti kami di media sosial untuk update terbaru:</p>
-                        <div class="social-media">
-                            <a href="#" class="social-link facebook" title="Facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="social-link instagram" title="Instagram">
+                    <div class="social-media">
+                        <h3><i class="fas fa-share-alt"></i> Ikuti Media Sosial Kami</h3>
+                        <div class="social-links">
+                            <a href="#" target="_blank" title="Instagram" aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" class="social-link twitter" title="Twitter">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="social-link youtube" title="YouTube">
+                            <a href="#" target="_blank" title="YouTube" aria-label="YouTube">
                                 <i class="fab fa-youtube"></i>
                             </a>
-                            <a href="#" class="social-link whatsapp" title="WhatsApp">
-                                <i class="fab fa-whatsapp"></i>
+                            <a href="#" target="_blank" title="TikTok" aria-label="TikTok">
+                                <i class="fab fa-tiktok"></i>
                             </a>
                         </div>
                     </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="contact-form-card">
+                    <h2><i class="fas fa-paper-plane"></i> Kirim Pesan</h2>
+                    <p class="subtitle">Isi formulir di bawah dan kami akan merespons dalam 1x24 jam</p>
+
+                    <?php if ($success_message): ?>
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <span><?= $success_message ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($error_message): ?>
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span><?= $error_message ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="POST" action="" id="contactForm">
+                        <div class="form-group">
+                            <label for="nama">Nama Lengkap <span class="required">*</span></label>
+                            <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap Anda" value="<?= isset($_POST['nama']) ? htmlspecialchars($_POST['nama']) : '' ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Alamat Email <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required placeholder="contoh@email.com" value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telepon">Nomor Telepon / WhatsApp</label>
+                            <input type="tel" id="telepon" name="telepon" placeholder="08xxxxxxxxxx" value="<?= isset($_POST['telepon']) ? htmlspecialchars($_POST['telepon']) : '' ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subjek">Subjek Pesan <span class="required">*</span></label>
+                            <select id="subjek" name="subjek" required>
+                                <option value="">-- Pilih Subjek --</option>
+                                <option value="Informasi PPDB" <?= (isset($_POST['subjek']) && $_POST['subjek'] == 'Informasi PPDB') ? 'selected' : '' ?>>Informasi PPDB</option>
+                                <option value="Informasi Jurusan" <?= (isset($_POST['subjek']) && $_POST['subjek'] == 'Informasi Jurusan') ? 'selected' : '' ?>>Informasi Jurusan</option>
+                                <option value="Kunjungan Sekolah" <?= (isset($_POST['subjek']) && $_POST['subjek'] == 'Kunjungan Sekolah') ? 'selected' : '' ?>>Kunjungan Sekolah</option>
+                                <option value="Kerja Sama" <?= (isset($_POST['subjek']) && $_POST['subjek'] == 'Kerja Sama') ? 'selected' : '' ?>>Kerja Sama & Kemitraan</option>
+                                <option value="Pengaduan" <?= (isset($_POST['subjek']) && $_POST['subjek'] == 'Pengaduan') ? 'selected' : '' ?>>Pengaduan</option>
+                                <option value="Lainnya" <?= (isset($_POST['subjek']) && $_POST['subjek'] == 'Lainnya') ? 'selected' : '' ?>>Lainnya</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pesan">Pesan Anda <span class="required">*</span></label>
+                            <textarea id="pesan" name="pesan" required placeholder="Tulis pesan Anda di sini..."><?= isset($_POST['pesan']) ? htmlspecialchars($_POST['pesan']) : '' ?></textarea>
+                        </div>
+
+                        <button type="submit" name="submit_kontak" class="btn-submit" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Kirim Pesan</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div class="map-section">
+                <h2><i class="fas fa-map-marked-alt"></i> Lokasi Kami</h2>
+                <p class="subtitle">📍 Jl. Sangkuriang No.34-36, Cimahi, Jawa Barat 40512</p>
+                <div class="map-container">
+                    <!-- Google Maps dengan marker SMK TI Garuda Nusantara Cimahi -->
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.140180472476!2d107.53971757463397!3d-6.895364793103795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e59b48322cdb%3A0x10a755b12e9aef37!2sBITC%20(Baros%20Information%2C%20Technology%2C%20%26%20Creative%20Center!5e1!3m2!1sid!2sid!4v1761192164228!5m2!1sid!2sid" 
+                        width="600" 
+                        height="450" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Lokasi SMK TI Garuda Nusantara Cimahi">
+                    </iframe>
                 </div>
             </div>
         </div>
 
-        <!-- Map Section -->
-        <section class="map-section fade-in">
-            <h2><i class="fas fa-map-marked-alt"></i> Lokasi Kami</h2>
-            <div class="map-container">
-                <!-- Ganti dengan Google Maps embed URL sekolah Anda -->
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.741887796676!2d106.82493931476898!3d-6.426198895362729!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69eb3e9c5c3c7b%3A0x3d6c3e8c2e8c3e8c!2sDepok%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1234567890123!5m2!1sen!2sid" 
-                    allowfullscreen="" 
-                    loading="lazy" 
-                    referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>🎓 Tertarik Bergabung dengan Kami?</h2>
+                <p>Dapatkan informasi lengkap tentang program pendidikan dan proses pendaftaran di SMK TI Garuda Nusantara</p>
+                <div class="cta-buttons">
+                    <a href="ppdb.php" class="btn-cta btn-cta-primary">
+                        <i class="fas fa-user-plus"></i> Daftar Sekarang
+                    </a>
+                    <a href="Brosur.pdf" download class="btn-cta btn-cta-secondary">
+                        <i class="fas fa-download"></i> Download Brosur
+                    </a>
+                </div>
             </div>
         </section>
 
-        <!-- FAQ Section -->
-        <section class="faq-section fade-in">
-            <h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan (FAQ)</h2>
+        <!-- Scroll to Top Button -->
+        <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+
+        <?php include 'include/footer.php'; ?>
+
+        <script>
+            // Form submission with loading state
+            const contactForm = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
             
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Bagaimana cara mendaftar ke SMK TI Garuda Nusantara?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Anda dapat mendaftar secara online melalui website kami di menu Pendaftaran atau datang langsung ke sekolah pada jam operasional. Persiapkan dokumen seperti ijazah SMP, kartu keluarga, dan foto.</p>
-                </div>
-            </div>
+            contactForm.addEventListener('submit', function(e) {
+                submitBtn.classList.add('loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Mengirim...</span>';
+                submitBtn.disabled = true;
+            });
 
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Apa saja jurusan yang tersedia?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Kami memiliki 6 jurusan unggulan: Teknik Komputer dan Jaringan (TKJ), Rekayasa Perangkat Lunak (RPL), Manajemen Perkantoran (MP), Animasi, Teknik Jaringan Akses Telekomunikasi (TJAT), dan Desain Komunikasi Visual (DKV).</p>
-                </div>
-            </div>
+            // Auto hide alerts after 5 seconds
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.animation = 'slideUp 0.3s ease';
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 5000);
 
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Apakah ada biaya pendaftaran?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-     
+            // Scroll to top button
+            const scrollTopBtn = document.getElementById('scrollTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.add('show');
+                } else {
+                    scrollTopBtn.classList.remove('show');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Smooth scroll for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start' 
+                        });
+                    }
+                });
+            });
+
+            // Form validation enhancement
+            const emailInput = document.getElementById('email');
+            const teleponInput = document.getElementById('telepon');
+
+            teleponInput.addEventListener('input', function(e) {
+                // Allow only numbers
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+            // Prevent form resubmission on page refresh
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        </script>
+    </body>
+    </html>

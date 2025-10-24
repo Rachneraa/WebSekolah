@@ -58,17 +58,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
 
+                // Hash password
+                $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
                 try {
-                    $stmt = $db->prepare("INSERT INTO guru (nip, nama, jenis_kelamin, alamat, no_telp, foto, mapel_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt = $db->prepare("INSERT INTO guru (nip, nama, jenis_kelamin, alamat, no_telp, foto, mapel_id, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                     $stmt->bind_param(
-                        "ssssssi",
+                        "ssssssss",
                         $_POST['nip'],
                         $_POST['nama'],
                         $_POST['jenis_kelamin'],
                         $_POST['alamat'],
                         $_POST['no_telp'],
                         $foto,
-                        $_POST['mapel_id']
+                        $_POST['mapel_id'],
+                        $password_hash
                     );
                     $stmt->execute();
                     $_SESSION['success'] = "Data guru berhasil ditambahkan";
@@ -99,10 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
 
+                // Hash password
+                $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
                 try {
-                    $stmt = $db->prepare("UPDATE guru SET nip=?, nama=?, jenis_kelamin=?, alamat=?, no_telp=?, foto=?, mapel_id=? WHERE id=?");
+                    $stmt = $db->prepare("UPDATE guru SET nip=?, nama=?, jenis_kelamin=?, alamat=?, no_telp=?, foto=?, mapel_id=?, password=? WHERE id=?");
                     $stmt->bind_param(
-                        "ssssssii",
+                        "ssssssssi",
                         $_POST['nip'],
                         $_POST['nama'],
                         $_POST['jenis_kelamin'],
@@ -110,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $_POST['no_telp'],
                         $foto,
                         $_POST['mapel_id'],
+                        $password_hash,
                         $_POST['id']
                     );
                     $stmt->execute();
@@ -300,6 +308,11 @@ try {
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Foto</label>
                         <input type="file" name="foto" class="form-control" accept="image/*">
                     </div>
@@ -367,6 +380,11 @@ try {
                     <div class="mb-3">
                         <label class="form-label">No. Telepon</label>
                         <input type="tel" name="no_telp" class="form-control" id="edit_no_telp">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="edit_password">
                     </div>
 
                     <div class="mb-3">

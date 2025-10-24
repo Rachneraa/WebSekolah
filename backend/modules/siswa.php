@@ -11,23 +11,51 @@ if (!isset($_SESSION['user_id'])) {
 require_once '../config/koneksi.php';
 
 // Fungsi CRUD
-function getAllSiswa($db, $start = 0, $limit = 10)
+function getAllSiswa($db, $start = 0, $limit = 10, $search = '', $kelas_filter = '')
 {
+    $where = [];
+    $params = [];
+    $types = '';
+
+    if ($search) {
+        $where[] = "(s.nama LIKE ? OR s.username LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $types .= 'ss';
+    }
+    if ($kelas_filter) {
+        $where[] = "s.kelas_id = ?";
+        $params[] = $kelas_filter;
+        $types .= 'i';
+    }
+
+    $where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
     $query = "SELECT s.*, k.nama as nama_kelas 
               FROM siswa s 
               LEFT JOIN kelas k ON s.kelas_id = k.id 
+              $where_sql
               ORDER BY k.nama, s.nama 
               LIMIT ?, ?";
+    $params[] = $start;
+    $params[] = $limit;
+    $types .= 'ii';
+
     $stmt = $db->prepare($query);
-    $stmt->bind_param("ii", $start, $limit);
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
     return $stmt->get_result();
 }
 
-function getTotalSiswa($db)
+function getTotalSiswa($db, $search = '', $kelas_filter = '')
 {
-    $query = "SELECT COUNT(*) as total FROM siswa";
-    $result = $db->query($query);
+    $query = "SELECT COUNT(*) as total FROM siswa s 
+              LEFT JOIN kelas k ON s.kelas_id = k.id 
+              WHERE (s.nama LIKE ? OR s.username LIKE ?) AND (k.id = ? OR ? = '')";
+    $stmt = $db->prepare($query);
+    $search_param = "%$search%";
+    $stmt->bind_param("ssii", $search_param, $search_param, $kelas_filter, $kelas_filter);
+    $stmt->execute();
+    $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     return $row['total'];
 }
@@ -62,7 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (!empty($_POST['password'])) {
                         // Update dengan password baru
                         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                        $stmt = $db->prepare("UPDATE siswa SET nama=?, username=?, password=?, kelas_id=?, nama_kelas=? WHERE id=?");
+                        $update_query = "UPDATE siswa SET nama=?, username=?, password=?, kelas_id=?, nama_kelas=? WHERE siswa_id=?";
+                        $stmt = $db->prepare($update_query);
                         $stmt->bind_param(
                             "sssisi",
                             $_POST['nama'],
@@ -74,7 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         );
                     } else {
                         // Update tanpa password
-                        $stmt = $db->prepare("UPDATE siswa SET nama=?, username=?, kelas_id=?, nama_kelas=? WHERE id=?");
+                        $update_query = "UPDATE siswa SET nama=?, username=?, kelas_id=?, nama_kelas=? WHERE siswa_id=?";
+                        $stmt = $db->prepare($update_query);
                         $stmt->bind_param(
                             "ssisi",
                             $_POST['nama'],
@@ -93,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             case 'delete':
                 try {
-                    $stmt = $db->prepare("DELETE FROM siswa WHERE id = ?");
+                    $delete_query = "DELETE FROM siswa WHERE siswa_id = ?";
+                    $stmt = $db->prepare($delete_query);
                     $stmt->bind_param("i", $_POST['id']);
                     $stmt->execute();
                     $_SESSION['success'] = "Data siswa berhasil dihapus";
@@ -109,10 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $page = isset($_GET['page_no']) ? (int) $_GET['page_no'] : 1;
 $limit = 10;
 $start = ($page - 1) * $limit;
-$total = getTotalSiswa($db);
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$kelas_filter = isset($_GET['kelas_filter']) ? $_GET['kelas_filter'] : '';
+$total = getTotalSiswa($db, $search, $kelas_filter);
 $total_pages = ceil($total / $limit);
 
-$siswa_list = getAllSiswa($db, $start, $limit);
+$siswa_list = getAllSiswa($db, $start, $limit, $search, $kelas_filter);
 
 // Get kelas list for dropdown
 $kelas_query = "SELECT * FROM kelas ORDER BY nama";
@@ -146,6 +179,31 @@ $kelas_result = $db->query($kelas_query);
             </button>
         </div>
         <div class="card-body">
+            <!-- Search & Filter -->
+            <form method="get" class="row g-2 mb-3">
+                <input type="hidden" name="page" value="siswa">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Cari nama atau username..."
+                        value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                </div>
+                <div class="col-md-4">
+                    <select name="kelas_filter" class="form-select">
+                        <option value="">Semua Kelas</option>
+                        <?php
+                        $kelas_result->data_seek(0);
+                        while ($kelas = $kelas_result->fetch_assoc()):
+                            ?>
+                            <option value="<?= $kelas['id'] ?>" <?= (isset($_GET['kelas_filter']) && $_GET['kelas_filter'] == $kelas['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($kelas['nama']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Cari</button>
+                </div>
+            </form>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -154,7 +212,6 @@ $kelas_result = $db->query($kelas_query);
                             <th>Nama</th>
                             <th>Username</th>
                             <th>Kelas</th>
-                            <th>Last Login</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -169,27 +226,55 @@ $kelas_result = $db->query($kelas_query);
                                     <td><?= htmlspecialchars($row['nama']) ?></td>
                                     <td><?= htmlspecialchars($row['username']) ?></td>
                                     <td><?= htmlspecialchars($row['nama_kelas']) ?></td>
-                                    <td><?= $row['last_login'] ? date('d/m/Y H:i', strtotime($row['last_login'])) : '-' ?></td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning" onclick="editSiswa(<?= $row['id'] ?>)">
+                                        <button class="btn btn-sm btn-warning" onclick="editSiswa(<?= $row['siswa_id'] ?>)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteSiswa(<?= $row['id'] ?>)">
+                                        <button class="btn btn-sm btn-danger" onclick="deleteSiswa(<?= $row['siswa_id'] ?>)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
-                            <?php
+                                <?php
                             endwhile;
                         else:
                             ?>
                             <tr>
-                                <td colspan="6" class="text-center">Tidak ada data</td>
+                                <td colspan="5" class="text-center">Tidak ada data</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                        <a class="page-link"
+                            href="?page=siswa&page_no=1&search=<?= urlencode($search) ?>&kelas_filter=<?= urlencode($kelas_filter) ?>"
+                            tabindex="-1">First</a>
+                    </li>
+                    <li class="page-item <?= $page == 1 ? 'disabled' : '' ?>">
+                        <a class="page-link"
+                            href="?page=siswa&page_no=<?= $page - 1 ?>&search=<?= urlencode($search) ?>&kelas_filter=<?= urlencode($kelas_filter) ?>">Previous</a>
+                    </li>
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                            <a class="page-link"
+                                href="?page=siswa&page_no=<?= $i ?>&search=<?= urlencode($search) ?>&kelas_filter=<?= urlencode($kelas_filter) ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li class="page-item <?= $page == $total_pages ? 'disabled' : '' ?>">
+                        <a class="page-link"
+                            href="?page=siswa&page_no=<?= $page + 1 ?>&search=<?= urlencode($search) ?>&kelas_filter=<?= urlencode($kelas_filter) ?>">Next</a>
+                    </li>
+                    <li class="page-item <?= $page == $total_pages ? 'disabled' : '' ?>">
+                        <a class="page-link"
+                            href="?page=siswa&page_no=<?= $total_pages ?>&search=<?= urlencode($search) ?>&kelas_filter=<?= urlencode($kelas_filter) ?>">Last</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -299,11 +384,11 @@ $kelas_result = $db->query($kelas_query);
         namaKelasInput.value = selectedOption.dataset.nama || '';
     }
 
-    function editSiswa(id) {
-        fetch(`get_siswa.php?id=${id}`)
+    function editSiswa(siswa_id) {
+        fetch(`get_siswa.php?id=${siswa_id}`)
             .then(response => response.json())
             .then(data => {
-                document.getElementById('edit_id').value = data.id;
+                document.getElementById('edit_id').value = data.siswa_id;
                 document.getElementById('edit_nama').value = data.nama;
                 document.getElementById('edit_username').value = data.username;
                 document.getElementById('edit_kelas_id').value = data.kelas_id;
@@ -325,3 +410,4 @@ $kelas_result = $db->query($kelas_query);
         }
     }
 </script>
+<!-- Jangan ada include modul di sini! -->

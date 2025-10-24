@@ -1,0 +1,7 @@
+nisn ga boleh double
+harus ada login dan validasi untuk ppdb dan harus connect ke nisn nasional
+harus login dulu sebelum daftar
+harus validasi asal sekolah
+tambahin notif Ketika sudah diterima di ppdb melalui wa
+tombol hapus di pendaftaran 
+tambahin export di guru

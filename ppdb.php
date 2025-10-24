@@ -1,5 +1,15 @@
 <?php
 session_start();
+include 'config/koneksi.php';
+
+// Ambil data pendaftar yang statusnya diterima atau proses
+$query = "SELECT id, nama_lengkap, jenis_kelamin, jurusan, status FROM ppdb_pendaftar WHERE status IN ('diterima', 'proses') ORDER BY id DESC";
+$result = mysqli_query($db, $query);
+
+$pendaftar = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $pendaftar[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -13,14 +23,13 @@ session_start();
     <link rel="shortcut icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="/pkl/manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="/pkl/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/pkl/icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/pkl/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/Web-Sekolah/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Web-Sekolah/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Web-Sekolah/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Web-Sekolah/icons/apple-touch-icon.png">
     <meta name="theme-color" content="#00499D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-
         .hero-ppdb {
             background: linear-gradient(135deg, rgba(0, 73, 157, 0.95), rgba(0, 51, 102, 0.95)),
                 url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1600') center/cover;
@@ -388,10 +397,6 @@ session_start();
             color: white;
             border-color: var(--primary-blue);
         }
-
-
-
-
 
         .recent-post-item {
             padding-bottom: 12px;
@@ -890,6 +895,53 @@ session_start();
                 display: none;
             }
         }
+
+        /* Custom Styles for PPDB Page */
+        .filter-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #f5f5f5;
+        }
+
+        .status-proses {
+            color: #ff8303;
+            font-weight: bold;
+        }
+
+        .status-diterima {
+            color: #00499d;
+            font-weight: bold;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            padding: 30px;
+        }
     </style>
 </head>
 
@@ -953,177 +1005,63 @@ session_start();
                             <th>Status Proses</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">AB</div>
-                                    <div class="student-info">
-                                        <div class="name">Ahmad Budi Santoso</div>
-                                        <div class="nisn">NISN: 0051234567</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-male"><i class="fas fa-mars"></i> Laki-laki</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Teknik Komputer Jaringan</span></td>
-                            <td><span class="status-badge status-diterima"><i class="fas fa-check-circle"></i>
-                                    Diterima</span></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">SP</div>
-                                    <div class="student-info">
-                                        <div class="name">Siti Putri Ayu</div>
-                                        <div class="nisn">NISN: 0051234568</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-female"><i class="fas fa-venus"></i> Perempuan</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Rekayasa Perangkat Lunak</span></td>
-                            <td><span class="status-badge status-diterima"><i class="fas fa-check-circle"></i>
-                                    Diterima</span></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">BW</div>
-                                    <div class="student-info">
-                                        <div class="name">Budi Wahyudi</div>
-                                        <div class="nisn">NISN: 0051234569</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-male"><i class="fas fa-mars"></i> Laki-laki</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-cross"></i> Kristen</span></td>
-                            <td><span class="badge badge-jurusan">Animasi</span></td>
-                            <td><span class="status-badge status-proses"><i class="fas fa-clock"></i> Proses
-                                    Seleksi</span></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">DA</div>
-                                    <div class="student-info">
-                                        <div class="name">Dewi Anggraini</div>
-                                        <div class="nisn">NISN: 0051234570</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-female"><i class="fas fa-venus"></i> Perempuan</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Desain Komunikasi Visual</span></td>
-                            <td><span class="status-badge status-diterima"><i class="fas fa-check-circle"></i>
-                                    Diterima</span></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">RP</div>
-                                    <div class="student-info">
-                                        <div class="name">Rudi Prasetyo</div>
-                                        <div class="nisn">NISN: 0051234571</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-male"><i class="fas fa-mars"></i> Laki-laki</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Teknik Jaringan Akses Telekomunikasi</span></td>
-                            <td><span class="status-badge status-proses"><i class="fas fa-clock"></i> Proses
-                                    Seleksi</span></td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">LK</div>
-                                    <div class="student-info">
-                                        <div class="name">Linda Kusuma</div>
-                                        <div class="nisn">NISN: 0051234572</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-female"><i class="fas fa-venus"></i> Perempuan</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-cross"></i> Katolik</span></td>
-                            <td><span class="badge badge-jurusan">Manajemen Perkantoran</span></td>
-                            <td><span class="status-badge status-diterima"><i class="fas fa-check-circle"></i>
-                                    Diterima</span></td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">FH</div>
-                                    <div class="student-info">
-                                        <div class="name">Fajar Hidayat</div>
-                                        <div class="nisn">NISN: 0051234573</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-male"><i class="fas fa-mars"></i> Laki-laki</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Teknik Komputer Jaringan</span></td>
-                            <td><span class="status-badge status-pending"><i class="fas fa-hourglass-half"></i>
-                                    Pending</span></td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">MS</div>
-                                    <div class="student-info">
-                                        <div class="name">Maya Sari</div>
-                                        <div class="nisn">NISN: 0051234574</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-female"><i class="fas fa-venus"></i> Perempuan</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-om"></i> Hindu</span></td>
-                            <td><span class="badge badge-jurusan">Rekayasa Perangkat Lunak</span></td>
-                            <td><span class="status-badge status-diterima"><i class="fas fa-check-circle"></i>
-                                    Diterima</span></td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">AK</div>
-                                    <div class="student-info">
-                                        <div class="name">Arif Kurniawan</div>
-                                        <div class="nisn">NISN: 0051234575</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-male"><i class="fas fa-mars"></i> Laki-laki</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Animasi</span></td>
-                            <td><span class="status-badge status-proses"><i class="fas fa-clock"></i> Proses
-                                    Seleksi</span></td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td>
-                                <div class="student-name">
-                                    <div class="student-avatar">NU</div>
-                                    <div class="student-info">
-                                        <div class="name">Nur Utami</div>
-                                        <div class="nisn">NISN: 0051234576</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-female"><i class="fas fa-venus"></i> Perempuan</span></td>
-                            <td><span class="badge badge-agama"><i class="fas fa-mosque"></i> Islam</span></td>
-                            <td><span class="badge badge-jurusan">Desain Komunikasi Visual</span></td>
-                            <td><span class="status-badge status-diterima"><i class="fas fa-check-circle"></i>
-                                    Diterima</span></td>
-                        </tr>
+                    <tbody id="ppdbTableBody">
+                        <?php
+                        // Ambil semua data pendaftar
+                        $query = "SELECT nisn, nama_lengkap, jenis_kelamin, agama, jurusan, status FROM ppdb_pendaftar WHERE status IN ('diterima', 'proses') ORDER BY id DESC";
+                        $result = mysqli_query($db, $query);
+                        $rows = [];
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $rows[] = $row;
+                        }
+                        ?>
+                        <?php if (count($rows) === 0): ?>
+                            <tr>
+                                <td colspan="6" class="no-data">Belum ada pendaftar.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($rows as $i => $row): ?>
+                                <tr>
+                                    <td><?= $i + 1 ?></td>
+                                    <td>
+                                        <div class="student-name">
+                                            <div class="student-avatar">
+                                                <?= strtoupper(substr($row['nama_lengkap'], 0, 1) . substr(explode(' ', $row['nama_lengkap'])[1] ?? $row['nama_lengkap'], 0, 1)) ?>
+                                            </div>
+                                            <div class="student-info">
+                                                <div class="name"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
+                                                <div class="nisn">NISN: <?= htmlspecialchars($row['nisn']) ?></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge badge-<?= $row['jenis_kelamin'] == 'laki-laki' ? 'male' : 'female' ?>">
+                                            <i
+                                                class="fas fa-<?= $row['jenis_kelamin'] == 'laki-laki' ? 'mars' : 'venus' ?>"></i>
+                                            <?= ucwords($row['jenis_kelamin']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-agama">
+                                            <i
+                                                class="fas fa-<?= $row['agama'] == 'islam' ? 'mosque' : ($row['agama'] == 'kristen' ? 'cross' : ($row['agama'] == 'katolik' ? 'cross' : ($row['agama'] == 'hindu' ? 'om' : 'pray'))) ?>"></i>
+                                            <?= ucwords($row['agama']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-jurusan"><?= ucwords($row['jurusan']) ?></span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-<?= $row['status'] ?>">
+                                            <i
+                                                class="fas fa-<?= $row['status'] == 'diterima' ? 'check-circle' : 'clock' ?>"></i>
+                                            <?= $row['status'] == 'diterima' ? 'Diterima' : 'Proses Seleksi' ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach ?>
+                        <?php endif ?>
                     </tbody>
                 </table>
             </div>
@@ -1171,6 +1109,83 @@ session_start();
                 }
             }, { once: true });
         }
+
+        // Ambil data dari tabel
+        const rows = Array.from(document.querySelectorAll('#ppdbTable tbody tr'));
+        const searchInput = document.getElementById('searchNama');
+        const jurusanSelect = document.getElementById('filterJurusan');
+
+        function filterTable() {
+            const search = searchInput.value.toLowerCase();
+            const jurusan = jurusanSelect.value;
+            let visible = 0;
+
+            rows.forEach(row => {
+                const nama = row.cells[1]?.textContent.toLowerCase() || '';
+                const jurusanCell = row.cells[3]?.textContent.toLowerCase() || '';
+                let show = true;
+
+                if (search && !nama.includes(search)) show = false;
+                if (jurusan && !jurusanCell.includes(jurusan)) show = false;
+
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+
+            // Tampilkan pesan jika tidak ada data yang cocok
+            document.querySelectorAll('.no-data').forEach(el => el.style.display = visible === 0 ? '' : 'none');
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        jurusanSelect.addEventListener('change', filterTable);
+    </script>
+    <script>
+        const tableBody = document.getElementById('ppdbTableBody');
+        const searchInput = document.getElementById('searchNama');
+        const jurusanSelect = document.getElementById('filterJurusan');
+        let allRows = Array.from(tableBody.querySelectorAll('tr'));
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        function renderTable() {
+            let filtered = allRows.filter(row => {
+                const nama = row.querySelector('.name')?.textContent.toLowerCase() || '';
+                const jurusan = row.querySelector('.badge-jurusan')?.textContent.toLowerCase() || '';
+                let show = true;
+                if (searchInput.value && !nama.includes(searchInput.value.toLowerCase())) show = false;
+                if (jurusanSelect.value && !jurusan.includes(jurusanSelect.value.toLowerCase())) show = false;
+                return show;
+            });
+
+            // Pagination
+            const totalPages = Math.ceil(filtered.length / rowsPerPage);
+            currentPage = Math.min(currentPage, totalPages) || 1;
+            tableBody.innerHTML = '';
+            filtered.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage).forEach(row => tableBody.appendChild(row));
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const pag = document.querySelector('.pagination');
+            if (!pag) return;
+            pag.innerHTML = '';
+            if (totalPages <= 1) return;
+            pag.innerHTML += `<button ${currentPage == 1 ? 'disabled' : ''} onclick="gotoPage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                pag.innerHTML += `<button class="${i == currentPage ? 'active' : ''}" onclick="gotoPage(${i})">${i}</button>`;
+            }
+            pag.innerHTML += `<button ${currentPage == totalPages ? 'disabled' : ''} onclick="gotoPage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`;
+        }
+
+        window.gotoPage = function (page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        searchInput.addEventListener('input', renderTable);
+        jurusanSelect.addEventListener('change', renderTable);
+
+        renderTable();
     </script>
 </body>
 

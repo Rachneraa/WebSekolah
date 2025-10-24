@@ -234,17 +234,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
                 </li>
                 <li>
                     <a href="?page=kelas">
-                        <i class="fas fa-school"></i> Data Kelas
-                    </a>
-                </li>
-                <li>
-                    <a href="?page=absensi">
-                        <i class="fas fa-clipboard-list"></i> Absensi
-                    </a>
-                </li>
-                <li>
-                    <a href="?page=nilai">
-                        <i class="fas fa-star"></i> Nilai
+                        <i class="fas fa-school"></i> Data Kelas dan Absensi
                     </a>
                 </li>
                 <li>
@@ -252,18 +242,20 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
                         <i class="fas fa-newspaper"></i> Berita
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="?page=login_report">
-                        <i class="fas fa-history"></i>
-                        <span>Laporan Login</span>
+                <li>
+                    <a href="?page=ppdb_admin">
+                        <i class="fas fa-newspaper"></i> Pendaftaran Siswa Baru
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="?page=absensi">
-                        <i class="fas fa-clipboard-list"></i>
-                        <span>Laporan Absensi</span>
+                <li>
+                    <a href="?page=jadwal">
+                        <i class="fas fa-calendar-alt"></i> Jadwal Pelajaran
                     </a>
                 </li>
+                <li>
+                    <a href="?page=mapel">
+                        <i class="fas fa-file-alt"></i> Mata Pelajaran
+                    </a>
             </ul>
         </nav>
 

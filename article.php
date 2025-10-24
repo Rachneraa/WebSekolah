@@ -1,7 +1,20 @@
 <?php
 session_start();
 require_once 'config/koneksi.php';
-require_once 'config/functions.php';
+
+$per_page = 6;
+$page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$offset = ($page - 1) * $per_page;
+
+// Hitung total berita
+$total_query = mysqli_query($db, "SELECT COUNT(*) as total FROM berita");
+$total_row = mysqli_fetch_assoc($total_query);
+$total_berita = $total_row['total'];
+$total_pages = ceil($total_berita / $per_page);
+
+// Ambil berita sesuai halaman
+$query = "SELECT * FROM berita ORDER BY tanggal DESC LIMIT $per_page OFFSET $offset";
+$result = mysqli_query($db, $query);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -13,47 +26,144 @@ require_once 'config/functions.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .article-card {
-            transition: transform 0.2s;
+        /* Card Artikel Style dari index.php */
+        .artikel-slider {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .artikel-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
             height: 100%;
         }
 
-        .article-card:hover {
-            transform: translateY(-5px);
+        .artikel-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         }
 
-        .card-img-top {
-            height: 200px;
+        .artikel-card img {
+            width: 100%;
+            height: 220px;
             object-fit: cover;
+            transition: transform 0.5s ease;
         }
 
-        .card-title {
+        .artikel-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .artikel-content {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .artikel-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .artikel-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .artikel-content h3 {
+            font-size: 18px;
+            color: #00499d;
+            margin-bottom: 10px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .artikel-content p {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .artikel-link {
+            color: #ff8303;
             font-weight: 600;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: gap 0.3s ease;
+            margin-top: auto;
         }
 
-        .card-text {
-            color: #666;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .artikel-link:hover {
+            gap: 10px;
         }
 
-        .article-meta {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 1rem;
+            .section-title {
+                font-size: 24px;
+            }
+
+                    .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
         }
 
-        .btn-primary {
-            padding: 0.5rem 1rem;
-            font-weight: 500;
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60px;
+            height: 5px;
+            background: var(--primary-orange);
+            border-radius: 3px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 70px;
+            bottom: -10px;
+            width: 30px;
+            height: 5px;
+            background: var(--primary-orange);
+            opacity: 0.5;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 1024px) {
+            .artikel-slider {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .artikel-slider {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .artikel-card img {
+                height: 200px;
+            }
         }
     </style>
 </head>
@@ -62,129 +172,66 @@ require_once 'config/functions.php';
     <?php include 'include/nav.php'; ?>
 
     <div class="container py-5">
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <h2>Artikel & Berita</h2>
-                <div class="input-group mb-3 mt-3">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Cari artikel...">
-                    <button class="btn btn-primary" onclick="searchArticles()">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
+        <section id="artikel" class="artikel-container fade-in">
+            <div class="artikel-header">
+                <h2 class="section-title">Artikel & Berita Terbaru</h2>
+                <!-- Hapus tombol kembali ke beranda -->
             </div>
-        </div>
-
-        <div class="row" id="articleGrid">
-            <?php
-            $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-            $limit = 9;
-            $offset = ($page - 1) * $limit;
-
-            $query = "SELECT * FROM berita ORDER BY tanggal DESC LIMIT $offset, $limit";
-            $result = mysqli_query($db, $query);
-
-            if (mysqli_num_rows($result) > 0):
-                while ($article = mysqli_fetch_assoc($result)):
-                    ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="card article-card">
-                            <?php if ($article['gambar']): ?>
-                                <img src="berita/<?= htmlspecialchars($article['gambar']) ?>" class="card-img-top"
-                                    alt="<?= htmlspecialchars($article['judul']) ?>">
-                            <?php endif; ?>
-                            <div class="card-body d-flex flex-column">
-                                <div class="article-meta">
-                                    <i class="far fa-calendar"></i> <?= date('d M Y', strtotime($article['tanggal'])) ?>
-                                    <?php if ($article['penulis']): ?>
-                                        <span class="ms-2">
-                                            <i class="far fa-user"></i> <?= htmlspecialchars($article['penulis']) ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-                                <h5 class="card-title"><?= htmlspecialchars($article['judul']) ?></h5>
-                                <p class="card-text flex-grow-1">
-                                    <?= substr(strip_tags(str_replace(['\r\n', '\n', '##'], ' ', $article['isi'])), 0, 150) ?>...
-                                </p>
-                                <a href="article-detail.php?id=<?= $article['id'] ?>" class="btn btn-primary mt-auto">
-                                    Baca Selengkapnya
-                                </a>
+            <div class="artikel-slider">
+                <?php while ($berita = mysqli_fetch_assoc($result)): ?>
+                    <article class="artikel-card">
+                        <img src="berita/<?= htmlspecialchars($berita['gambar']) ?>"
+                            alt="<?= htmlspecialchars($berita['judul']) ?>">
+                        <div class="artikel-content">
+                            <div class="artikel-meta">
+                                <span><i class="far fa-calendar"></i>
+                                    <?= date('d F Y', strtotime($berita['tanggal'])) ?></span>
+                                <span><i class="far fa-user"></i> <?= htmlspecialchars($berita['penulis']) ?></span>
                             </div>
+                            <h3><?= htmlspecialchars($berita['judul']) ?></h3>
+                            <p>
+                                <?php
+                                $isi = $berita['isi'];
+                                $isi_bersih = preg_replace('/^##.*$/m', '', $isi);
+                                $isi_bersih = str_replace(["\r", "\n"], ' ', $isi_bersih);
+                                $excerpt = mb_strimwidth(trim($isi_bersih), 0, 120, '...');
+                                echo htmlspecialchars($excerpt);
+                                ?>
+                            </p>
+                            <a href="artikel-detail.php?id=<?= $berita['id'] ?>" class="artikel-link">
+                                Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
-                    </div>
-                    <?php
-                endwhile;
-            else:
-                ?>
-                <div class="col-12">
-                    <div class="alert alert-info">
-                        Belum ada artikel yang tersedia.
-                    </div>
-                </div>
-            <?php endif; ?>
-        </div>
-
-        <?php
-        $query = "SELECT COUNT(*) as total FROM berita";
-        $result = mysqli_query($db, $query);
-        $row = mysqli_fetch_assoc($result);
-        $total_pages = ceil($row['total'] / $limit);
-
-        if ($total_pages > 1):
-            ?>
-            <div class="d-flex justify-content-center mt-4">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <?php if ($page > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<?= $page - 1 ?>">&laquo; Previous</a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
-
-                        <?php if ($page < $total_pages): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<?= $page + 1 ?>">Next &raquo;</a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
+                    </article>
+                <?php endwhile; ?>
             </div>
-        <?php endif; ?>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <?php if ($page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $page - 1 ?>">Sebelumnya</a>
+                        </li>
+                    <?php endif; ?>
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <?php if ($page < $total_pages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $page + 1 ?>">Berikutnya</a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+        </section>
     </div>
 
     <?php include 'include/footer.php'; ?>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function searchArticles() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const articles = document.querySelectorAll('.col-md-4');
-
-            articles.forEach(article => {
-                const title = article.querySelector('.card-title').textContent.toLowerCase();
-                const content = article.querySelector('.card-text').textContent.toLowerCase();
-
-                if (title.includes(searchTerm) || content.includes(searchTerm)) {
-                    article.style.display = '';
-                } else {
-                    article.style.display = 'none';
-                }
-            });
-        }
-
-        // Search on Enter key
-        document.getElementById('searchInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                searchArticles();
-            }
-        });
-    </script>
 </body>
 
 </html>
