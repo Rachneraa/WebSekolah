@@ -1,4 +1,6 @@
 <?php
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 // Hapus session_start() karena sudah ada di admin.php
 
 if (!defined('BASE_PATH')) {
@@ -17,9 +19,9 @@ require_once '../config/koneksi.php';
 function getAllGuru($db, $start = 0, $limit = 10)
 {
     $query = "SELECT g.*, m.nama as nama_mapel 
-              FROM guru g 
-              LEFT JOIN mapel m ON g.mapel_id = m.id 
-              LIMIT ?, ?";
+                FROM guru g 
+                LEFT JOIN mapel m ON g.mapel_id = m.id 
+                LIMIT ?, ?";
     $stmt = $db->prepare($query);
     $stmt->bind_param("ii", $start, $limit);
     $stmt->execute();
@@ -34,127 +36,236 @@ function getTotalGuru($db)
     return $row['total'];
 }
 
-// Handle form submissions
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'add':
-                $foto = '';
-                if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-                    // Pastikan direktori upload ada
+// Handle form submissio
+
+
+if (isset($_POST['action'])) {
+    switch ($_POST['action']) {
+        case 'add':
+            $foto = '';
+            if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+                // Pastikan direktori upload ada
+                $target_dir = __DIR__ . "/../../uploads/guru/";
+                if (!file_exists($target_dir)) {
+                    mkdir($target_dir, 0777, true);
+                }
+
+                // Generate nama file unik
+                $foto = uniqid() . "." . pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION);
+                $target_file = $target_dir . $foto;
+
+                // Upload file
+                if (!move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
+                    $_SESSION['error'] = "Gagal mengupload file";
+                    break;
+                }
+            }
+
+            // Hash password
+            $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+            try {
+                $stmt = $db->prepare("INSERT INTO guru (nip, nama, jenis_kelamin, alamat, no_telp, foto, mapel_id, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param(
+                    "ssssssss",
+                    $_POST['nip'],
+                    $_POST['nama'],
+                    $_POST['jenis_kelamin'],
+                    $_POST['alamat'],
+                    $_POST['no_telp'],
+                    $foto,
+                    $_POST['mapel_id'],
+                    $password_hash
+                );
+                $stmt->execute();
+                $_SESSION['success'] = "Data guru berhasil ditambahkan";
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error: " . $e->getMessage();
+            }
+            break;
+
+        case 'edit':
+            $foto = $_POST['foto_lama'];
+            if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+                $target_dir = __DIR__ . "/../../uploads/guru/";
+                if (!file_exists($target_dir)) {
+                    mkdir($target_dir, 0777, true);
+                }
+
+                // Hapus foto lama jika ada
+                if ($_POST['foto_lama'] && file_exists($target_dir . $_POST['foto_lama'])) {
+                    unlink($target_dir . $_POST['foto_lama']);
+                }
+
+                $foto = uniqid() . "." . pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION);
+                $target_file = $target_dir . $foto;
+
+                if (!move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
+                    $_SESSION['error'] = "Gagal mengupload file";
+                    break;
+                }
+            }
+
+            // Hash password
+            $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+            try {
+                $stmt = $db->prepare("UPDATE guru SET nip=?, nama=?, jenis_kelamin=?, alamat=?, no_telp=?, foto=?, mapel_id=?, password=? WHERE id=?");
+                $stmt->bind_param(
+                    "ssssssssi",
+                    $_POST['nip'],
+                    $_POST['nama'],
+                    $_POST['jenis_kelamin'],
+                    $_POST['alamat'],
+                    $_POST['no_telp'],
+                    $foto,
+                    $_POST['mapel_id'],
+                    $password_hash,
+                    $_POST['id']
+                );
+                $stmt->execute();
+                $_SESSION['success'] = "Data guru berhasil diperbarui";
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error: " . $e->getMessage();
+            }
+            break;
+
+        case 'delete':
+            try {
+                // Hapus foto
+                $stmt = $db->prepare("SELECT foto FROM guru WHERE id = ?");
+                $stmt->bind_param("i", $_POST['id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $guru = $result->fetch_assoc();
+
+                if ($guru['foto']) {
                     $target_dir = __DIR__ . "/../../uploads/guru/";
-                    if (!file_exists($target_dir)) {
-                        mkdir($target_dir, 0777, true);
-                    }
-
-                    // Generate nama file unik
-                    $foto = uniqid() . "." . pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION);
-                    $target_file = $target_dir . $foto;
-
-                    // Upload file
-                    if (!move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
-                        $_SESSION['error'] = "Gagal mengupload file";
-                        break;
+                    if (file_exists($target_dir . $guru['foto'])) {
+                        unlink($target_dir . $guru['foto']);
                     }
                 }
 
-                // Hash password
-                $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-                try {
-                    $stmt = $db->prepare("INSERT INTO guru (nip, nama, jenis_kelamin, alamat, no_telp, foto, mapel_id, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->bind_param(
-                        "ssssssss",
-                        $_POST['nip'],
-                        $_POST['nama'],
-                        $_POST['jenis_kelamin'],
-                        $_POST['alamat'],
-                        $_POST['no_telp'],
-                        $foto,
-                        $_POST['mapel_id'],
-                        $password_hash
-                    );
-                    $stmt->execute();
-                    $_SESSION['success'] = "Data guru berhasil ditambahkan";
-                } catch (Exception $e) {
-                    $_SESSION['error'] = "Error: " . $e->getMessage();
-                }
-                break;
-
-            case 'edit':
-                $foto = $_POST['foto_lama'];
-                if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-                    $target_dir = __DIR__ . "/../../uploads/guru/";
-                    if (!file_exists($target_dir)) {
-                        mkdir($target_dir, 0777, true);
-                    }
-
-                    // Hapus foto lama jika ada
-                    if ($_POST['foto_lama'] && file_exists($target_dir . $_POST['foto_lama'])) {
-                        unlink($target_dir . $_POST['foto_lama']);
-                    }
-
-                    $foto = uniqid() . "." . pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION);
-                    $target_file = $target_dir . $foto;
-
-                    if (!move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
-                        $_SESSION['error'] = "Gagal mengupload file";
-                        break;
-                    }
-                }
-
-                // Hash password
-                $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-                try {
-                    $stmt = $db->prepare("UPDATE guru SET nip=?, nama=?, jenis_kelamin=?, alamat=?, no_telp=?, foto=?, mapel_id=?, password=? WHERE id=?");
-                    $stmt->bind_param(
-                        "ssssssssi",
-                        $_POST['nip'],
-                        $_POST['nama'],
-                        $_POST['jenis_kelamin'],
-                        $_POST['alamat'],
-                        $_POST['no_telp'],
-                        $foto,
-                        $_POST['mapel_id'],
-                        $password_hash,
-                        $_POST['id']
-                    );
-                    $stmt->execute();
-                    $_SESSION['success'] = "Data guru berhasil diperbarui";
-                } catch (Exception $e) {
-                    $_SESSION['error'] = "Error: " . $e->getMessage();
-                }
-                break;
-
-            case 'delete':
-                try {
-                    // Hapus foto
-                    $stmt = $db->prepare("SELECT foto FROM guru WHERE id = ?");
-                    $stmt->bind_param("i", $_POST['id']);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $guru = $result->fetch_assoc();
-
-                    if ($guru['foto']) {
-                        $target_dir = __DIR__ . "/../../uploads/guru/";
-                        if (file_exists($target_dir . $guru['foto'])) {
-                            unlink($target_dir . $guru['foto']);
-                        }
-                    }
-
-                    // Hapus data
-                    $stmt = $db->prepare("DELETE FROM guru WHERE id = ?");
-                    $stmt->bind_param("i", $_POST['id']);
-                    $stmt->execute();
-                    $_SESSION['success'] = "Data guru berhasil dihapus";
-                } catch (Exception $e) {
-                    $_SESSION['error'] = "Error: " . $e->getMessage();
-                }
-                break;
-        }
+                // Hapus data
+                $stmt = $db->prepare("DELETE FROM guru WHERE id = ?");
+                $stmt->bind_param("i", $_POST['id']);
+                $stmt->execute();
+                $_SESSION['success'] = "Data guru berhasil dihapus";
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Error: " . $e->getMessage();
+            }
+            break;
     }
 }
+
+if (isset($_POST['import_guru'])) {
+    require_once BASE_PATH . '/vendor/autoload.php';
+
+    if (isset($_FILES['import_file']) && $_FILES['import_file']['error'] == 0) {
+        $file_tmp = $_FILES['import_file']['tmp_name'];
+        $file_name = $_FILES['import_file']['name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        if ($file_ext != 'xlsx' && $file_ext != 'xls') {
+            $_SESSION['error'] = "Hanya file Excel (.xlsx/.xls) yang diperbolehkan";
+        } else {
+            $spreadsheet = IOFactory::load($file_tmp);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            $imported = 0;
+            foreach ($rows as $i => $data) {
+                if ($i == 0)
+                    continue; // skip header
+
+                if (count($data) < 6)
+                    continue;
+
+                $nip = $data[0];
+                $nama = $data[1];
+                $jenis_kelamin = (strtolower($data[2]) == 'laki-laki' || strtolower($data[2]) == 'l') ? 'L' : 'P';
+                $alamat = $data[3];
+                $no_telp = $data[4];
+
+                // Ambil mapel_id dari nama mapel, jika tidak ada di database, set null
+                $nama_mapel = $data[5];
+                $stmt_mapel = $db->prepare("SELECT id FROM mapel WHERE nama = ?");
+                $stmt_mapel->bind_param("s", $nama_mapel);
+                $stmt_mapel->execute();
+                $result_mapel = $stmt_mapel->get_result();
+                $mapel_id = null;
+                if ($row_mapel = $result_mapel->fetch_assoc()) {
+                    $mapel_id = $row_mapel['id'];
+                }
+
+                $password = uniqid();
+                $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+                // Cek apakah NIP sudah ada
+                $stmt = $db->prepare("SELECT id FROM guru WHERE nip = ?");
+                $stmt->bind_param("s", $nip);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    $guru = $result->fetch_assoc();
+                    $stmt = $db->prepare("UPDATE guru SET nama=?, jenis_kelamin=?, alamat=?, no_telp=?, mapel_id=?, password=? WHERE id=?");
+                    $stmt->bind_param("ssssssi", $nama, $jenis_kelamin, $alamat, $no_telp, $mapel_id, $password_hash, $guru['id']);
+                    $stmt->execute();
+                } else {
+                    $stmt = $db->prepare("INSERT INTO guru (nip, nama, jenis_kelamin, alamat, no_telp, mapel_id, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->bind_param("sssssis", $nip, $nama, $jenis_kelamin, $alamat, $no_telp, $mapel_id, $password_hash);
+                    $stmt->execute();
+                }
+                $imported++;
+            }
+            $_SESSION['success'] = "Import selesai. $imported data berhasil diimport.";
+        }
+    } else {
+        $_SESSION['error'] = "Gagal mengupload file";
+    }
+}
+
+if (isset($_POST['export_guru'])) {
+    // Proses export CSV
+    $filename = "data_guru_" . date("YmdHis") . ".csv";
+    $file = fopen($filename, 'w');
+
+    // Tambahkan header CSV
+    $header = array("NIP", "Nama", "Jenis Kelamin", "Alamat", "No. Telepon", "Mata Pelajaran");
+    fputcsv($file, $header, ",");
+
+    // Ambil data guru dari database
+    $query = "SELECT g.nip, g.nama, g.jenis_kelamin, g.alamat, g.no_telp, m.nama as nama_mapel 
+                    FROM guru g 
+                    LEFT JOIN mapel m ON g.mapel_id = m.id";
+    $result = $db->query($query);
+
+    // Tambahkan data ke dalam file CSV
+    while ($row = $result->fetch_assoc()) {
+        $data = array(
+            $row['nip'],
+            $row['nama'],
+            $row['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan',
+            $row['alamat'],
+            $row['no_telp'],
+            $row['nama_mapel']
+        );
+        fputcsv($file, $data, ",");
+    }
+
+    fclose($file);
+
+    // Download file CSV
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    readfile($filename);
+
+    // Hapus file setelah di-download
+    unlink($filename);
+
+    exit();
+}
+
 
 // Get current page data
 $page = isset($_GET['page_no']) ? (int) $_GET['page_no'] : 1;
@@ -193,7 +304,10 @@ try {
     <div class="card">
         <div class="card-header">
             <h3 class="card-title float-start">Data Guru</h3>
-            <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addModal">
+            <a href="#" class="btn btn-success btn-sm float-end ms-2" data-bs-toggle="modal"
+                data-bs-target="#importModal">Import Data</a>
+            <a href="modules/export_guru.php" class="btn btn-info btn-sm float-end me-2">Export Data</a>
+            <button class="btn btn-primary float-end me-2" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah Guru
             </button>
         </div>
@@ -442,11 +556,38 @@ try {
             const form = document.createElement('form');
             form.method = 'POST';
             form.innerHTML = `
-                <input type="hidden" name="action" value="delete">
-                <input type="hidden" name="id" value="${id}">
-            `;
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="${id}">
+                `;
             document.body.appendChild(form);
             form.submit();
         }
     }
 </script>
+
+<!-- Modal Import CSV -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Data Guru (CSV)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="import_file" class="form-label">Pilih File CSV</label>
+                        <input type="file" name="import_file" id="import_file" class="form-control"
+                            accept=".csv,.xlsx,.xls" required>
+                        <div class="form-text">Format: NIP, Nama, Jenis Kelamin, Alamat, No. Telepon, Mata Pelajaran
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" name="import_guru" class="btn btn-success">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -71,13 +71,13 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <th>Jenis Kelamin</th>
                         <th>Jurusan</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <!-- <th>Aksi</th> --> <!-- Hapus kolom Aksi -->
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (count($pendaftar) === 0): ?>
                         <tr>
-                            <td colspan="7" class="text-center">Belum ada pendaftar.</td>
+                            <td colspan="6" class="text-center">Belum ada pendaftar.</td> <!-- Ubah colspan jadi 6 -->
                         </tr>
                     <?php else: ?>
                         <?php foreach ($pendaftar as $i => $row): ?>
@@ -99,10 +99,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         </option>
                                     </select>
                                 </td>
-                                <td>
+                                <!-- <td>
                                     <button class="btn btn-danger btn-sm hapus-btn" data-id="<?= $row['id'] ?>"><i
                                             class="fas fa-trash"></i> Hapus</button>
-                                </td>
+                                </td> -->
                             </tr>
                         <?php endforeach ?>
                     <?php endif ?>
@@ -114,11 +114,38 @@ while ($row = mysqli_fetch_assoc($result)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function postWithRetry(url, body, tries = 3, delayMs = 800) {
+            return new Promise((resolve, reject) => {
+                const attempt = (n) => {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body
+                    })
+                        .then(res => {
+                            if (!res.ok) throw new Error('HTTP ' + res.status);
+                            return res.json();
+                        })
+                        .then(resolve)
+                        .catch(err => {
+                            if (n > 1) {
+                                setTimeout(() => attempt(n - 1), delayMs);
+                                delayMs *= 2; // exponential backoff
+                            } else {
+                                reject(err);
+                            }
+                        });
+                };
+                attempt(tries);
+            });
+        }
+
         // Status update (AJAX + SweetAlert2)
         document.querySelectorAll('.status-select').forEach(function (select) {
             select.addEventListener('change', function () {
-                const id = this.dataset.id;
-                const statusBaru = this.value;
+                const selectEl = this;
+                const id = selectEl.dataset.id;
+                const statusBaru = selectEl.value;
                 Swal.fire({
                     title: 'Konfirmasi Ubah Status',
                     text: 'Yakin ingin mengubah status pendaftar?',
@@ -128,23 +155,32 @@ while ($row = mysqli_fetch_assoc($result)) {
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        fetch('modules/ubah_status_ppdb.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: 'id=' + id + '&status=' + statusBaru
-                        })
-                            .then(res => res.json())
+                        postWithRetry('modules/ubah_status_ppdb.php', 'id=' + encodeURIComponent(id) + '&status=' + encodeURIComponent(statusBaru))
                             .then(data => {
                                 if (data.success) {
-                                    Swal.fire('Berhasil!', 'Status berhasil diubah.', 'success');
-                                    // Update data-status pada row
-                                    this.closest('tr').setAttribute('data-status', statusBaru);
+                                    let msg = 'Status diubah.';
+                                    if (statusBaru === 'diterima') {
+                                        if (data.wa_sent) {
+                                            msg += ' Pesan WhatsApp berhasil dikirim.';
+                                        } else {
+                                            msg += ' WhatsApp gagal dikirim: ' + (data.wa_error || data.wa_response || 'Tidak diketahui');
+                                        }
+                                    }
+                                    Swal.fire('Berhasil!', msg, 'success');
+                                    selectEl.closest('tr').setAttribute('data-status', statusBaru);
+                                    selectEl.setAttribute('data-old', statusBaru);
                                 } else {
-                                    Swal.fire('Gagal!', 'Status gagal diubah.', 'error');
+                                    Swal.fire('Gagal!', data.error || 'Status gagal diubah.', 'error');
+                                    selectEl.value = selectEl.getAttribute('data-old');
                                 }
+                            })
+                            .catch(err => {
+                                console.error('Network/error:', err);
+                                Swal.fire('Kesalahan Jaringan', 'Tidak dapat terhubung ke server. Silakan coba lagi atau hubungi admin.', 'error');
+                                selectEl.value = selectEl.getAttribute('data-old');
                             });
                     } else {
-                        this.value = this.getAttribute('data-old');
+                        selectEl.value = selectEl.getAttribute('data-old');
                     }
                 });
             });

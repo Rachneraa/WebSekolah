@@ -3,10 +3,11 @@ const urlsToCache = [
   '/Web-Sekolah/',
   '/Web-Sekolah/index.php',
   '/Web-Sekolah/ppdb.php',
-  '/Web-Sekolah/artikel.php',
+  '/Web-Sekolah/article.php',
   '/Web-Sekolah/jurusan-rpl.php',
   '/Web-Sekolah/pendaftaran.php',
   '/Web-Sekolah/artikel-detail.php',
+  '/Web-Sekolah/contact.php',
   '/Web-Sekolah/icons/android-chrome-192x192.png',
   '/Web-Sekolah/icons/android-chrome-512x512.png'
 ];

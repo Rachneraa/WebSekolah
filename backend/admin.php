@@ -314,3 +314,4 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
 </body>
 
 </html>
+<form action="admin.php?page=jadwal" method="post"></form>
