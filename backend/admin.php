@@ -194,6 +194,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
             padding: 10px 15px;
             border-radius: 4px;
             margin-right: 15px;
+            z-index: 1100;
+            position: relative;
         }
 
         #sidebarCollapse:hover {

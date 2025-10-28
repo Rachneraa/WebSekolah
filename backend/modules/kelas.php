@@ -35,7 +35,7 @@ function generateQRCode($kelas_id, $nama_kelas)
         }
 
         $file_name = $qr_path . "kelas_" . $kelas_id . ".png";
-        $qr_content = "http://" . $_SERVER['HTTP_HOST'] . "/Web-Sekolah/absensi.php?kelas=" . $kelas_id;
+        $qr_content = "http://" . $_SERVER['HTTP_HOST'] . "//absensi.php?kelas=" . $kelas_id;
 
         QRcode::png($qr_content, $file_name, QR_ECLEVEL_L, 10);
         return "kelas_" . $kelas_id . ".png";
@@ -50,8 +50,8 @@ function getAllKelas($db, $start = 0, $limit = 10)
 {
     $query = "SELECT k.*, COUNT(s.siswa_id) as jumlah_siswa 
               FROM kelas k 
-              LEFT JOIN siswa s ON k.id = s.kelas_id 
-              GROUP BY k.id 
+              LEFT JOIN siswa s ON k.kelas_id = s.kelas_id 
+              GROUP BY k.kelas_id 
               ORDER BY k.nama 
               LIMIT ?, ?";
     $stmt = $db->prepare($query);
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $qr_file = generateQRCode($kelas_id, $_POST['nama']);
 
                     // Update QR Code filename in database
-                    $stmt = $db->prepare("UPDATE kelas SET qr_code = ? WHERE id = ?");
+                    $stmt = $db->prepare("UPDATE kelas SET qr_code = ? WHERE kelas_id = ?");
                     $stmt->bind_param("si", $qr_file, $kelas_id);
                     $stmt->execute();
 
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             case 'edit':
                 try {
-                    $stmt = $db->prepare("UPDATE kelas SET nama = ? WHERE id = ?");
+                    $stmt = $db->prepare("UPDATE kelas SET nama = ? WHERE kelas_id = ?");
                     $stmt->bind_param("si", $_POST['nama'], $_POST['id']);
                     $stmt->execute();
                     $_SESSION['success'] = "Kelas berhasil diperbarui";
@@ -109,8 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt->bind_param("i", $_POST['id']);
                     $stmt->execute();
 
+
                     // Baru hapus kelas
-                    $stmt = $db->prepare("DELETE FROM kelas WHERE id = ?");
+                    $stmt = $db->prepare("DELETE FROM kelas WHERE kelas_id = ?");
                     $stmt->bind_param("i", $_POST['id']);
                     $stmt->execute();
 
@@ -180,14 +181,14 @@ $kelas_list = getAllKelas($db, $start, $limit);
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning" onclick="editKelas(<?= $row['id'] ?>)">
+                                        <button class="btn btn-sm btn-warning" onclick="editKelas(<?= $row['kelas_id'] ?>)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteKelas(<?= $row['id'] ?>)">
+                                        <button class="btn btn-sm btn-danger" onclick="deleteKelas(<?= $row['kelas_id'] ?>)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                         <br>
-                                        <a href="/Web-Sekolah/backend/modules/absensi.php?kelas=<?= $row['id'] ?>"
+                                        <a href="//backend/modules/absensi.php?kelas=<?= $row['kelas_id'] ?>"
                                             class="btn btn-sm btn-info mt-2">
                                             <i class="fas fa-clipboard-list"></i> Absensi
                                         </a>
@@ -279,7 +280,7 @@ $kelas_list = getAllKelas($db, $start, $limit);
         fetch(`get_kelas.php?id=${id}`)
             .then(response => response.json())
             .then(data => {
-                document.getElementById('edit_id').value = data.id;
+                document.getElementById('edit_id').value = data.kelas_id;
                 document.getElementById('edit_nama').value = data.nama;
                 new bootstrap.Modal(document.getElementById('editModal')).show();
             });

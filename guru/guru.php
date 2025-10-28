@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+  session_start();
+}
 require_once '../config/koneksi.php';
 
 // Cek login dan level guru
@@ -118,6 +120,7 @@ if (!in_array($page, $allowed))
         height: 100vh;
         transform: translateX(-100%);
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+        z-index: 1040;
       }
 
       #sidebar.active {
@@ -132,49 +135,91 @@ if (!in_array($page, $allowed))
         display: block;
       }
     }
+
+@media (min-width: 769px) {
+  #sidebar {
+    display: block !important;
+    position: relative;
+    transform: none;
+    box-shadow: none;
+  }
+  #sidebarCollapse {
+    display: none !important;
+  }
+}
   </style>
 </head>
 
 <body>
-  <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
   <div class="wrapper">
     <!-- Sidebar -->
     <nav id="sidebar">
       <div class="sidebar-header">
         <h3>Guru Panel</h3>
       </div>
-      <ul>
-        <li><a href="guru.php?page=dashboard" class="<?= $page == 'dashboard' ? 'active' : '' ?>"><i
-              class="fas fa-home"></i>
-            Dashboard</a></li>
-        <li><a href="guru.php?page=absensi" class="<?= $page == 'absensi' ? 'active' : '' ?>"><i
-              class="fas fa-clipboard-list"></i> Absensi</a></li>
-        <li><a href="guru.php?page=jadwal" class="<?= $page == 'jadwal' ? 'active' : '' ?>"><i
-              class="fas fa-calendar-alt"></i> Jadwal</a></li>
-        <li><a href="guru.php?page=nilai" class="<?= $page == 'nilai' ? 'active' : '' ?>"><i
-              class="fas fa-file-alt"></i>
-            Nilai</a></li>
+      <ul class="list-unstyled components">
+        <li>
+          <a href="guru.php?page=dashboard">
+            <i class="fas fa-home"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="guru.php?page=absensi">
+            <i class="fas fa-clipboard-list"></i> Absensi
+          </a>
+        </li>
+        <li>
+          <a href="guru.php?page=jadwal">
+            <i class="fas fa-calendar-alt"></i> Jadwal
+          </a>
+        </li>
+        <li>
+          <a href="guru.php?page=nilai">
+            <i class="fas fa-star"></i> Nilai
+          </a>
+        </li>
       </ul>
-      <a href="../config/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
-    <!-- Content -->
+
+    <!-- Page Content -->
     <div id="content">
-      <?php include $page . '.php'; ?>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <button type="button" id="sidebarCollapse" class="btn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="ms-auto">
+            <a href="../config/logout.php" class="btn btn-danger">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </div>
+        </div>
+      </nav>
+      <div class="container-fluid">
+        <?php include $page . '.php'; ?>
+      </div>
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('sidebarToggle');
-    toggleBtn.addEventListener('click', function () {
-      sidebar.classList.toggle('active');
-    });
-    // Optional: close sidebar when clicking outside (mobile)
-    document.addEventListener('click', function (e) {
-      if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
-        if (!sidebar.contains(e.target) && e.target !== toggleBtn) {
-          sidebar.classList.remove('active');
+    $(document).ready(function () {
+      // Toggle sidebar
+      $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').addClass('active');
+      });
+
+      // Close sidebar when clicking menu (mobile)
+      $('#sidebar a').on('click', function () {
+        if (window.innerWidth <= 768) {
+          $('#sidebar').removeClass('active');
         }
-      }
+      });
+
+      // Handle active menu
+      const currentPage = new URLSearchParams(window.location.search).get('page') || 'dashboard';
+      $('#sidebar li').removeClass('active');
+      $(`#sidebar a[href="guru.php?page=${currentPage}"]`).parent().addClass('active');
     });
   </script>
 </body>

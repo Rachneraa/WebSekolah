@@ -13,7 +13,7 @@ $kelas_filter = isset($_GET['kelas']) ? intval($_GET['kelas']) : 0;
 // Ambil nama kelas
 $kelas_nama = '';
 if ($kelas_filter) {
-    $kelas_stmt = $db->prepare("SELECT nama FROM kelas WHERE id = ?");
+    $kelas_stmt = $db->prepare("SELECT nama FROM kelas WHERE kelas_id = ?");
     $kelas_stmt->bind_param("i", $kelas_filter);
     $kelas_stmt->execute();
     $kelas_stmt->bind_result($kelas_nama);

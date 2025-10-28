@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if (isset($_GET['id'])) {
-    $stmt = $db->prepare("SELECT * FROM kelas WHERE id = ?");
+    $stmt = $db->prepare("SELECT * FROM kelas WHERE kelas_id = ?");
     $stmt->bind_param("i", $_GET['id']);
     $stmt->execute();
     $result = $stmt->get_result();

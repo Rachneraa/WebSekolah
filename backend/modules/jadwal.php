@@ -30,7 +30,7 @@ $where_sql = $where ? "WHERE " . implode(" AND ", $where) : "";
 $jadwal = mysqli_query($db, "
     SELECT j.*, k.nama AS nama_kelas, g.nama AS nama_guru, m.nama AS nama_mapel
     FROM jadwal j
-    JOIN kelas k ON j.kelas_id = k.id
+    JOIN kelas k ON j.kelas_id = k.kelas_id
     JOIN guru g ON j.guru_id = g.id
     JOIN mapel m ON j.mapel_id = m.id
     $where_sql
@@ -98,15 +98,16 @@ if (isset($_GET['edit'])) {
 
 <div class="container-fluid mt-4">
     <h3>Jadwal Pelajaran</h3>
-    
+
     <!-- Filter -->
     <form method="get" action="admin.php" class="row g-2 mb-3">
         <input type="hidden" name="page" value="jadwal">
         <div class="col-md-4">
             <select name="kelas_id" class="form-select" onchange="this.form.submit()">
                 <option value="0">-- Pilih Kelas --</option>
-                <?php mysqli_data_seek($kelas, 0); while ($k = mysqli_fetch_assoc($kelas)): ?>
-                    <option value="<?= $k['id'] ?>" <?= $filter_kelas == $k['id'] ? 'selected' : '' ?>>
+                <?php mysqli_data_seek($kelas, 0);
+                while ($k = mysqli_fetch_assoc($kelas)): ?>
+                    <option value="<?= $k['kelas_id'] ?>" <?= $filter_kelas == $k['kelas_id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($k['nama']) ?>
                     </option>
                 <?php endwhile; ?>
@@ -115,8 +116,9 @@ if (isset($_GET['edit'])) {
         <div class="col-md-4">
             <select name="guru_id" class="form-select" onchange="this.form.submit()">
                 <option value="0">-- Pilih Guru --</option>
-                <?php mysqli_data_seek($guru, 0); while ($g = mysqli_fetch_assoc($guru)): ?>
-                    <option value="<?= $g['id'] ?>" <?= $filter_guru == $g['id'] ? 'selected' : '' ?>>
+                <?php mysqli_data_seek($guru, 0);
+                while ($g = mysqli_fetch_assoc($guru)): ?>
+                    <option value="<?= $g['guru_id'] ?>" <?= $filter_guru == $g['guru_id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($g['nama']) ?>
                     </option>
                 <?php endwhile; ?>
@@ -138,7 +140,8 @@ if (isset($_GET['edit'])) {
                 <div class="col-md-2">
                     <select name="kelas_id" class="form-select" required>
                         <option value="">Kelas</option>
-                        <?php mysqli_data_seek($kelas, 0); while ($k = mysqli_fetch_assoc($kelas)): ?>
+                        <?php mysqli_data_seek($kelas, 0);
+                        while ($k = mysqli_fetch_assoc($kelas)): ?>
                             <option value="<?= $k['id'] ?>" <?= ($edit_data && $edit_data['kelas_id'] == $k['id']) || ($filter_kelas == $k['id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($k['nama']) ?>
                             </option>
@@ -150,7 +153,7 @@ if (isset($_GET['edit'])) {
                         <?php
                         $hari_list = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
                         foreach ($hari_list as $h):
-                        ?>
+                            ?>
                             <option value="<?= $h ?>" <?= ($edit_data && $edit_data['hari'] == $h) ? 'selected' : '' ?>>
                                 <?= $h ?>
                             </option>
@@ -164,8 +167,9 @@ if (isset($_GET['edit'])) {
                 <div class="col-md-3">
                     <select name="mapel_id" class="form-select" required>
                         <option value="">Mata Pelajaran</option>
-                        <?php mysqli_data_seek($mapel, 0); while ($m = mysqli_fetch_assoc($mapel)): ?>
-                            <option value="<?= $m['id'] ?>" <?= ($edit_data && $edit_data['mapel_id'] == $m['id']) ? 'selected' : '' ?>>
+                        <?php mysqli_data_seek($mapel, 0);
+                        while ($m = mysqli_fetch_assoc($mapel)): ?>
+                            <option value="<?= $m['mapel_id'] ?>" <?= ($edit_data && $edit_data['mapel_id'] == $m['mapel_id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($m['nama']) ?>
                             </option>
                         <?php endwhile; ?>
@@ -174,7 +178,8 @@ if (isset($_GET['edit'])) {
                 <div class="col-md-2">
                     <select name="guru_id" class="form-select" required>
                         <option value="">Guru</option>
-                        <?php mysqli_data_seek($guru, 0); while ($g = mysqli_fetch_assoc($guru)): ?>
+                        <?php mysqli_data_seek($guru, 0);
+                        while ($g = mysqli_fetch_assoc($guru)): ?>
                             <option value="<?= $g['id'] ?>" <?= ($edit_data && $edit_data['guru_id'] == $g['id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($g['nama']) ?>
                             </option>

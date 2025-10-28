@@ -149,9 +149,9 @@ if ($tablesExist):
                     <div class="card-body">
                         <?php
                         $query = "SELECT k.nama as kelas, a.hadir, a.sakit, a.izin, a.alpha 
-                             FROM absensi a 
-                             JOIN kelas k ON a.kelas_id = k.id 
-                             WHERE DATE(a.created_at) = CURDATE()";
+     FROM absensi a 
+     JOIN kelas k ON a.kelas_id = k.kelas_id 
+     WHERE DATE(a.created_at) = CURDATE()";
                         $result = mysqli_query($db, $query);
                         if (mysqli_num_rows($result) > 0):
                             ?>

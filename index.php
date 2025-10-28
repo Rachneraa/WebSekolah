@@ -14,10 +14,10 @@ require_once 'config/koneksi.php';
     <link rel="shortcut icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="/pkl/manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="/pkl/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/pkl/icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/pkl/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/Web-sekolah/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Web-sekolah/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/Web-sekolah/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/Web-sekolah/icons/apple-touch-icon.png">
     <meta name="theme-color" content="#00499D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -1777,14 +1777,12 @@ require_once 'config/koneksi.php';
     </style>
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('/pkl/service-worker.js')
-                    .then(function (registration) {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(function (err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
+            window.addEventListener('load', () => {
+                // ganti '/Web-Sekolah/service-worker.js' jika project ada di subfolder,
+                // atau pakai '/service-worker.js' jika di root
+                navigator.serviceWorker.register('/Web-Sekolah/service-worker.js', { scope: '/Web-Sekolah/' })
+                    .then(reg => console.log('ServiceWorker registered with scope:', reg.scope))
+                    .catch(err => console.error('ServiceWorker registration failed:', err));
             });
         }
     </script>
@@ -2437,6 +2435,7 @@ require_once 'config/koneksi.php';
                         if (img.dataset.src) {
                             img.src = img.dataset.src;
                             img.removeAttribute('data-src');
+
                         }
                         observer.unobserve(img);
                     }

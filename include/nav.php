@@ -887,7 +887,7 @@
         // ==================== SERVICE WORKER ====================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/Web-Sekolah/service-worker.js')
+                navigator.serviceWorker.register('//service-worker.js')
                     .then(registration => {
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;

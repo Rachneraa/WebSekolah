@@ -32,7 +32,7 @@ function getAllSiswa($db, $start = 0, $limit = 10, $search = '', $kelas_filter =
     $where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
     $query = "SELECT s.*, k.nama as nama_kelas 
               FROM siswa s 
-              LEFT JOIN kelas k ON s.kelas_id = k.id 
+              LEFT JOIN kelas k ON s.kelas_id = k.kelas_id 
               $where_sql
               ORDER BY k.nama, s.nama 
               LIMIT ?, ?";
@@ -49,8 +49,8 @@ function getAllSiswa($db, $start = 0, $limit = 10, $search = '', $kelas_filter =
 function getTotalSiswa($db, $search = '', $kelas_filter = '')
 {
     $query = "SELECT COUNT(*) as total FROM siswa s 
-              LEFT JOIN kelas k ON s.kelas_id = k.id 
-              WHERE (s.nama LIKE ? OR s.username LIKE ?) AND (k.id = ? OR ? = '')";
+              LEFT JOIN kelas k ON s.kelas_id = k.kelas_id 
+              WHERE (s.nama LIKE ? OR s.username LIKE ?) AND (k.kelas_id = ? OR ? = '')";
     $stmt = $db->prepare($query);
     $search_param = "%$search%";
     $stmt->bind_param("ssii", $search_param, $search_param, $kelas_filter, $kelas_filter);
@@ -193,7 +193,7 @@ $kelas_result = $db->query($kelas_query);
                         $kelas_result->data_seek(0);
                         while ($kelas = $kelas_result->fetch_assoc()):
                             ?>
-                            <option value="<?= $kelas['id'] ?>" <?= (isset($_GET['kelas_filter']) && $_GET['kelas_filter'] == $kelas['id']) ? 'selected' : '' ?>>
+                            <option value="<?= $kelas['kelas_id'] ?>" <?= (isset($_GET['kelas_filter']) && $_GET['kelas_filter'] == $kelas['kelas_id']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($kelas['nama']) ?>
                             </option>
                         <?php endwhile; ?>

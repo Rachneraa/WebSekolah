@@ -40,10 +40,10 @@
         <div class="footer-section">
             <h3>Link Cepat</h3>
             <ul>
-                <li><a href="/Web-Sekolah/index.php"><i class="fas fa-angle-right"></i> Beranda</a></li>
-                <li><a href="/Web-Sekolah/index.php#jurusan-program"><i class="fas fa-angle-right"></i> Jurusan</a></li>
-                <li><a href="/Web-Sekolah/index.php#kontak"><i class="fas fa-angle-right"></i> Artikel</a></li>
-                <li><a href="/Web-Sekolah/ppdb.php"><i class="fas fa-angle-right"></i> Pendaftaran</a></li>
+                <li><a href="//index.php"><i class="fas fa-angle-right"></i> Beranda</a></li>
+                <li><a href="//index.php#jurusan-program"><i class="fas fa-angle-right"></i> Jurusan</a></li>
+                <li><a href="//index.php#kontak"><i class="fas fa-angle-right"></i> Artikel</a></li>
+                <li><a href="//ppdb.php"><i class="fas fa-angle-right"></i> Pendaftaran</a></li>
             </ul>
         </div>
 
@@ -52,15 +52,15 @@
             <h3>Postingan Terbaru</h3>
             <ul>
                 <li class="recent-post-item">
-                    <a href="/Web-Sekolah/artikel.php">Siswa TKJ Raih Juara Nasional Kompetisi Jaringan</a>
+                    <a href="//artikel.php">Siswa TKJ Raih Juara Nasional Kompetisi Jaringan</a>
                     <span class="recent-post-date"><i class="far fa-calendar"></i> 10 Okt 2025</span>
                 </li>
                 <li class="recent-post-item">
-                    <a href="/Web-Sekolah/artikel.php">Workshop Web Development bersama Industri IT</a>
+                    <a href="//artikel.php">Workshop Web Development bersama Industri IT</a>
                     <span class="recent-post-date"><i class="far fa-calendar"></i> 5 Okt 2025</span>
                 </li>
                 <li class="recent-post-item">
-                    <a href="/Web-Sekolah/artikel.php">Program Web-Sekolah di 50+ Perusahaan Partner</a>
+                    <a href="//artikel.php">Program di 50+ Perusahaan Partner</a>
                     <span class="recent-post-date"><i class="far fa-calendar"></i> 1 Okt 2025</span>
                 </li>
             </ul>

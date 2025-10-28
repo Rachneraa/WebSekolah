@@ -12,10 +12,10 @@
     <link rel="shortcut icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="/Web-Sekolah/manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="/Web-Sekolah/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/Web-Sekolah/icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/Web-Sekolah/icons/apple-touch-icon.png">
+    <link rel="manifest" href="//manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="//icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="//icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="//icons/apple-touch-icon.png">
     <meta name="theme-color" content="#00499D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>

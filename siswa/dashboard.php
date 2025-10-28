@@ -9,37 +9,51 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'siswa') {
 
 // Get siswa data
 $stmt = $db->prepare("SELECT s.*, k.nama as nama_kelas 
-                      FROM siswa s 
-                      JOIN kelas k ON s.kelas_id = k.id 
-                      WHERE s.siswa_id = ?");
+                        FROM siswa s 
+                        JOIN kelas k ON s.kelas_id = k.kelas_id 
+                        WHERE s.siswa_id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $siswa = $stmt->get_result()->fetch_assoc();
 
-// Get statistics
-$hadir_query = "SELECT COUNT(*) as hadir FROM login_history 
-                WHERE id = ? AND status = 'Hadir' 
-                AND MONTH(login_time) = MONTH(CURRENT_DATE())";
+// Statistik absensi dari absensi_detail
+$hadir_query = "SELECT COUNT(*) as hadir FROM absensi_detail WHERE siswa_id = ? AND status = 'Hadir'";
 $stmt = $db->prepare($hadir_query);
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $hadir_count = $stmt->get_result()->fetch_assoc()['hadir'];
 
-$izin_query = "SELECT COUNT(*) as izin FROM login_history 
-               WHERE id = ? AND status = 'Izin' 
-               AND MONTH(login_time) = MONTH(CURRENT_DATE())";
+$izin_query = "SELECT COUNT(*) as izin FROM absensi_detail WHERE siswa_id = ? AND status = 'Izin'";
 $stmt = $db->prepare($izin_query);
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $izin_count = $stmt->get_result()->fetch_assoc()['izin'];
 
-$sakit_query = "SELECT COUNT(*) as sakit FROM login_history 
-                WHERE id = ? AND status = 'Sakit' 
-                AND MONTH(login_time) = MONTH(CURRENT_DATE())";
+$sakit_query = "SELECT COUNT(*) as sakit FROM absensi_detail WHERE siswa_id = ? AND status = 'Sakit'";
 $stmt = $db->prepare($sakit_query);
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $sakit_count = $stmt->get_result()->fetch_assoc()['sakit'];
+
+// Jika ingin menambah Alpha:
+$alpha_query = "SELECT COUNT(*) as alpha FROM absensi_detail WHERE siswa_id = ? AND status = 'Alpha'";
+$stmt = $db->prepare($alpha_query);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$alpha_count = $stmt->get_result()->fetch_assoc()['alpha'];
+
+// Tampilkan hanya dari absensi_detail (tanpa UNION login_history)
+$absensi_query = "
+    SELECT tanggal, waktu_absen, status 
+    FROM absensi_detail 
+    WHERE siswa_id = ?
+    ORDER BY tanggal DESC, waktu_absen DESC 
+    LIMIT 10
+";
+$stmt = $db->prepare($absensi_query);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$absensi = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -1164,33 +1178,26 @@ $sakit_count = $stmt->get_result()->fetch_assoc()['sakit'];
                         </thead>
                         <tbody>
                             <?php
-                            $absensi_query = "SELECT * FROM login_history 
-                                             WHERE id = ? 
-                                             ORDER BY login_time DESC LIMIT 10";
-                            $stmt = $db->prepare($absensi_query);
-                            $stmt->bind_param("i", $_SESSION['user_id']);
-                            $stmt->execute();
-                            $absensi = $stmt->get_result();
-
                             if ($absensi->num_rows > 0):
                                 while ($row = $absensi->fetch_assoc()):
                                     $status_class = strtolower($row['status']);
+                                    $waktu = strtotime($row['tanggal'] . ' ' . $row['waktu_absen']);
                                     ?>
                                     <tr>
                                         <td>
                                             <i class="fas fa-calendar"></i>
-                                            <?= date('d M Y', strtotime($row['login_time'])) ?>
+                                            <?= date('d M Y', $waktu) ?>
                                         </td>
                                         <td>
                                             <i class="fas fa-clock"></i>
-                                            <?= date('H:i', strtotime($row['login_time'])) ?> WIB
+                                            <?= date('H:i', $waktu) ?> WIB
                                         </td>
                                         <td>
                                             <span class="status-badge status-<?= $status_class ?>">
                                                 <?= ucfirst($row['status']) ?>
                                             </span>
                                         </td>
-                                        <td><?= htmlspecialchars($row['keterangan'] ?? '-') ?></td>
+                                        <td>-</td>
                                     </tr>
                                     <?php
                                 endwhile;
@@ -1257,37 +1264,6 @@ $sakit_count = $stmt->get_result()->fetch_assoc()['sakit'];
             </div>
         </div>
 
-        <!-- Riwayat Absensi -->
-        <div class="login-section">
-            <h5><i class="fas fa-calendar-check"></i> Riwayat Absensi Saya</h5>
-            <div class="table-container">
-                <?php
-                $siswa_id = $_SESSION['user_id'];
-                // Ambil riwayat absensi hanya untuk siswa yang login
-                $stmt = $db->prepare("SELECT tanggal, status, waktu_absen FROM absensi_detail WHERE siswa_id = ? ORDER BY tanggal DESC LIMIT 10");
-                $stmt->bind_param("i", $siswa_id);
-                $stmt->execute();
-                $absensi_result = $stmt->get_result();
-
-                // Tampilkan riwayat absensi
-                echo '<table class="table">';
-                echo '<thead><tr><th>Tanggal</th><th>Status</th><th>Waktu Absen</th></tr></thead><tbody>';
-                while ($row = $absensi_result->fetch_assoc()) {
-                    echo '<tr>';
-                    echo '<td>' . htmlspecialchars($row['tanggal']) . '</td>';
-                    echo '<td>' . htmlspecialchars($row['status']) . '</td>';
-                    echo '<td>' . htmlspecialchars($row['waktu_absen']) . '</td>';
-                    echo '</tr>';
-                }
-                echo '</tbody></table>';
-                ?>
-            </div>
-        </div>
-
-        <!-- Riwayat Login -->
-        <div class="login-section">
-            <h5><i class="fas fa-sign-in-alt"></i> Riwayat Login Saya</h5>
-        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
