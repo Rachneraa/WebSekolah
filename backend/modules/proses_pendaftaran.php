@@ -1,39 +1,60 @@
 <?php
+session_start();
+include '../../config/koneksi.php'; // Ganti 'konek' menjadi 'koneksi'
 
-require_once '../../config/koneksi.php';
+// Periksa apakah metode request adalah POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nisn = $_POST['nisn'] ?? '';
-    $nama_lengkap = $_POST['nama_lengkap'] ?? '';
-    $jenis_kelamin = $_POST['jenis_kelamin'] ?? '';
-    $agama = $_POST['agama'] ?? '';
-    $tempat_lahir = $_POST['tempat_lahir'] ?? '';
-    $tanggal = $_POST['tanggal'] ?? '';
-    $bulan = $_POST['bulan'] ?? '';
-    $tahun = $_POST['tahun'] ?? '';
-    $alamat_email = $_POST['alamat_email'] ?? '';
-    $no_hp = $_POST['no_hp'] ?? '';
-    $nama_sekolah = $_POST['nama_sekolah'] ?? '';
-    $jurusan = $_POST['jurusan'] ?? '';
-
+    // Ambil semua data dari form (tambahkan escape string)
+    $nama_lengkap = mysqli_real_escape_string($db, $_POST['nama_lengkap']);
+    $jenis_kelamin = mysqli_real_escape_string($db, $_POST['jenis_kelamin']);
+    $agama = mysqli_real_escape_string($db, $_POST['agama']);
+    $tempat_lahir = mysqli_real_escape_string($db, $_POST['tempat_lahir']);
     // Gabungkan tanggal lahir
-    $tanggal_lahir = "$tahun-$bulan-$tanggal";
+    $tanggal_lahir = $_POST['tahun'] . '-' . $_POST['bulan'] . '-' . $_POST['tanggal'];
+    $nisn = mysqli_real_escape_string($db, $_POST['nisn']);
+    $alamat_email = mysqli_real_escape_string($db, $_POST['alamat_email']); // Pastikan kolom ini ada
+    $no_hp = mysqli_real_escape_string($db, $_POST['no_hp']);
+    $nama_sekolah = mysqli_real_escape_string($db, $_POST['nama_sekolah']); // Pastikan kolom ini ada
+    $jurusan = mysqli_real_escape_string($db, $_POST['jurusan']);
+    $status = 'proses'; // Status awal
 
-    // Validasi sederhana
-    if ($nisn && $nama_lengkap && $jenis_kelamin && $agama && $tempat_lahir && $tanggal && $bulan && $tahun && $no_hp && $nama_sekolah && $jurusan) {
-        $stmt = $db->prepare("INSERT INTO ppdb_pendaftar (nisn, nama_lengkap, jenis_kelamin, agama, tempat_lahir, tanggal_lahir, alamat_email, no_hp, nama_sekolah, jurusan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssssss", $nisn, $nama_lengkap, $jenis_kelamin, $agama, $tempat_lahir, $tanggal_lahir, $alamat_email, $no_hp, $nama_sekolah, $jurusan);
-        if ($stmt->execute()) {
+    // Query INSERT ke tabel 'pendaftaran'
+    // Pastikan semua nama kolom sesuai dengan database Anda
+    $query = "INSERT INTO pendaftaran (nama_lengkap, jenis_kelamin, agama, tempat_lahir, tanggal_lahir, nisn, alamat_email, no_hp, nama_sekolah, jurusan, status, created_at) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+
+    if ($stmt = mysqli_prepare($db, $query)) {
+        mysqli_stmt_bind_param($stmt, "sssssssssss", 
+            $nama_lengkap, $jenis_kelamin, $agama, $tempat_lahir, $tanggal_lahir, $nisn, $alamat_email, $no_hp, $nama_sekolah, $jurusan, $status);
+
+        // Eksekusi statement
+        if (mysqli_stmt_execute($stmt)) {
+            // === BERHASIL ===
+            // Redirect kembali ke halaman pendaftaran dengan parameter sukses
             header("Location: ../../pendaftaran.php?sukses=1");
             exit();
         } else {
+            // === GAGAL INSERT ===
+            // Redirect kembali dengan parameter error
+            // Tampilkan error SQL jika perlu untuk debugging: echo "Error: " . mysqli_stmt_error($stmt); exit();
             header("Location: ../../pendaftaran.php?error=1");
             exit();
         }
+        mysqli_stmt_close($stmt);
     } else {
+        // === GAGAL PREPARE STATEMENT ===
+         // Redirect kembali dengan parameter error
+         // Tampilkan error SQL jika perlu: echo "Error preparing statement: " . mysqli_error($db); exit();
         header("Location: ../../pendaftaran.php?error=1");
         exit();
     }
+    mysqli_close($db);
+
+} else {
+    // Jika bukan metode POST, redirect ke halaman pendaftaran
+    header("Location: ../../pendaftaran.php");
+    exit();
 }
 ?>
 

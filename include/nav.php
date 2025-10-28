@@ -1,3 +1,9 @@
+<?php
+// WAJIB: Mulai session di baris paling atas
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -443,6 +449,51 @@
             transform: translateY(0);
         }
 
+        /* ==================== PASSWORD TOGGLE ICON ==================== */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Ini akan menimpa padding-right dari .input-group input */
+        .password-wrapper input {
+            /* Beri ruang di kanan untuk ikon */
+            padding-right: 45px;
+        }
+
+        .password-wrapper i {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            /* Posisikan ikon di kanan */
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .password-wrapper i:hover {
+            color: var(--primary-blue);
+        }
+
+        /* ==================== LOGIN ERROR MESSAGE ==================== */
+        .login-error-message {
+            padding: 15px;
+            background: #f8d7da;
+            /* Merah muda */
+            color: #721c24;
+            /* Merah tua */
+            border: 1px solid #f5c6cb;
+            border-radius: 10px;
+            /* Samakan dengan radius input */
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
         /* ==================== TABLET RESPONSIVE ==================== */
         @media (max-width: 1024px) {
             header {
@@ -713,12 +764,10 @@
 </head>
 
 <body>
-    <!-- Loading Screen -->
     <div class="loader-wrapper" id="mainLoader">
         <div class="loader"></div>
     </div>
 
-    <!-- Header Navigation -->
     <header id="header">
         <div class="logo" onclick="window.location.href='index.php'">
             <img src="assets/logo.png" alt="Logo SMK TI Garuda Nusantara" class="logo-img">
@@ -749,7 +798,6 @@
         </button>
     </header>
 
-    <!-- Login Modal -->
     <div class="modal-overlay" id="loginModal">
         <div class="login-modal">
             <button class="modal-close" id="closeModal">
@@ -762,17 +810,34 @@
                 <p>Selamat datang di<br>Portal Login Sekolah</p>
             </div>
 
+            <?php
+            if (isset($_SESSION['error'])) {
+                // Tampilkan pesan error
+                echo '<div class="login-error-message">';
+                echo htmlspecialchars($_SESSION['error']);
+                echo '</div>';
+                // Session akan di-unset di bagian JavaScript
+            }
+            ?>
             <form id="loginForm" action="config/process_login.php" method="POST">
                 <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" name="username" placeholder="Masukkan Username Anda" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Username / Nama Lengkap" required>
                 </div>
 
                 <div class="input-group">
                     <label>Kata Sandi</label>
-                    <input type="password" name="password" placeholder="Masukkan Kata Sandi" required>
+                    
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi / NISN" required>
+                        <i class="fas fa-eye-slash" id="togglePassword"></i>
+                    </div>
                 </div>
 
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe">Ingat Saya</label>
+                </div>
 
                 <button type="submit" class="btn-login">Masuk</button>
             </form>
@@ -789,6 +854,32 @@
             const loginModal = document.getElementById('loginModal');
             const closeModal = document.getElementById('closeModal');
             const loginForm = document.getElementById('loginForm');
+            
+            // ==================== BARU: SHOW/HIDE PASSWORD ====================
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('loginPassword');
+
+            // Pastikan elemennya ada sebelum menambahkan listener
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function () {
+                    // Toggle tipe input
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle ikon
+                    if (type === 'password') {
+                        // Jika tipe password (tersembunyi)
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    } else {
+                        // Jika tipe text (terlihat)
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    }
+                });
+            }
+            // ==================== AKHIR KODE BARU ====================
+
 
             // ==================== LOGIN MODAL ====================
             loginBtn.addEventListener('click', function (e) {
@@ -810,13 +901,23 @@
                 }
             });
 
-            // Handling login error messages
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('error') === 'invalid') {
-                alert('Username atau password salah!');
-                loginModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
+            // ==================== PENANGANAN LOGIN ERROR (SUDAH DIPERBAIKI) ====================
+            <?php
+            // Jika ada session error (dideteksi oleh PHP)
+            if (isset($_SESSION['error'])) {
+            
+                // PHP akan "mencetak" kode JavaScript ini
+                // untuk membuka modal secara otomatis
+                echo "loginModal.classList.add('active');\n";
+                echo "document.body.style.overflow = 'hidden';\n";
+                
+                // Setelah modal dipastikan terbuka, hapus session error
+                // agar tidak muncul lagi jika halaman di-refresh manual
+                unset($_SESSION['error']);
             }
+            ?>
+            // ==================== AKHIR KODE BARU ====================
+            
 
             // ==================== HAMBURGER MENU ====================
             hamburger.addEventListener('click', function (e) {

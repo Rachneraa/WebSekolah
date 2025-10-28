@@ -687,6 +687,36 @@ include 'config/koneksi.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // ... (Kode JavaScript lain seperti validasi, dll) ...
+
+        // Notifikasi SweetAlert2 setelah submit (dari PHP redirect)
+        <?php if (isset($_GET['sukses'])): ?>
+            Swal.fire({
+                icon: 'success',
+                title: '🎉 Pendaftaran Berhasil!',
+                html: 'Terima kasih telah mendaftar. Data Anda telah kami terima dan akan segera diproses.<br>Anda dapat mengecek status pendaftaran secara berkala melalui tombol <strong>Cek Status</strong> di halaman PPDB.', // Tambahkan info cek status
+                confirmButtonText: 'OK',
+                customClass: { confirmButton: 'submit-btn' }, // Gunakan style tombol submit
+                buttonsStyling: false
+            }).then(() => {
+                // Hapus parameter dari URL agar notif tidak muncul saat refresh
+                window.history.replaceState(null, null, window.location.pathname);
+            });
+            // Reset form jika perlu (setelah notif ditutup)
+             // document.getElementById('ppdbForm').reset(); // Anda sudah punya ini di event submit, mungkin tidak perlu di sini
+        <?php elseif (isset($_GET['error'])): ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Pendaftaran Gagal!',
+                text: 'Terjadi kesalahan saat menyimpan data. Pastikan semua data terisi dengan benar dan coba lagi.',
+                confirmButtonText: 'OK',
+                 customClass: { confirmButton: 'submit-btn error' }, // Style tombol error jika ada
+                 buttonsStyling: false
+            }).then(() => {
+                 window.history.replaceState(null, null, window.location.pathname);
+             });
+        <?php endif; ?>
+
         // Form submission handler
         const form = document.getElementById('ppdbForm');
         form.addEventListener('submit', function (e) {
