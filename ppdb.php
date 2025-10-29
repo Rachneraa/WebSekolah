@@ -3,7 +3,7 @@ session_start();
 include 'config/koneksi.php';
 
 // 1. Ambil data pendaftar (yang diterima/proses) untuk tabel
-$query_tabel = "SELECT id, nama_lengkap, jenis_kelamin, agama, jurusan, status, nisn FROM pendaftaran WHERE status IN ('diterima', 'proses') ORDER BY id DESC";
+$query_tabel = "SELECT id, nama_lengkap, jenis_kelamin, agama, jurusan, status, nisn FROM ppdb_pendaftar WHERE status IN ('diterima', 'proses') ORDER BY id DESC";
 $result_tabel = mysqli_query($db, $query_tabel);
 $rows = [];
 if ($result_tabel) {
@@ -13,17 +13,17 @@ if ($result_tabel) {
 }
 
 // 2. Hitung Statistik Total
-$query_total = "SELECT COUNT(*) AS total FROM pendaftaran";
+$query_total = "SELECT COUNT(*) AS total FROM ppdb_pendaftar";
 $result_total = mysqli_query($db, $query_total);
 $total_pendaftar = ($result_total) ? mysqli_fetch_assoc($result_total)['total'] : 0;
 
 // 3. Hitung Statistik Diterima
-$query_diterima = "SELECT COUNT(*) AS total FROM pendaftaran WHERE status = 'diterima'";
+$query_diterima = "SELECT COUNT(*) AS total FROM ppdb_pendaftar WHERE status = 'diterima'";
 $result_diterima = mysqli_query($db, $query_diterima);
 $total_diterima = ($result_diterima) ? mysqli_fetch_assoc($result_diterima)['total'] : 0;
 
 // 4. Hitung Statistik Proses
-$query_proses = "SELECT COUNT(*) AS total FROM pendaftaran WHERE status = 'proses'";
+$query_proses = "SELECT COUNT(*) AS total FROM ppdb_pendaftar WHERE status = 'proses'";
 $result_proses = mysqli_query($db, $query_proses);
 $total_proses = ($result_proses) ? mysqli_fetch_assoc($result_proses)['total'] : 0;
 

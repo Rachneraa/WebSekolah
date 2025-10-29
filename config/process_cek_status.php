@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama_lengkap = mysqli_real_escape_string($db, $_POST['nama_lengkap']);
     $nisn = mysqli_real_escape_string($db, $_POST['nisn']); // NISN adalah 'password'
 
-    $query = "SELECT * FROM pendaftaran WHERE nama_lengkap = ? AND nisn = ?";
+    $query = "SELECT * FROM ppdb_pendaftar WHERE nama_lengkap = ? AND nisn = ?";
     $stmt = mysqli_prepare($db, $query);
     mysqli_stmt_bind_param($stmt, "ss", $nama_lengkap, $nisn); 
     mysqli_stmt_execute($stmt);

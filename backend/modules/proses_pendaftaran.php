@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Query INSERT ke tabel 'pendaftaran'
     // Pastikan semua nama kolom sesuai dengan database Anda
-    $query = "INSERT INTO pendaftaran (nama_lengkap, jenis_kelamin, agama, tempat_lahir, tanggal_lahir, nisn, alamat_email, no_hp, nama_sekolah, jurusan, status, created_at) 
+    $query = "INSERT INTO ppdb_pendaftar (nama_lengkap, jenis_kelamin, agama, tempat_lahir, tanggal_lahir, nisn, alamat_email, no_hp, nama_sekolah, jurusan, status, created_at) 
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     if ($stmt = mysqli_prepare($db, $query)) {

@@ -14,7 +14,7 @@ $hasil_pencarian = null;
 
 // Ambil data lengkap pendaftar
 $query = "SELECT nama_lengkap, nisn, agama, jurusan, status
-          FROM pendaftaran
+          FROM ppdb_pendaftar
           WHERE nisn = ?";
 
 if ($stmt = mysqli_prepare($db, $query)) {
