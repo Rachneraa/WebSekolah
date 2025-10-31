@@ -220,7 +220,7 @@ class CurlFactory implements CurlFactoryInterface
 
     private static function createRejection(EasyHandle $easy, array $ctx): PromiseInterface
     {
-        static $connectionErrors = [
+        static $dbectionErrors = [
             \CURLE_OPERATION_TIMEOUTED => true,
             \CURLE_COULDNT_RESOLVE_HOST => true,
             \CURLE_COULDNT_CONNECT => true,
@@ -273,7 +273,7 @@ class CurlFactory implements CurlFactoryInterface
         }
 
         // Create a connection exception if it was a specific error code.
-        $error = isset($connectionErrors[$easy->errno])
+        $error = isset($dbectionErrors[$easy->errno])
             ? new ConnectException($message, $easy->request, null, $ctx)
             : new RequestException($message, $easy->request, $easy->response, null, $ctx);
 

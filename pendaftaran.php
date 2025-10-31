@@ -1,6 +1,23 @@
 <?php
 session_start();
 include 'config/koneksi.php';
+
+// Tampilkan notifikasi jika pendaftaran sukses (mendukung ?success=1 atau ?status=success)
+if ((isset($_GET['success']) && $_GET['success'] == '1') || (isset($_GET['status']) && $_GET['status'] === 'success')) {
+    echo "<script>
+        window.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Pendaftaran Berhasil!',
+                text: 'Terima kasih, data Anda telah terkirim. Silakan tunggu konfirmasi dari admin.',
+                confirmButtonText: 'OK'
+            }).then(function() {
+                // Setelah pengguna menekan OK, redirect ke halaman utama
+                window.location.href = 'index.php';
+            });
+        });
+    </script>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -14,7 +31,7 @@ include 'config/koneksi.php';
     <link rel="shortcut icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="/Web-sekolah/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#00499D">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -517,7 +534,7 @@ include 'config/koneksi.php';
                     </ul>
                 </div>
 
-                <form action="backend/modules/proses_pendaftaran.php" method="POST">
+                <form id="ppdbForm" action="backend/modules/proses_pendaftaran.php" method="POST">
                     <!-- Data Pribadi -->
                     <div class="form-step">
                         <h3 class="step-title"><i class="fas fa-user"></i> Data Pribadi Calon Siswa</h3>
@@ -610,7 +627,8 @@ include 'config/koneksi.php';
                             <label for="nisn">NISN <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-id-card input-icon"></i>
-                                <input type="text" id="nisn" name="nisn" placeholder="Masukkan NISN" required>
+                                <input type="text" id="nisn" name="nisn" placeholder="Masukkan NISN" required
+                                    maxlength="10" inputmode="numeric">
                             </div>
                         </div>
                     </div>
@@ -687,117 +705,109 @@ include 'config/koneksi.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // ... (Kode JavaScript lain seperti validasi, dll) ...
+        let nisnAlerted = false;
+        let nisnValid = true;
+        const nisnInput = document.getElementById('nisn');
+        const ppdbForm = document.getElementById('ppdbForm');
+        let nisnDebounceTimer = null;
+        const DEBOUNCE_MS = 400;
 
-        // Notifikasi SweetAlert2 setelah submit (dari PHP redirect)
-        <?php if (isset($_GET['sukses'])): ?>
-            Swal.fire({
-                icon: 'success',
-                title: '🎉 Pendaftaran Berhasil!',
-                html: 'Terima kasih telah mendaftar. Data Anda telah kami terima dan akan segera diproses.<br>Anda dapat mengecek status pendaftaran secara berkala melalui tombol <strong>Cek Status</strong> di halaman PPDB.', // Tambahkan info cek status
-                confirmButtonText: 'OK',
-                customClass: { confirmButton: 'submit-btn' }, // Gunakan style tombol submit
-                buttonsStyling: false
-            }).then(() => {
-                // Hapus parameter dari URL agar notif tidak muncul saat refresh
-                window.history.replaceState(null, null, window.location.pathname);
-            });
-            // Reset form jika perlu (setelah notif ditutup)
-             // document.getElementById('ppdbForm').reset(); // Anda sudah punya ini di event submit, mungkin tidak perlu di sini
-        <?php elseif (isset($_GET['error'])): ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Pendaftaran Gagal!',
-                text: 'Terjadi kesalahan saat menyimpan data. Pastikan semua data terisi dengan benar dan coba lagi.',
-                confirmButtonText: 'OK',
-                 customClass: { confirmButton: 'submit-btn error' }, // Style tombol error jika ada
-                 buttonsStyling: false
-            }).then(() => {
-                 window.history.replaceState(null, null, window.location.pathname);
-             });
-        <?php endif; ?>
+        function checkNISNFetch(nisn) {
+            return fetch('backend/modules/cek_nisn.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'nisn=' + encodeURIComponent(nisn)
+            }).then(response => response.json());
+        }
 
-        // Form submission handler
-        const form = document.getElementById('ppdbForm');
-        form.addEventListener('submit', function (e) {
+        function handleDuplicate() {
+            nisnValid = false;
+            if (!nisnAlerted) {
+                nisnAlerted = true;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'NISN sama',
+                    text: 'NISN sudah terdaftar. Silakan gunakan NISN lain.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    nisnInput.value = '';
+                    nisnInput.focus();
+                    nisnAlerted = false;
+                });
+            }
+        }
+
+        nisnInput.addEventListener('input', function () {
+            // Hanya angka dan maksimal 10 digit
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+            const nisn = this.value.trim();
+            nisnValid = true; // reset optimistic
+            clearTimeout(nisnDebounceTimer);
+            if (nisn.length < 8) return;
+
+            nisnDebounceTimer = setTimeout(() => {
+                checkNISNFetch(nisn)
+                    .then(data => {
+                        if (data.status === 'exists') {
+                            handleDuplicate();
+                        } else {
+                            nisnValid = true;
+                        }
+                    })
+                    .catch(err => console.error('AJAX error:', err));
+            }, DEBOUNCE_MS);
+        });
+
+        // Juga cek saat blur (user berhenti mengetik)
+        nisnInput.addEventListener('blur', function () {
+            clearTimeout(nisnDebounceTimer);
+            const nisn = this.value.trim();
+            if (nisn.length < 8) return;
+            checkNISNFetch(nisn)
+                .then(data => {
+                    if (data.status === 'exists') {
+                        handleDuplicate();
+                    } else {
+                        nisnValid = true;
+                    }
+                })
+                .catch(err => console.error('AJAX error:', err));
+        });
+
+        ppdbForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            const nisn = nisnInput.value.trim();
+            if (nisn.length < 8) {
+                nisnInput.focus();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'NISN tidak valid',
+                    text: 'Pastikan NISN minimal 8 digit.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
 
-            // Collect form data
-            const formData = {
-                namaLengkap: document.getElementById('namaLengkap').value,
-                jenisKelamin: document.getElementById('jenisKelamin').value,
-                agama: document.getElementById('agama').value,
-                tempatLahir: document.getElementById('tempatLahir').value,
-                tanggalLahir: `${document.getElementById('tanggal').value}-${document.getElementById('bulan').value}-${document.getElementById('tahun').value}`,
-                alamatEmail: document.getElementById('alamatEmail').value,
-                noHp: document.getElementById('noHp').value,
-                namaSekolah: document.getElementById('namaSekolah').value,
-                namaJurusan: document.getElementById('namaJurusan').value
-            };
-
-            console.log('Data Pendaftaran:', formData);
-
-            // Show success message
-            Swal.fire({
-                icon: 'success',
-                title: '🎉 Pendaftaran Berhasil!',
-                text: 'Terima kasih telah mendaftar di SMK TI Garuda Nusantara. Data Anda telah kami terima dan akan segera kami proses. Tim kami akan menghubungi Anda melalui WhatsApp untuk informasi selanjutnya.',
-                confirmButtonText: 'OK',
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-            });
-
-            // Reset form
-            form.reset();
-
-            // Optional: Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Notifikasi SweetAlert2 setelah submit
-        <?php if (isset($_GET['sukses'])): ?>
-            Swal.fire({
-                icon: 'success',
-                title: 'Pendaftaran Berhasil!',
-                text: 'Terima kasih telah mendaftar. Data Anda telah kami terima dan akan segera diproses.',
-                confirmButtonText: 'OK'
-            });
-        <?php elseif (isset($_GET['error'])): ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Pendaftaran Gagal!',
-                text: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
-                confirmButtonText: 'OK'
-            });
-        <?php endif; ?>
-
-        // Add animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.form-step').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'all 0.6s ease';
-            observer.observe(el);
-        });
-
-        // Phone number validation
-        document.getElementById('noHp').addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
+            // Final check sebelum submit untuk menghindari race
+            checkNISNFetch(nisn)
+                .then(data => {
+                    if (data.status === 'exists') {
+                        handleDuplicate();
+                    } else {
+                        // Lanjutkan submit jika valid
+                        ppdbForm.submit();
+                    }
+                })
+                .catch(err => {
+                    console.error('AJAX error:', err);
+                    // Kalau error jaringan, beri pilihan submit manual
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Terjadi kesalahan jaringan',
+                        text: 'Tidak bisa memverifikasi NISN saat ini. Coba lagi.',
+                        confirmButtonText: 'OK'
+                    });
+                });
         });
     </script>
 </body>

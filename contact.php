@@ -1,4 +1,8 @@
     <?php
+    date_default_timezone_set('Asia/Jakarta');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
     session_start();
     include 'config/koneksi.php';
 
@@ -6,7 +10,7 @@
     $error_message = '';
 
     // Handle form submission
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_kontak'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
         $nama = mysqli_real_escape_string($db, trim($_POST['nama']));
         $email = mysqli_real_escape_string($db, trim($_POST['email']));
         $telepon = mysqli_real_escape_string($db, trim($_POST['telepon']));
@@ -17,8 +21,12 @@
         if (!empty($nama) && !empty($email) && !empty($subjek) && !empty($pesan)) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 // Insert into database
-                $query = "INSERT INTO kontak_pesan (nama, email, telepon, subjek, pesan, tanggal, status) 
-                        VALUES ('$nama', '$email', '$telepon', '$subjek', '$pesan', NOW(), 'Baru')";
+                // 1. Buat variabel waktu SEKARANG menggunakan PHP
+        $tanggal_sekarang = date('Y-m-d H:i:s');
+        
+        // 2. Masukkan variabel itu ke query, GANTI NOW()
+        $query = "INSERT INTO kontak_pesan (nama, email, telepon, subjek, pesan, tanggal, status) 
+                  VALUES ('$nama', '$email', '$telepon', '$subjek', '$pesan', '$tanggal_sekarang', 'Baru')";
                 
                 if (mysqli_query($db, $query)) {
                     $success_message = "Pesan Anda berhasil dikirim! Kami akan segera menghubungi Anda dalam 1x24 jam.";
@@ -39,6 +47,18 @@
     <!DOCTYPE html>
     <html lang="id">
     <head>
+            <!-- PWA META TAGS -->
+<meta name="theme-color" content="#00499D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+<!-- ICONS -->
+<link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+<link rel="shortcut icon" href="icons/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.json">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Kontak Kami - SMK TI Garuda Nusantara</title>
@@ -700,13 +720,13 @@
                     <div class="social-media">
                         <h3><i class="fas fa-share-alt"></i> Ikuti Media Sosial Kami</h3>
                         <div class="social-links">
-                            <a href="#" target="_blank" title="Instagram" aria-label="Instagram">
+                            <a href="https://www.instagram.com/smktignc_?igsh=MTlzZmcyZ2U0Znk5aw==" target="_blank" title="Instagram" aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="#" target="_blank" title="YouTube" aria-label="YouTube">
+                            <a href="https://youtube.com/@kesiswaangarnus?si=UbOoW0H8ELekvKHl" target="_blank" title="YouTube" aria-label="YouTube">
                                 <i class="fab fa-youtube"></i>
                             </a>
-                            <a href="#" target="_blank" title="TikTok" aria-label="TikTok">
+                            <a href="https://www.tiktok.com/@officialsmktigarnus?_r=1&_t=ZS-912Ago5SlVQ" target="_blank" title="TikTok" aria-label="TikTok">
                                 <i class="fab fa-tiktok"></i>
                             </a>
                         </div>
@@ -733,6 +753,7 @@
                     <?php endif; ?>
 
                     <form method="POST" action="" id="contactForm">
+                        <input type="hidden" name="submit_kontak" value="true">
                         <div class="form-group">
                             <label for="nama">Nama Lengkap <span class="required">*</span></label>
                             <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap Anda" value="<?= isset($_POST['nama']) ? htmlspecialchars($_POST['nama']) : '' ?>">
@@ -781,7 +802,7 @@
                 <div class="map-container">
                     <!-- Google Maps dengan marker SMK TI Garuda Nusantara Cimahi -->
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.140180472476!2d107.53971757463397!3d-6.895364793103795!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e59b48322cdb%3A0x10a755b12e9aef37!2sBITC%20(Baros%20Information%2C%20Technology%2C%20%26%20Creative%20Center!5e1!3m2!1sid!2sid!4v1761192164228!5m2!1sid!2sid" 
+                        src=https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.1978138005184!2d107.53494497414069!3d-6.866883567183974!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e467b7e41ef7%3A0xd5da8bce87311d6!2sSMK%20Teknik%20Informatika%20Garuda%20Nusantara%20Cimahi!5e0!3m2!1sid!2sid!4v1762497639725!5m2!1sid!2sid"
                         width="600" 
                         height="450" 
                         style="border:0;" 
@@ -800,10 +821,10 @@
                 <h2>🎓 Tertarik Bergabung dengan Kami?</h2>
                 <p>Dapatkan informasi lengkap tentang program pendidikan dan proses pendaftaran di SMK TI Garuda Nusantara</p>
                 <div class="cta-buttons">
-                    <a href="ppdb.php" class="btn-cta btn-cta-primary">
+                    <a href="pendaftaran.php" class="btn-cta btn-cta-primary">
                         <i class="fas fa-user-plus"></i> Daftar Sekarang
                     </a>
-                    <a href="Brosur.pdf" download class="btn-cta btn-cta-secondary">
+                    <a href="brosur.jpg" download class="btn-cta btn-cta-secondary">
                         <i class="fas fa-download"></i> Download Brosur
                     </a>
                 </div>
@@ -882,6 +903,12 @@
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, window.location.href);
             }
+            // SERVICE WORKER REGISTRATION
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => console.log('SW Registered'))
+    .catch(error => console.log('SW Registration failed:', error));
+}
         </script>
     </body>
     </html>

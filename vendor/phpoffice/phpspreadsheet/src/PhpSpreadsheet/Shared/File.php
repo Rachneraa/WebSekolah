@@ -57,8 +57,14 @@ class File
             $zipFile = substr($filename, 6, strrpos($filename, '#') - 6);
             $archiveFile = substr($filename, strrpos($filename, '#') + 1);
 
+            // Jika ekstensi zip (ZipArchive) tidak tersedia, tidak dapat membuka ZIP -> kembalikan false
+            // (upstream akan menangani dan memberikan pesan yang sesuai)
+            if (!class_exists('ZipArchive')) {
+                return false;
+            }
+
             if (self::validateZipFirst4($zipFile)) {
-                $zip = new ZipArchive();
+                $zip = new \ZipArchive();
                 $res = $zip->open($zipFile);
                 if ($res === true) {
                     $returnValue = ($zip->getFromName($archiveFile) !== false);
@@ -152,6 +158,11 @@ class File
         }
 
         if ($zipMember !== '') {
+            // Jika ZipArchive tidak tersedia, beri pesan jelas agar user mengaktifkan ekstensi zip
+            if (!class_exists('ZipArchive')) {
+                throw new ReaderException('Ekstensi PHP "zip" (ZipArchive) tidak aktif. Silakan aktifkan extension=zip di php.ini dan restart web server (Laragon/XAMPP).');
+            }
+
             $zipfile = "zip://$filename#$zipMember";
             if (!self::fileExists($zipfile)) {
                 // Has the file been saved with Windoze directory separators rather than unix?

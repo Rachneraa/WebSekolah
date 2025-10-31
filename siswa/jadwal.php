@@ -39,6 +39,18 @@ $stmt->close();
 <html lang="id">
 
 <head>
+    <!-- PWA META TAGS -->
+    <meta name="theme-color" content="#00499D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+    <!-- ICONS -->
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+    <link rel="shortcut icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jadwal Pelajaran - SMK TI Garuda Nusantara</title>
@@ -252,7 +264,7 @@ $stmt->close();
                 right: -280px;
                 left: auto;
                 top: 0;
-                height: 100vh;
+                height: 100%;
                 border-radius: 20px 0 0 20px;
                 transition: right 0.3s ease;
             }
@@ -355,6 +367,13 @@ $stmt->close();
                     <span>Nilai</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a href="pengaturan.php" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+            </div>
+        </nav>
         </nav>
 
         <div class="logout-section">
@@ -370,7 +389,8 @@ $stmt->close();
         <div class="page-header">
             <h2><i class="fas fa-calendar-alt"></i> Pelajaran Hari Ini</h2>
             <div class="user-name"><?= htmlspecialchars($siswa['nama'] ?? '') ?> - Kelas
-                <?= htmlspecialchars($siswa['nama_kelas'] ?? '') ?></div>
+                <?= htmlspecialchars($siswa['nama_kelas'] ?? '') ?>
+            </div>
         </div>
         <div class="jadwal-card">
             <div class="jadwal-title">Jadwal Pelajaran</div>
@@ -432,6 +452,12 @@ $stmt->close();
                 }
             }
         });
+        // SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => console.log('SW Registered'))
+                .catch(error => console.log('SW Registration failed:', error));
+        }
     </script>
 </body>
 

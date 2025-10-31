@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'guru') {
     exit();
 }
 
-$guru_id = $_SESSION['user_id'];
+$guru_id = $_SESSION['guru_id'];
 
 // Mapping hari
 $hari_map = [

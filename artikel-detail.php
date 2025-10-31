@@ -24,22 +24,18 @@ if (!$article) {
 <html lang="id">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= htmlspecialchars($article['judul']) ?> - SMK TI Garuda Nusantara</title>
-    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" href="/icons/logo.png">
-    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
-    <link rel="shortcut icon" href="icons/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="//manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="//icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="//icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="//icons/apple-touch-icon.png">
-    <meta name="theme-color" content="#00499D">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- PWA META TAGS -->
+<meta name="theme-color" content="#00499D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+<!-- ICONS -->
+<link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+<link rel="shortcut icon" href="icons/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.json">
     <style>
         .article-container {
             max-width: 800px;
@@ -200,6 +196,15 @@ if (!$article) {
     <?php include 'include/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+// SERVICE WORKER REGISTRATION
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => console.log('SW Registered'))
+    .catch(error => console.log('SW Registration failed:', error));
+}
+    </script>
+
 </body>
 
 </html>

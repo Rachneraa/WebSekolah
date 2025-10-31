@@ -32,20 +32,18 @@ $total_proses = ($result_proses) ? mysqli_fetch_assoc($result_proses)['total'] :
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PPDB 2025 - SMK TI Garuda Nusantara</title>
-    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
-    <link rel="shortcut icon" href="icons/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="//manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="//icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="//icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="//icons/apple-touch-icon.png">
-    <meta name="theme-color" content="#00499D">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- PWA META TAGS -->
+<meta name="theme-color" content="#00499D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+<!-- ICONS -->
+<link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+<link rel="shortcut icon" href="icons/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.json">
     <style>
         /* Variabel CSS, Reset, Base Styles */
         :root {
@@ -136,9 +134,45 @@ $total_proses = ($result_proses) ? mysqli_fetch_assoc($result_proses)['total'] :
         .table-header { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .table-header h3 { font-size: 20px; display: flex; align-items: center; gap: 10px; margin: 0; }
         .table-filter { display: flex; gap: 10px; }
-        .filter-btn, select.filter-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.3s ease; font-family: 'Poppins', sans-serif; appearance: none; -webkit-appearance: none; }
-        select.filter-btn { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 35px; }
-        .filter-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        /* Ambil dari file CSS Anda, dan ganti bagian ini */
+
+.filter-btn, select.filter-btn { 
+    /* Menghilangkan background dan mengatur warna teks */
+    background: transparent; 
+    color: white; 
+    
+    padding: 8px 18px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-size: 13px; 
+    font-weight: 600; 
+    transition: all 0.3s ease; 
+    font-family: 'Poppins', sans-serif; 
+    appearance: none; 
+    -webkit-appearance: none; 
+    
+    /* MODIFIKASI: Menghilangkan border */
+    border: none; /* Tambahkan atau pastikan properti border di set ke 'none' */
+}
+
+select.filter-btn { 
+    /* Pastikan icon dropdown tetap putih */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); 
+    background-repeat: no-repeat; 
+    background-position: right 10px center; 
+    padding-right: 35px; 
+}
+
+.filter-btn:hover { 
+    /* Memberi sedikit highlight transparan saat di-hover */
+    background: rgba(255, 255, 255, 0.2); 
+}
+
+/* Mengatur opsi dropdown agar memiliki background putih dan teks gelap agar mudah dibaca saat dibuka */
+.table-filter .filter-btn option {
+    background-color: white;
+    color: var(--text-dark);
+}
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
         thead { background: #f8f9fa; }
@@ -284,12 +318,12 @@ $total_proses = ($result_proses) ? mysqli_fetch_assoc($result_proses)['total'] :
                 <div class="table-filter">
                      <select id="jurusanSelect" class="filter-btn">
                          <option value="">Semua Jurusan</option>
-                         <option value="Rekayasa Perangkat Lunak">RPL</option>
-                         <option value="Teknik Komputer dan Jaringan">TKJ</option>
+                         <option value="RPL">RPL</option>
+                         <option value="TKJ">TKJ</option>
                          <option value="Animasi">Animasi</option>
-                         <option value="Desain Komunikasi Visual">DKV</option>
-                         <option value="Managemen Perkantoran">MP</option>
-                         <option value="Teknik Jaringan Akses Telekomunikasi">TJAT</option>
+                         <option value="DKV">DKV</option>
+                         <option value="MP">Mp</option>
+                         <option value="TJAT">TJAT</option>
                      </select>
                 </div>
             </div>
@@ -322,7 +356,6 @@ $total_proses = ($result_proses) ? mysqli_fetch_assoc($result_proses)['total'] :
                                             </div>
                                             <div class="student-info">
                                                 <div class="name"><?= htmlspecialchars($row['nama_lengkap']) ?></div>
-                                                <div class="nisn">NISN: <?= htmlspecialchars($row['nisn']) ?></div>
                                             </div>
                                         </div>
                                     </td>
@@ -492,6 +525,12 @@ $total_proses = ($result_proses) ? mysqli_fetch_assoc($result_proses)['total'] :
             // === AKHIR KODE JAVASCRIPT MODAL ===
 
         }); // Penutup DOMContentLoaded
+        // SERVICE WORKER REGISTRATION
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => console.log('SW Registered'))
+    .catch(error => console.log('SW Registration failed:', error));
+}
     </script>
 </body>
 

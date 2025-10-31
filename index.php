@@ -800,244 +800,340 @@ require_once 'config/koneksi.php';
 
 
         /* ========== Ekstrakurikuler - full‑bleed update ========== */
-        .ekstrakurikuler-section {
-            /* full-bleed gray background that always matches viewport width */
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            width: 100vw;
-            background: #f3f6f9;
-            /* lembut abu muda */
-            padding: 80px 0;
-            overflow: hidden;
-            font-family: 'Poppins', Inter, sans-serif;
-            z-index: 0;
-        }
+        /* ========================================
+   EKSTRAKURIKULER SECTION (RESPONSIVE & SPECIAL)
+   ======================================== */
+:root {
+    /* Pastikan variabel ini ada di atas */
+    --primary-orange: #ff8303;
+    --primary-blue: #00499d;
+    --text-dark: #0f1724;
+    --text-gray: #6b7280;
+}
 
-        /* keep inner card centered within the full-bleed section */
-        .ekstrakurikuler-inner {
-            position: relative;
-            z-index: 2;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 14px 40px rgba(8, 30, 52, 0.06);
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            align-items: center;
-            justify-content: center;
-        }
+/* Animasi Pulsate untuk Logo */
+@keyframes pulsate {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 73, 157, 0.1);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 73, 157, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 73, 157, 0);
+    }
+}
 
-        /* title sits above the card content, centered */
-        .ekstrakurikuler-title {
-            text-align: center;
-            color: #0A3C96;
-            /* biru tua */
-            font-size: 40px;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 0.6px;
-        }
+.ekstrakurikuler-section {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+    background: #f3f6f9;
+    padding: 80px 0;
+    overflow: hidden;
+    font-family: 'Poppins', Inter, sans-serif;
+    z-index: 0;
+}
 
-        .ekstrakurikuler-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            width: 100%;
-            align-items: center;
-            justify-items: center;
-            max-width: 960px;
-        }
+.ekstrakurikuler-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 28px;
+    box-shadow: 0 18px 50px rgba(8, 30, 52, 0.08); 
+    border: 2px solid #e0e7ff; 
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+}
 
-        /* LEFT - carousel */
-        .ekstrakurikuler-left {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-        }
+.ekstrakurikuler-title {
+    text-align: center;
+    color: var(--primary-blue);
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.6px;
+    position: relative;
+    padding-bottom: 10px;
+}
 
-        .ekstrakurikuler-carousel {
-            position: relative;
-            width: 260px;
-            height: 260px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.ekstrakurikuler-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--primary-orange); 
+    border-radius: 2px;
+}
 
-        .ekskul-logo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(8, 30, 52, 0.08);
-            border: 6px solid rgba(2, 6, 23, 0.03);
-            transition: transform 0.35s ease;
-        }
+.ekstrakurikuler-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+    max-width: 960px;
+}
 
-        .ekskul-logo img {
-            width: 88%;
-            height: 88%;
-            object-fit: contain;
-        }
+/* LEFT - Logo Carousel Block */
+.ekstrakurikuler-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
 
-        /* Update class ekstrul-meta */
-        .ekskul-meta {
-            text-align: center;
-            margin-top: 2px;
-            /* Ubah nilai ini sesuai kebutuhan */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+.ekstrakurikuler-carousel {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .ekskul-meta .name {
-            font-size: 16px;
-            font-weight: 800;
-            color: #0A3C96;
-            width: 100%;
-            text-align: center;
+.ekskul-logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(8, 30, 52, 0.08);
+    border: 6px solid rgba(0, 73, 157, 0.1); 
+    transition: transform 0.35s ease;
+    animation: pulsate 3s infinite ease-out;
+}
 
-        }
+.ekskul-logo img {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+}
 
-        .ekskul-meta .subtitle {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 4px;
-            letter-spacing: 0.6px;
-            width: 100%;
-            text-align: center;
-        }
+.ekskul-meta {
+    text-align: center;
+    margin-top: 2px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        .ekskul-more {
-            margin-top: 8px;
-            background: #16a34a;
-            /* hijau */
-            color: white;
-            border: none;
-            padding: 7px 12px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            box-shadow: 0 8px 18px rgba(22, 163, 74, 0.14);
-        }
+.ekskul-meta .name {
+    font-size: 19px; 
+    font-weight: 800;
+    color: var(--primary-blue);
+    width: 100%;
+    text-align: center;
+}
 
-        /* navigation buttons placed close to logo (left/right) */
-        .ekstrakurikuler-carousel .ekstrakurikuler-nav {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            padding: 0 8px;
-            pointer-events: none;
-        }
+.ekskul-meta .subtitle {
+    font-size: 13px; 
+    color: var(--text-gray);
+    margin-top: 4px;
+    letter-spacing: 1px;
+    width: 100%;
+    text-align: center;
+}
 
-        .ekstrakurikuler-carousel .ekstrakurikuler-nav button {
-            pointer-events: all;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: #16a34a;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.18);
-            transition: transform 0.18s ease, background 0.18s ease;
-            font-size: 14px;
-        }
+/* Navigasi Buttons */
+.ekstrakurikuler-carousel .ekstrakurikuler-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 8px;
+    pointer-events: none;
+}
 
-        .ekstrakurikuler-carousel .ekstrakurikuler-nav button:hover {
-            transform: scale(1.05);
-        }
+.ekstrakurikuler-carousel .ekstrakurikuler-nav button {
+    pointer-events: all;
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid white; 
+    background: var(--primary-blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 73, 157, 0.3);
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
 
-        /* RIGHT - illustration */
-        .ekstrakurikuler-illustration {
-            max-width: 380px;
-            /* Reduced from 420px */
-            width: 100%;
-            height: 240px;
-            /* Reduced from 280px */
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(8, 30, 52, 0.06);
-            background: transparent;
-            display: block;
-            object-fit: contain;
-            /* Changed from cover to contain to maintain aspect ratio */
-        }
+.ekstrakurikuler-carousel .ekstrakurikuler-nav button:hover {
+    background: var(--primary-orange);
+    box-shadow: 0 10px 25px rgba(255, 131, 3, 0.4);
+    transform: scale(1.1);
+}
 
-        /* small tweaks for visual balance */
-        .ekstrakurikuler-content>* {
-            max-width: 520px;
-        }
+/* RIGHT - Deskripsi dan Detail Styling */
 
-        /* Responsive */
-        @media (max-width: 980px) {
-            .ekstrakurikuler-inner {
-                padding: 20px;
-            }
+/* Menyembunyikan Ilustrasi Besar di Kanan (FIXED) */
+.ekstrakurikuler-illustration, 
+#ekskulIllustration {
+    display: none !important; 
+    width: 0; /* Pastikan tidak memakan ruang */
+    height: 0;
+}
 
-            .ekstrakurikuler-content {
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
+/* Deskripsi */
+.ekskul-description {
+    transition: opacity 0.3s ease-in-out; 
+    padding: 20px 0;
+}
 
-            .ekstrakurikuler-carousel {
-                margin: 0 auto;
-            }
+.ekskul-description h3 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
 
-            .ekstrakurikuler-section {
-                padding: 50px 0;
-            }
-        }
+.ekskul-description p {
+    font-size: 15px;
+    color: var(--text-gray);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
 
-        @media (max-width: 768px) {
-            .ekstrakurikuler-content {
-                display: flex;
-                flex-direction: column-reverse;
-                align-items: center;
-                gap: 18px;
-            }
-        }
+/* Detail Points */
+.ekskul-details {
+    display: flex;
+    flex-direction: column; 
+    gap: 5px; 
+    margin-top: 15px;
+    padding-left: 0;
+    list-style: none; 
+    text-align: left; 
+}
 
-        @media (max-width: 480px) {
-            .ekstrakurikuler-inner {
-                padding: 16px;
-                border-radius: 18px;
-            }
+.ekskul-details .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
 
-            .ekstrakurikuler-title {
-                font-size: 30px;
-            }
+.ekskul-details .detail-item:last-child {
+    border-bottom: none;
+}
 
-            .ekskul-logo {
-                width: 110px;
-                height: 110px;
-            }
+.ekskul-details .detail-item i {
+    color: var(--primary-orange); 
+    font-size: 18px;
+    min-width: 18px;
+    text-align: center;
+}
 
-            .ekstrakurikuler-illustration {
-                max-width: 320px;
-            }
-        }
+/* ========================================
+   RESPONSIVE OVERRIDES (MOBILE FIXES)
+   ======================================== */
+
+@media (max-width: 980px) {
+     .ekstrakurikuler-inner {
+        padding: 20px;
+    }
+}
+ 
+@media (max-width: 768px) {
+    /* Menghilangkan layout grid 1fr 1fr dan memaksa tumpukan vertikal */
+    .ekstrakurikuler-content {
+        display: flex; /* Ganti dari grid ke flex */
+        flex-direction: column; 
+        gap: 18px; 
+        align-items: center;
+        justify-content: center;
+        max-width: 100%; /* Lebarkan max-width untuk mobile */
+    }
+    
+    /* Mengatasi masalah width */
+    .ekstrakurikuler-left,
+    .ekstrakurikuler-right {
+        width: 100%;
+        max-width: 400px; /* Batasi maksimal agar tidak terlalu lebar di tablet */
+    }
+
+    .ekstrakurikuler-left {
+        order: 1; 
+    }
+    
+    .ekstrakurikuler-right {
+        order: 2; 
+        text-align: center;
+        padding: 0 10px; /* Tambahkan padding agar deskripsi tidak menempel ke pinggir */
+    }
+    
+    .ekskul-description h3 {
+        font-size: 20px;
+    }
+    
+    .ekskul-description p {
+        font-size: 14px;
+    }
+
+    .ekskul-details {
+        align-items: center; 
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 10px; /* Adjust padding for list items */
+    }
+    .ekskul-details .detail-item {
+        justify-content: flex-start;
+        width: 100%;
+        padding: 6px 0;
+    }
+    
+    .ekstrakurikuler-carousel {
+        width: 200px; /* Kurangi ukuran logo carousel di mobile */
+        height: 200px;
+    }
+    
+    .ekskul-logo {
+        width: 120px;
+        height: 120px;
+        border-width: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ekstrakurikuler-title {
+        font-size: 30px;
+    }
+    .ekstrakurikuler-inner {
+        padding: 16px;
+        border-radius: 18px;
+    }
+}
 
         /* ========== end Ekstrakurikuler styles ========== */
 
@@ -2027,40 +2123,41 @@ require_once 'config/koneksi.php';
 
         <!-- About Section -->
         <section class="ekstrakurikuler-section" aria-labelledby="ekskulTitle">
-            <div class="ekstrakurikuler-inner">
-                <h2 id="ekskulTitle" class="ekstrakurikuler-title">Ekstrakurikuler</h2>
+    <div class="ekstrakurikuler-inner">
+        <h2 id="ekskulTitle" class="ekstrakurikuler-title">Ekstrakurikuler Unggulan</h2>
 
-                <div class="ekstrakurikuler-content">
-                    <!-- LEFT: carousel with logo + nav -->
-                    <div class="ekstrakurikuler-left">
-                        <div class="ekstrakurikuler-carousel" aria-hidden="false">
-                            <div class="ekstrakurikuler-nav" aria-hidden="true">
-                                <button id="ekskulPrev" aria-label="Sebelumnya"><i
-                                        class="fas fa-chevron-left"></i></button>
-                                <button id="ekskulNext" aria-label="Berikutnya"><i
-                                        class="fas fa-chevron-right"></i></button>
-                            </div>
-
-                            <div class="ekskul-logo" id="ekskulLogoWrap">
-                                <img src="assets/pmr.jpg" alt="Logo pmr" id="ekskulLogo">
-                            </div>
-                        </div>
-
-                        <div class="ekskul-meta" role="status" aria-live="polite">
-                            <div class="name" id="ekskulName">PMR</div>
-                            <div class="subtitle" id="ekskulSubtitle">ADHI WIRA BHAKTI</div>
-
-
-                        </div>
+        <div class="ekstrakurikuler-content">
+            <div class="ekstrakurikuler-left">
+                <div class="ekstrakurikuler-carousel" aria-hidden="false">
+                    <div class="ekstrakurikuler-nav" aria-hidden="true">
+                        <button id="ekskulPrev" aria-label="Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+                        <button id="ekskulNext" aria-label="Berikutnya"><i class="fas fa-chevron-right"></i></button>
                     </div>
 
-                    <!-- RIGHT: illustration -->
-                    <div class="ekstrakurikuler-right">
-                        <img class="ekstrakurikuler-illustration" src="assets/ekskul.jpg">
+                    <div class="ekskul-logo" id="ekskulLogoWrap">
+                        <img src="assets/pmr.jpg" alt="Logo PMR" id="ekskulLogo">
                     </div>
                 </div>
+
+                <div class="ekskul-meta" role="status" aria-live="polite">
+                    <div class="name" id="ekskulName">PMR</div>
+                    <div class="subtitle" id="ekskulSubtitle">ADHI WIRA BHAKTI</div>
+                </div>
             </div>
-        </section>
+
+            <div class="ekstrakurikuler-right">
+                <img class="ekstrakurikuler-illustration" id="ekskulIllustration" src="assets/pmr.jpg" alt="Ilustrasi PMR"> 
+
+                <div class="ekskul-description" id="ekskulDescription">
+                    <h3>PMR (Palang Merah Remaja)</h3>
+                    <p>Palang Merah Remaja (PMR) adalah ekstrakurikuler unggulan...</p>
+                    <div class="ekskul-details">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
         <!-- Kembali ke Main -->
         <!-- Artikel Section -->
@@ -2454,127 +2551,127 @@ require_once 'config/koneksi.php';
         }
 
 
-        // Simple carousel logic for Ekstrakurikuler logos (left/right navigation)
-        (function () {
-            const slides = [
-                { src: 'assets/pmr.jpg', name: 'PMR', subtitle: 'ADHI WIRA BHAKTI' },
-                { src: 'assets/osis.jpg', name: 'OSIS', subtitle: 'KOMUNITAS SISWA' },
-                { src: 'assets/gnc.jpg', name: 'Robotics', subtitle: 'TIM INOVASI' }
-            ];
+        // // ========================================
+// EKSTRAKURIKULER CAROUSEL - FINAL REFINED CODE
+// ========================================
+(function () {
+    const slides = [
+        {
+            src: 'assets/pmr.jpg',
+            name: 'PMR',
+            subtitle: 'ADHI WIRA BHAKTI',
+            illustration: 'assets/pmr.jpg', // Tetap ada di data, tapi tidak dipakai di render
+            title: 'PMR (Palang Merah Remaja)',
+            description: 'Palang Merah Remaja (PMR) adalah organisasi kepemudaan yang bergerak di bidang kesehatan dan kemanusiaan. Melalui PMR, siswa belajar tentang pertolongan pertama, kesehatan remaja, dan pengabdian masyarakat.',
+            details: [
+                { icon: 'fas fa-users', text: '50+ Anggota Aktif' },
+                { icon: 'fas fa-trophy', text: 'Berprestasi Tingkat Kota' },
+                { icon: 'fas fa-briefcase-medical', text: 'Pelatihan Pertolongan Pertama' }
+            ]
+        },
+        {
+            src: 'assets/osis.jpg',
+            name: 'OSIS',
+            subtitle: 'KOMUNITAS SISWA',
+            illustration: 'assets/osis.jpg',
+            title: 'OSIS (Organisasi Siswa Intra Sekolah)',
+            description: 'OSIS adalah wadah bagi siswa untuk mengembangkan kepemimpinan, kreativitas, dan partisipasi aktif dalam kegiatan sekolah. OSIS menjadi jembatan komunikasi antara siswa dan pihak sekolah.',
+            details: [
+                { icon: 'fas fa-crown', text: 'Pengembangan Kepemimpinan' },
+                { icon: 'fas fa-bolt', text: 'Pelaksana Kegiatan Sekolah' },
+                { icon: 'fas fa-comments', text: 'Representasi Suara Siswa' }
+            ]
+        },
+        {
+            src: 'assets/basket.jpg', 
+            name: 'BASKET',
+            subtitle: 'TIM OLAHRAGA',
+            illustration: 'assets/basket.jpg',
+            title: 'Basket (Tim Olahraga Unggulan)',
+            description: 'Tim Ekstrakurikuler Basket kami fokus pada pengembangan fisik, teknik, dan kerjasama tim. Kami rutin mengikuti kompetisi tingkat kabupaten hingga provinsi untuk mengasah kemampuan bertanding dan meraih prestasi.',
+            details: [
+                { icon: 'fas fa-medal', text: 'Juara Turnamen Regional' },
+                { icon: 'fas fa-dumbbell', text: 'Latihan Fisik Intensif' },
+                { icon: 'fas fa-bullseye', text: 'Strategi dan Taktik Tim' }
+            ]
+        }
+    ];
 
-            let idx = 0;
-            const imgEl = document.getElementById('ekskulLogo');
-            const nameEl = document.getElementById('ekskulName');
-            const subtitleEl = document.getElementById('ekskulSubtitle');
-            const prevBtn = document.getElementById('ekskulPrev');
-            const nextBtn = document.getElementById('ekskulNext');
+    let idx = 0;
+    // Elemen Sisi Kiri
+    const imgEl = document.getElementById('ekskulLogo');
+    const nameEl = document.getElementById('ekskulName');
+    const subtitleEl = document.getElementById('ekskulSubtitle');
+    const prevBtn = document.getElementById('ekskulPrev');
+    const nextBtn = document.getElementById('ekskulNext');
 
-            function render() {
-                const s = slides[idx];
-                imgEl.src = s.src;
-                imgEl.alt = s.name + ' logo';
-                nameEl.textContent = s.name;
-                subtitleEl.textContent = s.subtitle;
-            }
+    // Elemen Sisi Kanan
+    // HAPUS: const illustrationEl = document.getElementById('ekskulIllustration');
+    const descriptionEl = document.getElementById('ekskulDescription'); 
 
-            prevBtn.addEventListener('click', function () {
-                idx = (idx - 1 + slides.length) % slides.length;
-                render();
-            });
+    // Tambahkan transisi fade
+    imgEl.parentElement.style.transition = 'opacity 0.3s ease-in-out';
+    // HAPUS: illustrationEl.style.transition = 'opacity 0.3s ease-in-out';
+    descriptionEl.style.transition = 'opacity 0.3s ease-in-out';
 
-            nextBtn.addEventListener('click', function () {
-                idx = (idx + 1) % slides.length;
-                render();
-            });
+    function updateContent(s) {
+        // Update Sisi Kiri
+        imgEl.src = s.src;
+        imgEl.alt = s.name + ' logo';
+        nameEl.textContent = s.name;
+        subtitleEl.textContent = s.subtitle;
 
-            // keyboard accessibility
-            prevBtn.addEventListener('keyup', e => e.key === 'Enter' && prevBtn.click());
-            nextBtn.addEventListener('keyup', e => e.key === 'Enter' && nextBtn.click());
+        // Update Ilustrasi (Dihapus dari DOM, hanya hapus referensi render di sini)
+        // HAPUS: illustrationEl.src = s.illustration;
+        // HAPUS: illustrationEl.alt = `Ilustrasi ${s.name}`;
 
-            // init
-            render();
-        })();
+        // Update Deskripsi dan Detail (Sisi Kanan)
+        descriptionEl.innerHTML = `
+            <h3>${s.title}</h3>
+            <p>${s.description}</p>
+            <div class="ekskul-details">
+                ${s.details.map(d => `
+                    <div class="detail-item">
+                        <i class="${d.icon}"></i>
+                        <span>${d.text}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
 
-        // Update existing carousel logic to include illustration images
-        (function () {
-            const slides = [
-                {
-                    src: 'assets/pmr.jpg',
-                    name: 'PMR',
-                    subtitle: 'ADHI WIRA BHAKTI',
-                    illustration: 'assets/pmr.jpg'
-                },
-                {
-                    src: 'assets/osis.jpg',
-                    name: 'OSIS',
-                    subtitle: 'KOMUNITAS SISWA',
-                    illustration: 'assets/osis.jpg'
-                },
-                {
-                    src: 'assets/basket.jpg',
-                    name: 'BASKET',
-                    subtitle: 'TIM INOVASI',
-                    illustration: 'assets/basket.jpg'
-                }
-            ];
+    function render() {
+        // Animasi fade out
+        imgEl.parentElement.style.opacity = '0';
+        // HAPUS: illustrationEl.style.opacity = '0';
+        descriptionEl.style.opacity = '0'; 
 
-            let idx = 0;
-            const imgEl = document.getElementById('ekskulLogo');
-            const nameEl = document.getElementById('ekskulName');
-            const subtitleEl = document.getElementById('ekskulSubtitle');
-            const prevBtn = document.getElementById('ekskulPrev');
-            const nextBtn = document.getElementById('ekskulNext');
-            const illustrationEl = document.querySelector('.ekstrakurikuler-illustration');
+        setTimeout(() => {
+            // Update konten setelah fade out
+            updateContent(slides[idx]);
+            
+            // Animasi fade in
+            imgEl.parentElement.style.opacity = '1';
+            // HAPUS: illustrationEl.style.opacity = '1';
+            descriptionEl.style.opacity = '1'; 
+        }, 300); // Durasi disesuaikan dengan transisi CSS (0.3s)
+        
+    }
 
-            // Add fade transition class
-            illustrationEl.style.transition = 'opacity 0.3s ease-in-out';
+    // Navigasi
+    prevBtn.addEventListener('click', function () {
+        idx = (idx - 1 + slides.length) % slides.length;
+        render();
+    });
 
-            function render() {
-                const s = slides[idx];
-                imgEl.src = s.src;
-                imgEl.alt = s.name + ' logo';
-                nameEl.textContent = s.name;
-                subtitleEl.textContent = s.subtitle;
+    nextBtn.addEventListener('click', function () {
+        idx = (idx + 1) % slides.length;
+        render();
+    });
 
-                // Fade out current illustration
-                illustrationEl.style.opacity = '0';
-
-                // Change illustration after fade out
-                setTimeout(() => {
-                    illustrationEl.src = s.illustration;
-                    illustrationEl.alt = `Ilustrasi ${s.name}`;
-                    // Fade in new illustration
-                    illustrationEl.style.opacity = '1';
-                }, 300);
-            }
-
-            prevBtn.addEventListener('click', function () {
-                idx = (idx - 1 + slides.length) % slides.length;
-                render();
-            });
-
-            nextBtn.addEventListener('click', function () {
-                idx = (idx + 1) % slides.length;
-                render();
-            });
-
-            // Handle "Selengkapnya" button click
-            const moreBtn = document.querySelector('.ekskul-more');
-            moreBtn.addEventListener('click', function () {
-                const currentSlide = slides[idx];
-                // You can add additional logic here before redirecting
-                // For example, passing the current ekskul data to the detail page
-                window.location.href = `ekstrakurikuler.php?ekskul=${currentSlide.name.toLowerCase()}`;
-            });
-
-            // keyboard accessibility
-            prevBtn.addEventListener('keyup', e => e.key === 'Enter' && prevBtn.click());
-            nextBtn.addEventListener('keyup', e => e.key === 'Enter' && nextBtn.click());
-
-            // init
-            render();
-        })();
-
+    // Inisialisasi awal (tanpa fade di awal)
+    updateContent(slides[idx]);
+})();
     </script>
 
     <?php include 'include/footer.php'; ?>

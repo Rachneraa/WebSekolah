@@ -9,9 +9,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'siswa') {
 
 // Get siswa data
 $stmt = $db->prepare("SELECT s.*, k.nama as nama_kelas 
-                        FROM siswa s 
-                        JOIN kelas k ON s.kelas_id = k.kelas_id 
-                        WHERE s.siswa_id = ?");
+                      FROM siswa s 
+                      JOIN kelas k ON s.kelas_id = k.kelas_id 
+                      WHERE s.siswa_id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $siswa = $stmt->get_result()->fetch_assoc();
@@ -60,6 +60,16 @@ $absensi = $stmt->get_result();
 <html lang="id">
 
 <head>
+    <meta name="theme-color" content="#00499D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+    <link rel="shortcut icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Siswa - SMK TI Garuda Nusantara</title>
@@ -69,6 +79,7 @@ $absensi = $stmt->get_result();
         rel="stylesheet">
 
     <style>
+        /* ... [CSS Anda yang sangat panjang tetap di sini, tidak berubah] ... */
         :root {
             --primary-blue: #00499d;
             --primary-orange: #ff8303;
@@ -676,7 +687,7 @@ $absensi = $stmt->get_result();
                 right: -280px;
                 left: auto;
                 top: 0;
-                height: 100vh;
+                height: 100%;
                 border-radius: 20px 0 0 20px;
                 transition: right 0.3s ease;
             }
@@ -698,10 +709,7 @@ $absensi = $stmt->get_result();
                 padding: 0;
             }
 
-            .page-header h2 {
-                font-size: 20px;
-            }
-
+            .page-header h2,
             .page-header .user-name {
                 font-size: 20px;
             }
@@ -1000,6 +1008,7 @@ $absensi = $stmt->get_result();
         /* Overlay untuk mobile sidebar */
         .sidebar-overlay {
             display: none;
+            /* Default tersembunyi */
             position: fixed;
             top: 0;
             left: 0;
@@ -1008,32 +1017,27 @@ $absensi = $stmt->get_result();
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, display 0.3s;
         }
 
         .sidebar-overlay.active {
             display: block;
+            /* Hanya tampil ketika kelas active ditambahkan JS */
             opacity: 1;
         }
 
-        @media (max-width: 992px) {
-            .sidebar-overlay {
-                display: block;
-            }
-        }
+        /* --- PERBAIKAN BUG: HAPUS ATURAN MOBILE OVERLAY PAKSA --- */
+        /* Hapus media query yang membuat overlay selalu display: block; di mobile */
     </style>
 </head>
 
 <body>
-    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Mobile Menu Toggle -->
     <button class="mobile-toggle" id="mobileToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h4><i class="fas fa-graduation-cap"></i> Portal Siswa</h4>
@@ -1065,6 +1069,12 @@ $absensi = $stmt->get_result();
                     <span>Nilai</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a href="pengaturan.php" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+            </div>
         </nav>
 
         <div class="logout-section">
@@ -1075,9 +1085,7 @@ $absensi = $stmt->get_result();
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Page Header -->
         <div class="page-header">
             <div class="welcome-text">
                 <div class="welcome-icon">
@@ -1092,7 +1100,6 @@ $absensi = $stmt->get_result();
             </div>
         </div>
 
-        <!-- Quick Actions -->
         <div class="quick-actions">
             <h5><i class="fas fa-bolt"></i> Akses Cepat</h5>
             <div class="action-grid">
@@ -1111,9 +1118,7 @@ $absensi = $stmt->get_result();
             </div>
         </div>
 
-        <!-- Content Grid -->
         <div class="content-grid">
-            <!-- Profile Card -->
             <div class="profile-card">
                 <div class="profile-avatar">
                     <i class="fas fa-user"></i>
@@ -1130,7 +1135,8 @@ $absensi = $stmt->get_result();
                         </div>
                         <div class="info-text">
                             <div class="info-label">NIS</div>
-                            <div class="info-value"><?= htmlspecialchars($siswa['siswa_id'] ?? '') ?></div>
+
+                            <div class="info-value"><?= htmlspecialchars($siswa['nis'] ?? '') ?></div>
                         </div>
                     </div>
 
@@ -1156,7 +1162,6 @@ $absensi = $stmt->get_result();
                 </div>
             </div>
 
-            <!-- Absensi Card -->
             <div class="absensi-card">
                 <div class="card-header-custom">
                     <h5><i class="fas fa-history"></i> Riwayat Absensi Terbaru</h5>
@@ -1219,7 +1224,6 @@ $absensi = $stmt->get_result();
             </div>
         </div>
 
-        <!-- Statistics Cards -->
         <div class="stats-section">
             <div class="stats-grid">
                 <div class="stat-card hadir">
@@ -1287,9 +1291,12 @@ $absensi = $stmt->get_result();
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function (event) {
             if (window.innerWidth <= 992) {
-                if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
-                    sidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
+                // HANYA cek jika sidebar sedang aktif
+                if (sidebar.classList.contains('active')) {
+                    if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    }
                 }
             }
         });
@@ -1323,14 +1330,6 @@ $absensi = $stmt->get_result();
             });
         });
 
-        // Add loading animation to buttons
-        document.querySelectorAll('.btn-scan, .btn-logout').forEach(button => {
-            button.addEventListener('click', function () {
-                this.style.opacity = '0.7';
-                this.style.pointerEvents = 'none';
-            });
-        });
-
         // Handle window resize
         window.addEventListener('resize', function () {
             if (window.innerWidth > 992) {
@@ -1338,6 +1337,11 @@ $absensi = $stmt->get_result();
                 sidebarOverlay.classList.remove('active');
             }
         });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => console.log('SW Registered'))
+                .catch(error => console.log('SW Registration failed:', error));
+        }
     </script>
 </body>
 

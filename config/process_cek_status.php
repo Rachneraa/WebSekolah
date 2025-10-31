@@ -29,12 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Set error khusus untuk modal status
         $_SESSION['status_error'] = "Nama Lengkap atau NISN tidak ditemukan.";
         // Kembali ke halaman index (modal akan terbuka otomatis)
-        header("Location: ../index.php"); 
-        exit();
+        header("Location: ../ppdb.php"); 
     }
 } else {
     // Jika diakses tanpa submit form POST
-    header("Location: ../index.php");
-    exit();
+    header("Location: ../ppdb.php");
 }
 ?>

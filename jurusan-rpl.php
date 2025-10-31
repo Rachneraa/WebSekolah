@@ -1,23 +1,24 @@
 <?php include 'include/nav.php' ?>
-
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RPL - Rekayasa Perangkat Lunak</title>
+    
+    <!-- PWA META TAGS -->
+    <meta name="theme-color" content="#00499D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+    
+    <!-- ICONS -->
     <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
     <link rel="shortcut icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="//manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="//icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="//icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="//icons/apple-touch-icon.png">
-    <meta name="theme-color" content="#00499D">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
+    
     <style>
         :root {
             --primary-blue: #00499d;
@@ -48,13 +49,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Hero Section */
@@ -94,15 +90,8 @@
         }
 
         @keyframes gradientShift {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .hero-content {
@@ -110,7 +99,7 @@
             position: relative;
             z-index: 2;
             animation: fadeInUp 1s ease-out 0.3s both;
-            top: -70px
+            top: -70px;
         }
 
         @keyframes fadeInUp {
@@ -118,7 +107,6 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -150,21 +138,10 @@
             box-sizing: border-box;
         }
 
-        section:nth-of-type(2) {
-            background: var(--section-white);
-        }
-
-        section:nth-of-type(3) {
-            background: var(--section-gray);
-        }
-
-        section:nth-of-type(4) {
-            background: var(--section-white);
-        }
-
-        section:nth-of-type(5) {
-            background: var(--section-gray);
-        }
+        section:nth-of-type(2) { background: var(--section-white); }
+        section:nth-of-type(3) { background: var(--section-gray); }
+        section:nth-of-type(4) { background: var(--section-white); }
+        section:nth-of-type(5) { background: var(--section-gray); }
 
         .section-title {
             text-align: center;
@@ -199,17 +176,13 @@
                 flex-direction: column;
                 gap: 1.5rem;
             }
-
             .about-image {
                 width: 100%;
                 height: 220px;
                 margin-bottom: 0;
                 order: 1;
             }
-
-            .about-text {
-                order: 2;
-            }
+            .about-text { order: 2; }
         }
 
         .about-text {
@@ -399,10 +372,7 @@
                 max-width: 100% !important;
                 flex: 0 0 100% !important;
             }
-
-            .slider-container {
-                padding: 0 10px;
-            }
+            .slider-container { padding: 0 10px; }
         }
 
         /* FAQ */
@@ -457,39 +427,8 @@
             padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
-        @media (max-width: 768px) {
-            .about-content {
-                display: flex;
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .about-image {
-                width: 100%;
-                height: 220px;
-                margin-bottom: 0;
-                order: 1;
-            }
-
-            .about-text {
-                order: 2;
-            }
-
-            .kegiatan-card {
-                min-width: 100% !important;
-                max-width: 100% !important;
-                flex: 0 0 100% !important;
-            }
-
-            .slider-container {
-                padding: 0 10px;
-            }
-        }
-
         @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
+            .hero h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -503,6 +442,7 @@
             <p>Coding, Debugging, Let's Running</p>
         </div>
     </section>
+
     <!-- Tentang RPL -->
     <section id="tentang">
         <h2 class="section-title">Tentang RPL</h2>
@@ -522,6 +462,7 @@
             </div>
         </div>
     </section>
+
     <!-- Kurikulum -->
     <section>
         <h2 class="section-title">Kurikulum</h2>
@@ -555,6 +496,7 @@
             </div>
         </div>
     </section>
+
     <!-- Kegiatan -->
     <section id="kontak">
         <h2 class="section-title">Kegiatan</h2>
@@ -627,6 +569,7 @@
             </div>
         </div>
     </section>
+
     <!-- FAQ -->
     <section>
         <h2 class="section-title">FAQ</h2>
@@ -676,11 +619,14 @@
             </div>
         </div>
     </section>
+
     <script>
         let currentSlide = 0;
+        
         function getCardsToShow() {
             return window.innerWidth <= 768 ? 1 : 3;
         }
+        
         function slideRight() {
             const cards = document.querySelectorAll('#kegiatanSliderContainer .kegiatan-card');
             const cardsToShow = getCardsToShow();
@@ -690,12 +636,14 @@
                 updateSlider();
             }
         }
+        
         function slideLeft() {
             if (currentSlide > 0) {
                 currentSlide--;
                 updateSlider();
             }
         }
+        
         function updateSlider() {
             const card = document.querySelector('#kegiatanSliderContainer .kegiatan-card');
             const sliderContainer = document.getElementById('kegiatanSliderContainer');
@@ -706,19 +654,13 @@
             const offset = -(currentSlide * (cardWidth + gap));
             sliderContainer.style.transform = `translateX(${offset}px)`;
         }
+        
         window.addEventListener('resize', () => {
             currentSlide = 0;
             updateSlider();
         });
+        
         updateSlider();
-
-        function goToJurusan(jurusanPage) {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                window.location.href = jurusanPage;
-            }, 300);
-        }
 
         function toggleFaq(element) {
             const faqItem = element.parentElement;
@@ -734,8 +676,14 @@
             // Toggle current FAQ
             faqItem.classList.toggle('active');
         }
+
+        // SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(registration => console.log('✅ SW Registered di RPL page'))
+                .catch(error => console.log('❌ SW Registration failed:', error));
+        }
     </script>
 </body>
-
 </html>
 <?php include 'include/footer.php' ?>

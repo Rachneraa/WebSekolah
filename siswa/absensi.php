@@ -7,6 +7,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'siswa') {
     exit();
 }
 
+$siswa_id = $_SESSION['user_id'];
+$tanggal_hari_ini = date('Y-m-d');
+
+// Cek apakah sudah absen hari ini
+$sudah_absen = false;
+$waktu_absen = null;
+$status_absen = null;
+
+$cek_absen = $db->prepare("SELECT status, waktu_absen FROM absensi_detail WHERE siswa_id = ? AND tanggal = ? AND status = 'Hadir' LIMIT 1");
+$cek_absen->bind_param("is", $siswa_id, $tanggal_hari_ini);
+$cek_absen->execute();
+$result_absen = $cek_absen->get_result();
+
+if ($row_absen = $result_absen->fetch_assoc()) {
+    $sudah_absen = true;
+    $waktu_absen = $row_absen['waktu_absen'];
+    $status_absen = $row_absen['status'];
+}
+$cek_absen->close();
+
 if (isset($_POST['absen'])) {
     // Proses absen siswa
     // ...kode absen...
@@ -20,6 +40,16 @@ if (isset($_POST['absen'])) {
 <html lang="id">
 
 <head>
+    <meta name="theme-color" content="#00499D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+    <link rel="shortcut icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi QR</title>
@@ -27,8 +57,8 @@ if (isset($_POST['absen'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         :root {
             --primary-blue: #00499d;
@@ -68,9 +98,10 @@ if (isset($_POST['absen'])) {
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             padding: 30px 0;
-            overflow-y: auto;
             z-index: 1000;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar-header {
@@ -94,6 +125,8 @@ if (isset($_POST['absen'])) {
 
         .nav-menu {
             padding: 20px 0;
+            flex-grow: 1;
+            overflow-y: auto;
         }
 
         .nav-item {
@@ -131,10 +164,10 @@ if (isset($_POST['absen'])) {
         }
 
         .logout-section {
-            position: absolute;
-            bottom: 20px;
-            left: 15px;
-            right: 15px;
+            position: static;
+            padding: 15px 15px 0;
+            margin-top: auto;
+            flex-shrink: 0;
         }
 
         .btn-logout {
@@ -225,10 +258,14 @@ if (isset($_POST['absen'])) {
             margin: 0 auto;
         }
 
+        /* ============================================================
+           PERBAIKAN KEDUA: Mengubah bentuk kotak agar Potrait
+           ============================================================ */
         .scanner-container {
             position: relative;
             width: 300px;
-            height: 300px;
+            height: 400px;
+            /* DIUBAH DARI 300px (menjadi Potrait 3:4) */
             margin: 0 auto;
             overflow: hidden;
             border-radius: 10px;
@@ -236,6 +273,9 @@ if (isset($_POST['absen'])) {
             background: #000;
         }
 
+        /* ============================================================
+           PERBAIKAN KESATU: Mengembalikan ke 'cover'
+           ============================================================ */
         #preview {
             position: absolute;
             top: 50%;
@@ -246,8 +286,11 @@ if (isset($_POST['absen'])) {
             height: auto;
             transform: translate(-50%, -50%) scaleX(1) !important;
             object-fit: cover;
+            /* DIKEMBALIKAN KE 'cover' */
             transform-origin: center;
         }
+
+        /* ================= AKHIR PERBAIKAN ================= */
 
         .scanner-overlay {
             position: absolute;
@@ -311,9 +354,10 @@ if (isset($_POST['absen'])) {
                 right: -280px;
                 left: auto;
                 top: 0;
-                height: 100vh;
+                height: 100%;
                 border-radius: 20px 0 0 20px;
                 transition: right 0.3s ease;
+                padding-bottom: 20px;
             }
 
             .sidebar.active {
@@ -351,9 +395,13 @@ if (isset($_POST['absen'])) {
                 font-size: 20px;
             }
 
+            /* ============================================================
+               PERBAIKAN KETIGA: Menyesuaikan tinggi di tablet
+               ============================================================ */
             .scanner-container {
                 width: 100%;
-                height: 220px;
+                height: 350px;
+                /* DIUBAH DARI 220px */
             }
 
             .absensi-card {
@@ -403,9 +451,13 @@ if (isset($_POST['absen'])) {
                 font-size: 18px;
             }
 
+            /* ============================================================
+               PERBAIKAN KEEMPAT: Menyesuaikan tinggi di HP
+               ============================================================ */
             .scanner-container {
                 width: 100%;
-                height: 180px;
+                height: 300px;
+                /* DIUBAH DARI 180px */
             }
 
             .absensi-card {
@@ -416,15 +468,12 @@ if (isset($_POST['absen'])) {
 </head>
 
 <body>
-    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Mobile Menu Toggle -->
     <button class="mobile-toggle" id="mobileToggle">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h4><i class="fas fa-graduation-cap"></i> Portal Siswa</h4>
@@ -455,6 +504,13 @@ if (isset($_POST['absen'])) {
                     <span>Nilai</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a href="pengaturan.php" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Pengaturan Akun</span>
+                </a>
+            </div>
+        </nav>
         </nav>
         <div class="logout-section">
             <a href="../config/logout.php" class="btn-logout">
@@ -464,7 +520,6 @@ if (isset($_POST['absen'])) {
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="page-header">
             <div class="welcome-text">
@@ -480,178 +535,191 @@ if (isset($_POST['absen'])) {
                 </div>
             </div>
         </div>
-        <div class="absensi-card">
-            <h5 class="mb-3"><i class="fas fa-qrcode"></i> Scan QR Code Kelas</h5>
-            <div class="scanner-container mx-auto mb-3">
-                <video id="preview"></video>
-                <div class="scanner-overlay"></div>
+
+        <?php if ($sudah_absen): ?>
+            <!-- Tampilan jika sudah absen -->
+            <div class="absensi-card">
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+                    </div>
+                    <h4 class="text-success mb-3">Anda Sudah Absen Hari Ini!</h4>
+                    <div class="alert alert-success d-inline-block">
+                        <p class="mb-1"><strong>Status:</strong> <?= htmlspecialchars($status_absen) ?></p>
+                        <p class="mb-1"><strong>Waktu Absen:</strong> <?= date('H:i', strtotime($waktu_absen)) ?> WIB</p>
+                        <p class="mb-0"><strong>Tanggal:</strong> <?= date('d F Y', strtotime($tanggal_hari_ini)) ?></p>
+                    </div>
+                    <p class="text-muted mt-4">
+                        <i class="fas fa-info-circle"></i>
+                        Fitur absensi akan aktif kembali besok.
+                    </p>
+                    <a href="dashboard.php" class="btn btn-primary mt-3">
+                        <i class="fas fa-home"></i> Kembali ke Dashboard
+                    </a>
+                </div>
             </div>
-            <div class="button-group text-center">
-                <button id="startButton" class="btn btn-primary me-2">
-                    <i class="fas fa-camera"></i> Buka Kamera
-                </button>
-                <button id="switchButton" class="btn btn-secondary">
-                    <i class="fas fa-sync"></i> Ganti Kamera
-                </button>
+        <?php else: ?>
+            <!-- Tampilan scan QR jika belum absen -->
+            <div class="absensi-card">
+                <h5 class="mb-3"><i class="fas fa-qrcode"></i> Scan QR Code Kelas</h5>
+                <div class="scanner-container mx-auto mb-3">
+                    <div id="preview" style="width: 100%; max-width: 400px; margin: 0 auto;"></div>
+                </div>
+                <div class="button-group text-center">
+                    <button id="startButton" class="btn btn-primary me-2">
+                        <i class="fas fa-camera"></i> Buka Kamera
+                    </button>
+                    <button id="switchButton" class="btn btn-secondary">
+                        <i class="fas fa-sync"></i> Ganti Kamera
+                    </button>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
     </main>
 
-    <script>
-        // FUNGSI SCAN QR TETAP DIPERTAHANKAN
-        let scanner = null;
-        let currentCamera = 0;
-        let cameras = [];
+    <?php if (!$sudah_absen): ?>
+        <script>
+            // FUNGSI SCAN QR dengan html5-qrcode
+            let html5QrCode = null;
+            let isScanning = false;
 
-        async function startScanner() {
-            try {
-                scanner = new Instascan.Scanner({
-                    video: document.getElementById('preview'),
-                    mirror: false,
-                    captureImage: true,
-                    scanPeriod: 5
-                });
-
+            async function startScanner() {
                 try {
-                    cameras = await Instascan.Camera.getCameras();
+                    html5QrCode = new Html5Qrcode("preview");
 
-                    if (cameras.length === 0) {
-                        const devices = await navigator.mediaDevices.enumerateDevices();
-                        cameras = devices.filter(device => device.kind === 'videoinput');
-                    }
-                } catch (e) {
-                    console.error('Camera detection error:', e);
-                    cameras = [{ deviceId: '' }];
-                }
+                    const config = {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0
+                    };
 
-                if (cameras.length > 0) {
-                    let selectedCamera = cameras[cameras.length - 1];
+                    await html5QrCode.start(
+                        { facingMode: "environment" }, // Kamera belakang
+                        config,
+                        (decodedText, decodedResult) => {
+                            // QR berhasil di-scan
+                            kirimAbsensi(decodedText);
+                        },
+                        (errorMessage) => {
+                            // Error scan (abaikan, ini normal saat tidak ada QR)
+                        }
+                    );
 
-                    try {
-                        await scanner.start(selectedCamera);
-                        currentCamera = cameras.indexOf(selectedCamera);
-
-                        const video = document.getElementById('preview');
-                        video.setAttribute('playsinline', '');
-                        video.setAttribute('controls', 'false');
-                        video.style.width = '100%';
-                        video.style.transform = 'scaleX(1)';
-
-                        document.getElementById('startButton').innerHTML =
-                            '<i class="fas fa-times"></i> Tutup Kamera';
-                        document.getElementById('switchButton').style.display =
-                            cameras.length > 1 ? 'inline-block' : 'none';
-                    } catch (e) {
-                        console.error('Camera start error:', e);
-                        await scanner.start(cameras[0]);
-                    }
-
-                    scanner.addListener('scan', function (content) {
-                        kirimAbsensi(content);
-                    });
-                } else {
-                    alert('Tidak ada kamera yang tersedia');
-                }
-            } catch (err) {
-                console.error('Scanner error:', err);
-                alert('Error mengakses kamera: ' + err.message);
-            }
-        }
-
-        async function stopScanner() {
-            if (scanner) {
-                try {
-                    await scanner.stop();
+                    isScanning = true;
                     document.getElementById('startButton').innerHTML =
-                        '<i class="fas fa-camera"></i> Buka Kamera';
-                    scanner = null;
+                        '<i class="fas fa-times"></i> Tutup Kamera';
+                    document.getElementById('switchButton').style.display = 'inline-block';
+
                 } catch (err) {
-                    console.error('Error stopping scanner:', err);
+                    console.error('Scanner error:', err);
+                    alert('Error mengakses kamera: ' + err.message);
                 }
             }
-        }
 
-        async function switchCamera() {
-            try {
-                if (cameras.length > 1 && scanner) {
-                    await scanner.stop();
-                    currentCamera = (currentCamera + 1) % cameras.length;
-
+            async function stopScanner() {
+                if (html5QrCode && isScanning) {
                     try {
-                        await scanner.start(cameras[currentCamera]);
-                    } catch (e) {
-                        console.error('Switch camera error:', e);
-                        await scanner.start({
-                            deviceId: cameras[currentCamera].deviceId,
-                            facingMode: currentCamera === 0 ? 'user' : 'environment'
-                        });
+                        await html5QrCode.stop();
+                        document.getElementById('preview').innerHTML = '';
+                        document.getElementById('startButton').innerHTML =
+                            '<i class="fas fa-camera"></i> Buka Kamera';
+                        document.getElementById('switchButton').style.display = 'none';
+                        isScanning = false;
+                    } catch (err) {
+                        console.error('Error stopping scanner:', err);
                     }
                 }
-            } catch (err) {
-                console.error('Error switching camera:', err);
-                alert('Gagal mengganti kamera. Coba tutup dan buka kamera kembali.');
-                await stopScanner();
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('switchButton').style.display = 'none';
-        });
+            async function switchCamera() {
+                if (html5QrCode && isScanning) {
+                    try {
+                        await html5QrCode.stop();
 
-        document.getElementById('startButton').addEventListener('click', async function () {
-            if (!scanner) {
-                await startScanner();
-            } else {
-                await stopScanner();
+                        // Toggle antara front dan back camera
+                        const currentFacingMode = html5QrCode._currentFacingMode === "environment" ? "user" : "environment";
+
+                        const config = {
+                            fps: 10,
+                            qrbox: { width: 250, height: 250 },
+                            aspectRatio: 1.0
+                        };
+
+                        await html5QrCode.start(
+                            { facingMode: currentFacingMode },
+                            config,
+                            (decodedText) => kirimAbsensi(decodedText),
+                            (errorMessage) => { }
+                        );
+                    } catch (err) {
+                        console.error('Error switching camera:', err);
+                        alert('Gagal mengganti kamera. Coba tutup dan buka kamera kembali.');
+                    }
+                }
             }
-        });
 
-        document.getElementById('switchButton').addEventListener('click', async function () {
-            this.disabled = true;
-            await switchCamera();
-            this.disabled = false;
-        });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('switchButton').style.display = 'none';
+            });
 
-        window.addEventListener('beforeunload', function () {
-            if (scanner) {
-                scanner.stop();
-            }
-        });
+            document.getElementById('startButton').addEventListener('click', async function () {
+                if (!isScanning) {
+                    await startScanner();
+                } else {
+                    await stopScanner();
+                }
+            });
 
-        function kirimAbsensi(qr_content) {
-            fetch('../api/absensi.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ qr_content: qr_content })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Absen Berhasil',
-                            text: data.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    } else {
+            document.getElementById('switchButton').addEventListener('click', async function () {
+                this.disabled = true;
+                await switchCamera();
+                this.disabled = false;
+            });
+
+            window.addEventListener('beforeunload', function () {
+                if (html5QrCode && isScanning) {
+                    html5QrCode.stop();
+                }
+            });
+
+            function kirimAbsensi(qr_content) {
+                fetch('../api/absensi.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ qr_content: qr_content })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Absen Berhasil',
+                                text: data.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal Absen',
+                                text: data.message
+                            });
+                        }
+                    })
+                    .catch(err => {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal Absen',
-                            text: data.message
+                            title: 'Error',
+                            text: 'Terjadi kesalahan koneksi!'
                         });
-                    }
-                })
-                .catch(err => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Terjadi kesalahan koneksi!'
                     });
-                });
-        }
+            }
+        </script>
+    <?php endif; ?>
 
-        // SIDEBAR & OVERLAY FUNGSI SAMA DENGAN DASHBOARD
+    <!-- Script Sidebar (selalu aktif) -->
+    <script>
+        // SIDEBAR & OVERLAY FUNGSI (TIDAK BERUBAH)
         const mobileToggle = document.getElementById('mobileToggle');
         const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -678,6 +746,12 @@ if (isset($_POST['absen'])) {
                 sidebarOverlay.classList.remove('active');
             }
         });
+        // SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => console.log('SW Registered'))
+                .catch(error => console.log('SW Registration failed:', error));
+        }
     </script>
 </body>
 

@@ -1,6 +1,24 @@
+<?php
+// 1. Panggil file koneksi database
+// Variabel koneksi ($db) akan tersedia setelah ini dipanggil.
+require_once 'config/koneksi.php';
+
+// 2. Query untuk mengambil 3 berita terbaru
+// Mengambil ID, Judul, dan Tanggal dari tabel 'berita', diurutkan dari yang terbaru (DESC).
+$sql_berita = "SELECT id, judul, tanggal FROM berita ORDER BY tanggal DESC LIMIT 3";
+$result_berita = mysqli_query($db, $sql_berita);
+
+// Cek jika query gagal (walaupun jarang terjadi jika koneksi berhasil)
+if (!$result_berita) {
+    // Anda bisa mengganti ini dengan logging error yang lebih aman di lingkungan produksi
+    error_log("Gagal mengambil data berita: " . mysqli_error($db));
+    // Set result menjadi array kosong agar footer tetap tampil
+    $result_berita = [];
+}
+?>
+
 <footer id="kontak" role="contentinfo">
     <div class="footer-content">
-        <!-- Info Sekolah -->
         <div class="footer-section">
             <div class="footer-logo">
                 <img src="assets/logo.png" alt="Logo SMK" class="footer-logo-img">
@@ -9,19 +27,18 @@
             <p>Sekolah Menengah Kejuruan unggulan di bidang Teknologi Informasi yang berkomitmen mencetak lulusan
                 berkualitas dan siap kerja.</p>
             <div class="social-links">
-                <a href="https://www.instagram.com/smktigarudanusantara" target="_blank" aria-label="Instagram">
+                <a href="https://www.instagram.com/smktignc_?igsh=MTlzZmcyZ2U0Znk5aw==" target="_blank" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://www.youtube.com/@smktigarudanusantara" target="_blank" aria-label="YouTube">
+                <a href="https://youtube.com/@kesiswaangarnus?si=UbOoW0H8ELekvKHl" target="_blank" aria-label="YouTube">
                     <i class="fab fa-youtube"></i>
                 </a>
-                <a href="https://www.tiktok.com/@smktigarudanusantara" target="_blank" aria-label="TikTok">
+                <a href="https://www.tiktok.com/@officialsmktigarnus?_r=1&_t=ZS-912Ago5SlVQ" target="_blank" aria-label="TikTok">
                     <i class="fab fa-tiktok"></i>
                 </a>
             </div>
         </div>
 
-        <!-- Kontak Kami -->
         <div class="footer-section">
             <h3>Kontak Kami</h3>
             <ul>
@@ -29,55 +46,68 @@
                     <li><i class="fas fa-map-marker-alt"></i> Jl. Sangkuriang No.34-36, Cipageran, Kec. Cimahi Utara,
                         Kota Cimahi, Jawa Barat 40511</li>
                 </a>
-                <a href="https://api.whatsapp.com/">
-                    <li><i class="fas fa-phone"></i> +62 21 1234 5678</li>
+                <a href="https://wa.me/6287747045822">
+                    <li><i class="fas fa-phone"></i>+62 877 4704 5822</li>
                 </a>
                 <li><i class="fas fa-envelope"></i> info@smktigaruda.sch.id</li>
             </ul>
         </div>
 
-        <!-- Link Cepat -->
         <div class="footer-section">
             <h3>Link Cepat</h3>
             <ul>
-                <li><a href="//index.php"><i class="fas fa-angle-right"></i> Beranda</a></li>
-                <li><a href="//index.php#jurusan-program"><i class="fas fa-angle-right"></i> Jurusan</a></li>
-                <li><a href="//index.php#kontak"><i class="fas fa-angle-right"></i> Artikel</a></li>
-                <li><a href="//ppdb.php"><i class="fas fa-angle-right"></i> Pendaftaran</a></li>
+                <li><a href="./index.php#beranda"><i class="fas fa-angle-right"></i> Beranda</a></li>
+                <li><a href="./index.php#jurusan-program"><i class="fas fa-angle-right"></i> Jurusan</a></li>
+                <li><a href="./index.php#artikel"><i class="fas fa-angle-right"></i> Artikel</a></li> 
+                <li><a href="ppdb.php"><i class="fas fa-angle-right"></i> Pendaftaran</a></li>
             </ul>
         </div>
 
-        <!-- Postingan Terbaru -->
         <div class="footer-section">
             <h3>Postingan Terbaru</h3>
             <ul>
-                <li class="recent-post-item">
-                    <a href="//artikel.php">Siswa TKJ Raih Juara Nasional Kompetisi Jaringan</a>
-                    <span class="recent-post-date"><i class="far fa-calendar"></i> 10 Okt 2025</span>
-                </li>
-                <li class="recent-post-item">
-                    <a href="//artikel.php">Workshop Web Development bersama Industri IT</a>
-                    <span class="recent-post-date"><i class="far fa-calendar"></i> 5 Okt 2025</span>
-                </li>
-                <li class="recent-post-item">
-                    <a href="//artikel.php">Program di 50+ Perusahaan Partner</a>
-                    <span class="recent-post-date"><i class="far fa-calendar"></i> 1 Okt 2025</span>
-                </li>
+                <?php
+                // Cek apakah query berhasil dan menghasilkan data
+                if ($result_berita && mysqli_num_rows($result_berita) > 0) {
+                    // Lakukan perulangan untuk menampilkan setiap berita terbaru
+                    while ($row = mysqli_fetch_assoc($result_berita)) {
+                        // Mengubah format tanggal dari YYYY-MM-DD menjadi DD Mmm YYYY (misal: 10 Okt 2025)
+                        $tanggal_formatted = date('j M Y', strtotime($row['tanggal']));
+                        
+                        // Link dinamis: article.php akan menerima ID berita untuk menampilkan konten penuh
+                        $link_artikel = "article.php?id=" . $row['id'];
+                        
+                        echo '<li class="recent-post-item">';
+                        // Menampilkan judul sebagai link
+                        echo '  <a href="' . htmlspecialchars($link_artikel) . '">' . htmlspecialchars($row['judul']) . '</a>';
+                        // Menampilkan tanggal
+                        echo '  <span class="recent-post-date"><i class="far fa-calendar"></i> ' . $tanggal_formatted . '</span>';
+                        echo '</li>';
+                    }
+                    
+                    // Bebaskan memori hasil query
+                    mysqli_free_result($result_berita);
+                    
+                } else {
+                    // Tampilkan pesan jika tidak ada postingan ditemukan
+                    echo '<li class="recent-post-item">Belum ada postingan terbaru.</li>';
+                }
+                ?>
             </ul>
         </div>
-    </div>
+        </div>
 
     <div class="footer-bottom">
-        <p>&copy; 2025 SMK TI Garuda Nusantara. All Rights Reserved.</p>
+        <p>© 2025 SMK TI Garuda Nusantara. All Rights Reserved.</p>
     </div>
 </footer>
 
-<!-- Loader (letakkan di footer agar muncul di semua halaman) -->
 <div class="loader-wrapper" id="globalLoader">
     <div class="loader"></div>
 </div>
 
 <style>
+    /* ... (CSS Anda) ... */
     :root {
         --primary-orange: #ff8303;
         --primary-blue: #00499d;
@@ -106,7 +136,6 @@
 
     .footer-section {
         text-align: left;
-        /* Ubah ke rata kiri */
     }
 
     .footer-section h3 {
@@ -134,14 +163,12 @@
         color: #e0e0e0;
         font-size: 14px;
         text-align: left;
-        /* Tambahkan rata kiri */
     }
 
     .footer-section ul li i {
         margin-right: 10px;
         color: var(--primary-orange);
         margin-top: 4px;
-        /* Add small top margin to align icon with text */
     }
 
     .footer-section ul li a {
@@ -149,11 +176,9 @@
         text-decoration: none;
         transition: color 0.3s;
         display: inline-flex;
-        /* Change from flex to inline-flex */
         align-items: center;
         text-align: left;
         gap: 10px;
-        /* Add gap between icon and text */
     }
 
     .footer-section ul li a:hover {
@@ -163,7 +188,6 @@
     .footer-logo {
         display: flex;
         align-items: center;
-        /* Change from flex-start to center */
         gap: 15px;
         margin-bottom: 20px;
         justify-content: flex-start;
@@ -173,11 +197,8 @@
 
     .footer-logo span {
         display: flex;
-        /* Change from block to flex */
         align-items: center;
-        /* Add this to vertically center text */
         height: 45px;
-        /* Match the height of the logo */
         text-align: left;
     }
 
@@ -284,7 +305,6 @@
 
         .footer-section {
             text-align: left;
-            /* Ubah ke rata kiri */
         }
 
         .footer-section:first-child {
@@ -293,12 +313,10 @@
 
         .footer-logo {
             justify-content: flex-start;
-            /* Ubah ke rata kiri */
         }
 
         .footer-section ul li {
             text-align: left;
-            /* Ubah ke rata kiri */
         }
     }
 
@@ -320,6 +338,12 @@
 </style>
 
 <script>
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+        .then(registration => console.log('SW Registered'))
+        .catch(error => console.log('SW Registration failed:', error));
+}
     // loader hide
     (function () {
         try {

@@ -1,0 +1,15 @@
+# Rewrite common manual PDF name variants to the actual file name
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Map hyphen/uppercase variants to the stored file name with comma
+    RewriteRule ^MANUAL-BOOK\.PDF$ /MANUAL,BOOK.pdf [L,NC]
+    RewriteRule ^MANUAL-BOOK\.pdf$ /MANUAL,BOOK.pdf [L,NC]
+    RewriteRule ^MANUAL-BOOK$ /MANUAL,BOOK.pdf [L,NC]
+
+    # In case some links use URL-encoded comma or spaces
+    RewriteRule ^MANUAL%2CBOOK\.pdf$ /MANUAL,BOOK.pdf [L,NC]
+    RewriteRule ^MANUAL%2CBOOK\.PDF$ /MANUAL,BOOK.pdf [L,NC]
+</IfModule>
+
+# Fallback: serve files normally

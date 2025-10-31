@@ -37,6 +37,18 @@ if ($stmt = mysqli_prepare($db, $query)) {
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- PWA META TAGS -->
+<meta name="theme-color" content="#00499D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+<!-- ICONS -->
+<link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+<link rel="shortcut icon" href="icons/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Status Pendaftar - <?= htmlspecialchars($hasil_pencarian['nama'] ?? 'SMK TI') ?></title>
@@ -212,6 +224,12 @@ if ($stmt = mysqli_prepare($db, $query)) {
         }
         // Tidak perlu Resize Handler khusus untuk menu lagi
     });
+    // SERVICE WORKER REGISTRATION
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(registration => console.log('SW Registered'))
+    .catch(error => console.log('SW Registration failed:', error));
+}
     </script>
      </body>
 </html>

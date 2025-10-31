@@ -8,6 +8,16 @@ if (session_status() == PHP_SESSION_NONE) {
 <html lang="id">
 
 <head>
+    <meta name="theme-color" content="#00499D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+<link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+<link rel="shortcut icon" href="icons/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="icons/favicon.png">
@@ -819,17 +829,18 @@ if (session_status() == PHP_SESSION_NONE) {
                 // Session akan di-unset di bagian JavaScript
             }
             ?>
-            <form id="loginForm" action="config/process_login.php" method="POST">
+            
+            <form id="loginForm" action="config/process_login.php" method="POST" novalidate>
                 <div class="input-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Username / Nama Lengkap" required>
+                    <input type="text" id="username" name="username" placeholder="Username / NIP" required>
                 </div>
 
                 <div class="input-group">
                     <label>Kata Sandi</label>
                     
                     <div class="password-wrapper">
-                        <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi / NISN" required>
+                        <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi" required>
                         <i class="fas fa-eye-slash" id="togglePassword"></i>
                     </div>
                 </div>
@@ -855,9 +866,62 @@ if (session_status() == PHP_SESSION_NONE) {
             const closeModal = document.getElementById('closeModal');
             const loginForm = document.getElementById('loginForm');
             
+            // ===================================================================
+            // == PERBAIKAN 2: JAVASCRIPT VALIDASI KUSTOM
+            // ===================================================================
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('loginPassword');
+            // Cari kotak error PHP. Kita akan gunakan ulang
+            let phpErrorBox = document.querySelector('.login-error-message');
+
+            // Fungsi untuk menampilkan pesan error
+            function showError(message) {
+                event.preventDefault(); // Hentikan form
+
+                if (phpErrorBox) {
+                    // Jika kotak error sudah ada, ganti pesannya
+                    phpErrorBox.innerHTML = message;
+                    phpErrorBox.style.display = 'block';
+                } else {
+                    // Jika tidak ada (misal, tidak ada error PHP), buat baru
+                    const newErrorBox = document.createElement('div');
+                    newErrorBox.className = 'login-error-message'; // Pakai style yg sama
+                    newErrorBox.innerHTML = message;
+                    newErrorBox.style.display = 'block';
+                    
+                    // Masukkan sebelum form
+                    loginForm.parentNode.insertBefore(newErrorBox, loginForm);
+                    
+                    // Simpan referensi ke error box baru ini
+                    phpErrorBox = newErrorBox; 
+                }
+            }
+
+            loginForm.addEventListener('submit', function(event) {
+                
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                // Sembunyikan error lama (jika ada) saat submit ulang
+                if (phpErrorBox) {
+                    phpErrorBox.style.display = 'none';
+                }
+
+                // Logika Validasi Kustom
+                if (username === '' && password === '') {
+                    showError('Username dan Kata Sandi tidak boleh kosong.');
+                } else if (username === '') {
+                    showError('Username tidak boleh kosong.');
+                } else if (password === '') {
+                    showError('Kata Sandi tidak boleh kosong.');
+                }
+                // Jika semua terisi, biarkan form ter-submit
+            });
+            // ==================== AKHIR PERBAIKAN 2 ====================
+
+
             // ==================== BARU: SHOW/HIDE PASSWORD ====================
             const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('loginPassword');
 
             // Pastikan elemennya ada sebelum menambahkan listener
             if (togglePassword && passwordInput) {
@@ -929,7 +993,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
             document.addEventListener('click', function (e) {
                 if (nav.classList.contains('active') &&
-                    !nav.contains(e.target) &&
+                    !nav.contains(e.targe) &&
                     !hamburger.contains(e.target)) {
                     hamburger.classList.remove('active');
                     nav.classList.remove('active');

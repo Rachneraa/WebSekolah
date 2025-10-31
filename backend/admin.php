@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+ob_start();
 session_start();
 require_once '../config/koneksi.php';
 
@@ -12,6 +16,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
 <html lang="id">
 
 <head>
+    <meta name="theme-color" content="#00499D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+    <link rel="shortcut icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
@@ -212,7 +226,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
 
 <body>
     <div class="wrapper">
-        <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3>Admin Panel</h3>
@@ -249,6 +262,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
                         <i class="fas fa-newspaper"></i> Pendaftaran Siswa Baru
                     </a>
                 </li>
+
+                <li>
+                    <a href="?page=kontak">
+                        <i class="fas fa-fw fa-envelope"></i> Pesan Masuk
+                    </a>
+                </li>
                 <li>
                     <a href="?page=jadwal">
                         <i class="fas fa-calendar-alt"></i> Jadwal Pelajaran
@@ -258,10 +277,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
                     <a href="?page=mapel">
                         <i class="fas fa-file-alt"></i> Mata Pelajaran
                     </a>
+                </li>
             </ul>
         </nav>
 
-        <!-- Page Content -->
         <div id="content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
@@ -290,7 +309,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -312,8 +330,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['level'] != 'admin') {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
         });
+        // SERVICE WORKER REGISTRATION
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => console.log('SW Registered'))
+                .catch(error => console.log('SW Registration failed:', error));
+        }
     </script>
 </body>
 
 </html>
 <form action="admin.php?page=jadwal" method="post"></form>
+<?php ob_end_flush(); ?>
