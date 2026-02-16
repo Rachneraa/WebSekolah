@@ -9,15 +9,15 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <head>
     <meta name="theme-color" content="#00499D">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="SMK TI GNC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SMK TI GNC">
 
-<link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
-<link rel="shortcut icon" href="icons/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-<link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
+    <link rel="shortcut icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="icons/favicon.png">
@@ -829,7 +829,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 // Session akan di-unset di bagian JavaScript
             }
             ?>
-            
+
             <form id="loginForm" action="config/process_login.php" method="POST" novalidate>
                 <div class="input-group">
                     <label for="username">Username</label>
@@ -838,7 +838,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
                 <div class="input-group">
                     <label>Kata Sandi</label>
-                    
+
                     <div class="password-wrapper">
                         <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi" required>
                         <i class="fas fa-eye-slash" id="togglePassword"></i>
@@ -865,7 +865,7 @@ if (session_status() == PHP_SESSION_NONE) {
             const loginModal = document.getElementById('loginModal');
             const closeModal = document.getElementById('closeModal');
             const loginForm = document.getElementById('loginForm');
-            
+
             // ===================================================================
             // == PERBAIKAN 2: JAVASCRIPT VALIDASI KUSTOM
             // ===================================================================
@@ -888,17 +888,17 @@ if (session_status() == PHP_SESSION_NONE) {
                     newErrorBox.className = 'login-error-message'; // Pakai style yg sama
                     newErrorBox.innerHTML = message;
                     newErrorBox.style.display = 'block';
-                    
+
                     // Masukkan sebelum form
                     loginForm.parentNode.insertBefore(newErrorBox, loginForm);
-                    
+
                     // Simpan referensi ke error box baru ini
-                    phpErrorBox = newErrorBox; 
+                    phpErrorBox = newErrorBox;
                 }
             }
 
-            loginForm.addEventListener('submit', function(event) {
-                
+            loginForm.addEventListener('submit', function (event) {
+
                 const username = usernameInput.value.trim();
                 const password = passwordInput.value.trim();
 
@@ -917,6 +917,15 @@ if (session_status() == PHP_SESSION_NONE) {
                 }
                 // Jika semua terisi, biarkan form ter-submit
             });
+            // Pindah fokus ke password jika user menekan Enter saat di field username
+            if (usernameInput) {
+                usernameInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (passwordInput) passwordInput.focus();
+                    }
+                });
+            }
             // ==================== AKHIR PERBAIKAN 2 ====================
 
 
@@ -929,7 +938,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     // Toggle tipe input
                     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                     passwordInput.setAttribute('type', type);
-                    
+
                     // Toggle ikon
                     if (type === 'password') {
                         // Jika tipe password (tersembunyi)
@@ -950,6 +959,10 @@ if (session_status() == PHP_SESSION_NONE) {
                 e.preventDefault();
                 loginModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
+                // Fokus ke username saat modal terbuka
+                setTimeout(function () {
+                    if (usernameInput) usernameInput.focus();
+                }, 50);
             });
 
             closeModal.addEventListener('click', function () {
@@ -969,19 +982,20 @@ if (session_status() == PHP_SESSION_NONE) {
             <?php
             // Jika ada session error (dideteksi oleh PHP)
             if (isset($_SESSION['error'])) {
-            
+
                 // PHP akan "mencetak" kode JavaScript ini
                 // untuk membuka modal secara otomatis
                 echo "loginModal.classList.add('active');\n";
                 echo "document.body.style.overflow = 'hidden';\n";
-                
+                echo "setTimeout(function(){ if (typeof usernameInput !== 'undefined' && usernameInput) usernameInput.focus(); }, 50);\n";
+
                 // Setelah modal dipastikan terbuka, hapus session error
                 // agar tidak muncul lagi jika halaman di-refresh manual
                 unset($_SESSION['error']);
             }
             ?>
             // ==================== AKHIR KODE BARU ====================
-            
+
 
             // ==================== HAMBURGER MENU ====================
             hamburger.addEventListener('click', function (e) {

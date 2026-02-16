@@ -810,6 +810,68 @@ if ((isset($_GET['success']) && $_GET['success'] == '1') || (isset($_GET['status
                 });
         });
     </script>
+
+    <script>
+        (function () {
+            const form = document.getElementById('ppdbForm');
+            if (!form) return;
+
+            form.addEventListener('keydown', function (e) {
+                if (e.key !== 'Enter') return;
+
+                const el = e.target;
+                if (!el) return;
+
+                // Don't hijack Enter in textarea or on buttons
+                if (el.tagName === 'TEXTAREA') return;
+                if (el.tagName === 'BUTTON' || el.type === 'submit') return;
+
+                // Special behavior for <select>:
+                // - If no value selected (empty or first option), open the dropdown on Enter
+                // - If a value is already selected, move to next field
+                if (el.tagName === 'SELECT') {
+                    const hasValue = el.value !== '' && el.selectedIndex > 0;
+                    if (!hasValue) {
+                        e.preventDefault();
+                        // Try to open dropdown in a cross-browser way
+                        el.focus();
+                        // Try dispatching ArrowDown key event (most browsers open dropdown)
+                        const downEvt = new KeyboardEvent('keydown', { key: 'ArrowDown', code: 'ArrowDown', bubbles: true });
+                        el.dispatchEvent(downEvt);
+                        // Fallback: also try Space key
+                        setTimeout(() => {
+                            if (document.activeElement === el) {
+                                const spaceEvt = new KeyboardEvent('keydown', { key: ' ', code: 'Space', bubbles: true });
+                                el.dispatchEvent(spaceEvt);
+                            }
+                        }, 50);
+                        return;
+                    }
+                    // else fallthrough to move to next
+                }
+
+                // Build list of focusable elements inside the form
+                const selectors = 'input, select, textarea, button, a[href]';
+                const focusable = Array.from(form.querySelectorAll(selectors))
+                    .filter(node => !node.disabled && node.type !== 'hidden' && node.offsetParent !== null);
+
+                const idx = focusable.indexOf(el);
+                if (idx === -1) return;
+
+                e.preventDefault();
+                const next = focusable[idx + 1];
+                if (next) {
+                    next.focus();
+                    if (next.select && typeof next.select === 'function') {
+                        try { next.select(); } catch (e) { }
+                    }
+                } else {
+                    // If it's the last field, blur current input to close virtual keyboard on mobile
+                    el.blur();
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>
