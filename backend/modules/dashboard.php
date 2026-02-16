@@ -184,7 +184,7 @@ if ($tablesExist):
                     <div class="card-body p-3 p-md-4" style="position: relative; z-index: 2;">
                         <div class="banner-content">
                             <div class="banner-text">
-                                <div class="emoji">👋</div>
+                                <div class="emoji">ðŸ‘‹</div>
                                 <div>
                                     <h5 class="card-title mb-2 font-weight-bold">Butuh Bantuan Sistem?</h5>
                                     <p class="card-text mb-0">Kelola data sekolah kini lebih mudah. Unduh panduan lengkap
@@ -377,8 +377,7 @@ if ($tablesExist):
     <!-- Lazy Loading Script -->
     <script>
         function openPanduanPDF() {
-            const pdfPath = '/public_html/MANUAL,BOOK.pdf';
-            const pdfUrl = window.location.origin + pdfPath;
+            const pdfUrl = 'MANUAL,BOOK.pdf';
             window.open(encodeURI(pdfUrl), '_blank');
         }
 

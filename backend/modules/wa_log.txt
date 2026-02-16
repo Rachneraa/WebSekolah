@@ -6,6 +6,7 @@
     <meta charset="utf-8"/>
     <meta h (truncated...)
 
+<<<<<<< HEAD
 2025-11-01T11:45:03+07:00 ERROR nomor:6283114347263 error:Client error: `POST https://api.whatsapp.com/send/?phone=%2B620895326706085&text&type=phone_number&app_absent=0` resulted in a `400 Bad Request` response:
 <!DOCTYPE html>
 <html lang="en" id="whatsapp">
@@ -15,6 +16,9 @@
     <meta h (truncated...)
 
 2025-11-01T11:45:14+07:00 ERROR nomor:6283114347263 error:Client error: `POST https://api.whatsapp.com/send/?phone=%2B620895326706085&text&type=phone_number&app_absent=0` resulted in a `400 Bad Request` response:
+=======
+2025-10-31T16:25:15+07:00 ERROR nomor:6285454678 error:Client error: `POST https://api.whatsapp.com/send/?phone=%2B620895326706085&text&type=phone_number&app_absent=0` resulted in a `400 Bad Request` response:
+>>>>>>> dbddd7c (cece sang penguasa kantor hahaha)
 <!DOCTYPE html>
 <html lang="en" id="whatsapp">
   <head>
