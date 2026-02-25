@@ -833,14 +833,16 @@ if (session_status() == PHP_SESSION_NONE) {
             <form id="loginForm" action="config/process_login.php" method="POST" novalidate>
                 <div class="input-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Username / NIP" required>
+                    <input type="text" id="username" name="username" placeholder="Username / NIP" required
+                        maxlength="50">
                 </div>
 
                 <div class="input-group">
                     <label>Kata Sandi</label>
 
                     <div class="password-wrapper">
-                        <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi" required>
+                        <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi" required
+                            maxlength="30">
                         <i class="fas fa-eye-slash" id="togglePassword"></i>
                     </div>
                 </div>

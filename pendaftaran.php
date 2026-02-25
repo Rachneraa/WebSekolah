@@ -544,7 +544,7 @@ if ((isset($_GET['success']) && $_GET['success'] == '1') || (isset($_GET['status
                             <div class="input-wrapper">
                                 <i class="fas fa-user input-icon"></i>
                                 <input type="text" id="namaLengkap" name="nama_lengkap"
-                                    placeholder="Masukkan nama lengkap sesuai ijazah" required>
+                                    placeholder="Masukkan nama lengkap sesuai ijazah" required maxlength="40">
                             </div>
                         </div>
 
@@ -649,7 +649,8 @@ if ((isset($_GET['success']) && $_GET['success'] == '1') || (isset($_GET['status
                             <label for="noHp">Nomor HP/WhatsApp Orang Tua <span class="required">*</span></label>
                             <div class="input-wrapper">
                                 <i class="fas fa-mobile-alt input-icon"></i>
-                                <input type="tel" id="noHp" name="no_hp" placeholder="08xxxxxxxxxx" required>
+                                <input type="tel" id="noHp" name="no_hp" placeholder="08xxxxxxxxxx" required
+                                    maxlength="15" inputmode="numeric" pattern="[0-9]*">
                             </div>
                         </div>
                     </div>
@@ -663,7 +664,7 @@ if ((isset($_GET['success']) && $_GET['success'] == '1') || (isset($_GET['status
                             <div class="input-wrapper">
                                 <i class="fas fa-graduation-cap input-icon"></i>
                                 <input type="text" id="namaSekolah" name="nama_sekolah"
-                                    placeholder="Contoh: SMP Negeri 1 Jakarta" required>
+                                    placeholder="Contoh: SMP Negeri 1 Jakarta" required maxlength="60">
                             </div>
                         </div>
 
@@ -757,6 +758,14 @@ if ((isset($_GET['success']) && $_GET['success'] == '1') || (isset($_GET['status
                     .catch(err => console.error('AJAX error:', err));
             }, DEBOUNCE_MS);
         });
+
+        // Filter input nomor HP: hanya angka dan maksimal 15 digit
+        const noHpInput = document.getElementById('noHp');
+        if (noHpInput) {
+            noHpInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 15);
+            });
+        }
 
         // Juga cek saat blur (user berhenti mengetik)
         nisnInput.addEventListener('blur', function () {
