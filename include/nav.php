@@ -5,1007 +5,268 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="id">
-
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="icons/favicon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMPN Cimahi - Membangun Generasi Cerdas & Berkarakter</title>
+    <meta name="description" content="Website resmi SMPN Cimahi. Sekolah Menengah Pertama Terakreditasi A unggul dalam prestasi, teknologi, dan pembentukan karakter peserta didik.">
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome 6 Free Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0F172A',
+                            dark: '#0A1128',
+                            blue: '#1E3A8A',
+                            accent: '#0284C7',
+                            lightBg: '#F8FAFC',
+                            softBlue: '#E0F2FE',
+                            mutedBlue: '#BAE6FD',
+                            grayText: '#475569'
+                        }
+                    },
+                    boxShadow: {
+                        'polaroid': '0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05)',
+                        'card-hover': '0 20px 30px -10px rgba(2, 132, 199, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* ==================== ROOT VARIABLES ==================== */
-        :root {
-            --primary-orange: #ff8303;
-            --primary-blue: #00499d;
-            --text-dark: #0f1724;
-            --text-gray: #6b7280;
-            --border-gray: #e6e9ee;
-        }
-
-        /* ==================== GLOBAL RESET ==================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent !important;
-        }
-
-        *:focus,
-        *:active {
-            outline: none !important;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            padding-top: 80px;
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        button {
-            -webkit-tap-highlight-color: transparent !important;
-            -webkit-appearance: none;
-            appearance: none;
-            border: none;
-            background: none;
-            cursor: pointer;
-        }
-
-        /* ==================== LOADING SCREEN ==================== */
-        .loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .loader-wrapper.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 5px solid #f0f0f0;
-            border-top: 5px solid var(--primary-orange);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ==================== HEADER NAVBAR ==================== */
-        header {
-            background: #ffffff;
-            padding: 20px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid var(--border-gray);
-            height: 80px;
-        }
-
-        header.scrolled {
-            padding: 12px 60px;
-            height: 70px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Logo */
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            color: var(--primary-blue);
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.02);
-        }
-
-        .logo-img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            transition: all 0.3s ease;
-        }
-
-        header.scrolled .logo-img {
-            width: 40px;
-            height: 40px;
-        }
-
-        /* Navigation */
-        header nav {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            flex: 1;
-        }
-
-        header nav ul {
-            list-style: none;
-            display: flex;
-            gap: 35px;
-            margin: 0 auto;
-            padding: 0;
-        }
-
-        header nav ul li {
-            position: relative;
-        }
-
-        header nav ul li a {
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-gray);
-            transition: color 0.3s ease;
-            padding: 8px 0;
-            display: inline-block;
-            position: relative;
-        }
-
-        header nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: var(--primary-orange);
-            transition: width 0.3s ease;
-        }
-
-        header nav ul li a:hover,
-        header nav ul li a.active {
-            color: var(--primary-orange);
-        }
-
-        header nav ul li a:hover::after,
-        header nav ul li a.active::after {
-            width: 100%;
-        }
-
-        /* Nav Buttons Container */
-        .nav-buttons {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Register Button */
-        .btn-register {
-            background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
-            color: white;
-            font-weight: 600;
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 131, 3, 0.25);
-            letter-spacing: 0.5px;
-        }
-
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 131, 3, 0.35);
-        }
-
-        /* Admin Button */
-        .btn-admin {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .btn-admin i {
-            color: #fff;
-            font-size: 1.2rem;
-        }
-
-        .btn-admin:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 73, 157, 0.3);
-            background: #003d7a;
-        }
-
-        /* Hamburger Menu */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 28px;
-            height: 24px;
-            padding: 0;
-            z-index: 1001;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 100%;
-            height: 3px;
-            background: var(--text-dark);
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(8px, -8px);
-        }
-
-        /* ==================== LOGIN MODAL ==================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .login-modal {
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-            max-width: 420px;
-            width: 90%;
-            padding: 2.5rem;
-            position: relative;
-            transform: scale(0.9) translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .login-modal {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #f5f6fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .modal-close:hover {
-            background: #e6e9ee;
-            transform: rotate(90deg);
-        }
-
-        .modal-close i {
-            color: var(--text-dark);
-            font-size: 1.2rem;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
-            display: block;
-        }
-
-        .login-header h2 {
-            color: var(--primary-blue);
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .login-header p {
-            color: var(--text-gray);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border-gray);
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .input-group input:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(0, 73, 157, 0.1);
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 15px 0 25px;
-        }
-
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--primary-blue);
-        }
-
-        .remember-me label {
-            font-size: 14px;
-            color: var(--text-gray);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary-blue), #003d7a);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 73, 157, 0.3);
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 73, 157, 0.4);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        /* ==================== PASSWORD TOGGLE ICON ==================== */
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        /* Ini akan menimpa padding-right dari .input-group input */
-        .password-wrapper input {
-            /* Beri ruang di kanan untuk ikon */
-            padding-right: 45px;
-        }
-
-        .password-wrapper i {
-            position: absolute;
-            top: 50%;
-            right: 16px;
-            /* Posisikan ikon di kanan */
-            transform: translateY(-50%);
-            color: var(--text-gray);
-            cursor: pointer;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-
-        .password-wrapper i:hover {
-            color: var(--primary-blue);
-        }
-
-        /* ==================== LOGIN ERROR MESSAGE ==================== */
-        .login-error-message {
-            padding: 15px;
-            background: #f8d7da;
-            /* Merah muda */
-            color: #721c24;
-            /* Merah tua */
-            border: 1px solid #f5c6cb;
-            border-radius: 10px;
-            /* Samakan dengan radius input */
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        /* ==================== TABLET RESPONSIVE ==================== */
-        @media (max-width: 1024px) {
-            header {
-                padding: 20px 40px;
-            }
-
-            header.scrolled {
-                padding: 12px 40px;
-            }
-
-            header nav ul {
-                gap: 25px;
-            }
-        }
-
-        /* ==================== MOBILE RESPONSIVE ==================== */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 70px;
-            }
-
-            header {
-                padding: 15px 25px;
-                height: 70px;
-            }
-
-            header.scrolled {
-                padding: 12px 25px;
-                height: 60px;
-            }
-
-            .logo {
-                font-size: 16px;
-                gap: 10px;
-            }
-
-            .logo-img {
-                width: 42px;
-                height: 42px;
-            }
-
-            header.scrolled .logo-img {
-                width: 36px;
-                height: 36px;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            header nav {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 75%;
-                max-width: 300px;
-                height: 100vh;
-                background: #ffffff;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 100px 30px 30px;
-                gap: 0;
-                box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
-                transition: right 0.3s ease;
-                overflow-y: auto;
-            }
-
-            header nav.active {
-                right: 0;
-            }
-
-            header nav ul {
-                flex-direction: column;
-                gap: 0;
-                width: 100%;
-            }
-
-            header nav ul li {
-                width: 100%;
-                border-bottom: 1px solid var(--border-gray);
-            }
-
-            header nav ul li:last-child {
-                border-bottom: none;
-            }
-
-            header nav ul li a {
-                font-size: 16px;
-                color: var(--text-dark);
-                padding: 18px 0;
-                display: block;
-                width: 100%;
-            }
-
-            header nav ul li a::after {
-                display: none;
-            }
-
-            .btn-register {
-                width: calc(100% - 40px);
-                margin: 0 20px;
-                text-align: center;
-            }
-
-            .login-label-mobile {
-                display: block;
-                text-align: center;
-                color: var(--primary-blue);
-                font-size: 13px;
-                font-weight: 500;
-                margin-top: 5px;
-                margin-bottom: 10px;
-            }
-
-            .btn-admin {
-                margin: 10px auto;
-                width: 45px;
-                height: 45px;
-            }
-
-            .btn-admin i {
-                font-size: 1.4rem;
-            }
-
-            .nav-buttons {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-                margin-top: 20px;
-            }
-
-            .btn-register {
-                width: 100%;
-                text-align: center;
-            }
-
-            .login-modal {
-                padding: 2rem;
-            }
-
-            .login-header h2 {
-                font-size: 20px;
-            }
-        }
-
-        /* ==================== SMALL MOBILE ==================== */
-        @media (max-width: 480px) {
-            header {
-                padding: 12px 20px;
-                height: 65px;
-            }
-
-            header.scrolled {
-                padding: 10px 20px;
-                height: 55px;
-            }
-
-            .logo {
-                font-size: 14px;
-                gap: 8px;
-            }
-
-            .logo-img {
-                width: 36px;
-                height: 36px;
-            }
-
-            header.scrolled .logo-img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .hamburger {
-                width: 24px;
-                height: 20px;
-            }
-
-            .hamburger span {
-                height: 2.5px;
-            }
-
-            header nav {
-                width: 80%;
-                padding: 80px 25px 25px;
-            }
-
-            .login-modal {
-                padding: 1.5rem;
-            }
-
-            .login-logo {
-                width: 70px;
-                height: 70px;
-            }
-        }
-
-        /* Tombol full width di mobile */
-        @media (max-width: 768px) {
-            .nav-buttons {
-                flex-direction: column;
-                gap: 18px;
-                width: 100%;
-                padding: 0;
-            }
-
-            .btn-block {
-                width: 100%;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 15px;
-                padding: 14px 0;
-                border-radius: 30px;
-                margin: 0;
-            }
-
-            .btn-register.btn-block {
-                background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
-                color: white;
-                font-weight: 600;
-                box-shadow: 0 4px 15px rgba(255, 131, 3, 0.25);
-                letter-spacing: 0.5px;
-                gap: 8px;
-            }
-
-            .btn-admin.btn-block {
-                background: var(--primary-blue);
-                color: white;
-                font-weight: 600;
-                gap: 8px;
-                box-shadow: 0 4px 12px rgba(0, 73, 157, 0.3);
-                border: none;
-            }
-
-            .btn-admin.btn-block i {
-                font-size: 1.2rem;
-            }
-
-            .btn-admin.btn-block .login-label {
-                font-size: 15px;
-                font-weight: 500;
-            }
-        }
-
-        /* Desktop: tombol tetap seperti semula */
-        @media (min-width: 769px) {
-            .btn-block {
-                width: auto;
-                padding: 12px 28px;
-                font-size: 14px;
-                border-radius: 50px;
-                margin: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .btn-admin.btn-block .login-label {
-                color: white;
-                font-size: 14px;
-                font-weight: 500;
-                margin-left: 8px;
+        /* Custom scrollbar and animations */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .hero-polaroid {
+            transform: rotate(2deg);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .hero-polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        @keyframes top-ticker {
+            0% { transform: translateX(0); }
+            45% { transform: translateX(min(0px, calc(100vw - 100% - 24px))); }
+            50% { transform: translateX(min(0px, calc(100vw - 100% - 24px))); }
+            95% { transform: translateX(0); }
+            100% { transform: translateX(0); }
+        }
+
+        @media (max-width: 639px) {
+            .animate-ticker-mobile {
+                display: inline-flex !important;
+                white-space: nowrap !important;
+                animation: top-ticker 10s ease-in-out infinite;
+                width: max-content !important;
             }
         }
     </style>
 </head>
+<body class="font-sans bg-brand-lightBg text-slate-800 antialiased selection:bg-brand-softBlue selection:text-brand-blue flex flex-col min-h-screen">
 
-<body>
-    <div class="loader-wrapper" id="mainLoader">
-        <div class="loader"></div>
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-brand-navy text-white text-xs py-2 px-3 border-b border-slate-800 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="animate-ticker-mobile flex items-center justify-between w-full gap-5 text-slate-200">
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="inline-flex items-center gap-1.5 text-brand-softBlue font-semibold">
+                        <i class="fa-solid fa-bullhorn text-xs"></i> PPDB Tahun Ajaran 2026/2027 Telah Dibuka!
+                    </span>
+                    <span class="text-slate-600">|</span>
+                    <span class="inline-flex items-center gap-1 text-slate-300 font-medium">
+                        <i class="fa-solid fa-graduation-cap text-xs"></i> Terakreditasi A Unggul
+                    </span>
+                </div>
+                <div class="hidden lg:flex items-center gap-3 shrink-0 text-slate-300 font-medium">
+                    <span class="text-slate-600">|</span>
+                    <a href="tel:0226654321" class="hover:text-white transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-phone text-[10px] text-brand-softBlue"></i> (022) 6654321
+                    </a>
+                    <span class="text-slate-600">|</span>
+                    <a href="mailto:info@smpncimahi.sch.id" class="hover:text-white transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-envelope text-[10px] text-brand-softBlue"></i> info@smpncimahi.sch.id
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <header id="header">
-        <div class="logo" onclick="window.location.href='index.php'">
-            <img src="assets/logo.png" alt="Logo SMK TI Garuda Nusantara" class="logo-img">
-            <span class="logo-text">SMK TI Garuda Nusantara</span>
-        </div>
+    <!-- MAIN NAVBAR -->
+    <header id="main-header" class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- BRAND LOGO -->
+                <a href="index.php" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-brand-navy flex items-center justify-center text-white font-extrabold text-xl shadow-md group-hover:bg-brand-accent transition-colors duration-300">
+                        <i class="fa-solid fa-school text-lg"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 leading-none">
+                            SMPN CIMAHI
+                        </span>
+                        <span class="text-[11px] text-slate-500 font-medium tracking-wide mt-1">Cerdas • Berkarakter • Unggul</span>
+                    </div>
+                </a>
 
-        <nav id="nav">
-            <ul>
-                <li><a href="index.php#beranda">Beranda</a></li>
-                <li><a href="index.php#jurusan-program">Jurusan</a></li>
-                <li><a href="index.php#artikel">Artikel</a></li>
-                <li><a href="ppdb.php">PPDB</a></li>
-                <li><a href="contact.php">Kontak</a></li>
-            </ul>
-            <div class="nav-buttons">
-                <a href="pendaftaran.php" class="btn-register btn-block">Daftar</a>
-                <button class="btn-admin btn-block" id="loginBtn">
-                    <i class="fas fa-user"></i>
-                    <span class="login-label"><b>Login</b></span>
-                </button>
-            </div>
-        </nav>
+                <!-- DESKTOP NAV LINKS -->
+                <nav class="hidden lg:flex items-center gap-6 lg:gap-7 text-sm font-semibold text-slate-600">
+                    <a href="index.php#beranda" class="hover:text-brand-accent transition-colors py-1">Beranda</a>
+                    <a href="index.php#tentang" class="hover:text-brand-accent transition-colors py-1">Tentang</a>
+                    <a href="index.php#ekstra" class="hover:text-brand-accent transition-colors py-1">Ekstrakulikuler</a>
+                    <a href="index.php#berita" class="hover:text-brand-accent transition-colors py-1">Berita</a>
+                    <a href="contact.php" class="hover:text-brand-accent transition-colors py-1">Kontak</a>
+                </nav>
 
-        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
+                <!-- HEADER ACTION BUTTONS -->
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="pendaftaran.php" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs sm:text-sm font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center gap-2 border border-amber-300/40">
+                        <i class="fa-solid fa-file-pen text-xs"></i>
+                        <span>PPDB ONLINE</span>
+                    </a>
 
-    <div class="modal-overlay" id="loginModal">
-        <div class="login-modal">
-            <button class="modal-close" id="closeModal">
-                <i class="fas fa-times"></i>
-            </button>
-
-            <div class="login-header">
-                <img src="assets/smk.png" alt="Logo Sekolah" class="login-logo">
-                <h2>SMK TI Garuda Nusantara</h2>
-                <p>Selamat datang di<br>Portal Login Sekolah</p>
-            </div>
-
-            <?php
-            if (isset($_SESSION['error'])) {
-                // Tampilkan pesan error
-                echo '<div class="login-error-message">';
-                echo htmlspecialchars($_SESSION['error']);
-                echo '</div>';
-                // Session akan di-unset di bagian JavaScript
-            }
-            ?>
-            <form id="loginForm" action="config/process_login.php" method="POST">
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Username / Nama Lengkap" required>
+                    <?php if (isset($_SESSION['username'])): ?>
+                        <a href="backend/admin.php" title="Dashboard Admin" class="w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-all duration-200 active:scale-95 shadow-sm">
+                            <i class="fa-solid fa-user-gear text-sm"></i>
+                        </a>
+                    <?php else: ?>
+                        <button onclick="openLoginModal()" title="Login Portal Sekolah" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all duration-200 active:scale-95 border border-slate-200">
+                            <i class="fa-solid fa-user text-sm"></i>
+                        </button>
+                    <?php endif; ?>
                 </div>
 
-                <div class="input-group">
-                    <label>Kata Sandi</label>
-                    
-                    <div class="password-wrapper">
-                        <input type="password" name="password" id="loginPassword" placeholder="Kata Sandi / NISN" required>
-                        <i class="fas fa-eye-slash" id="togglePassword"></i>
+                <!-- MOBILE MENU HAMBURGER BUTTON -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Buka Menu" class="lg:hidden p-2 text-slate-700 hover:text-brand-navy focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+                </button>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-900/50 z-[50] hidden backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="toggleMobileMenu()"></div>
+
+    <!-- MOBILE NAV DRAWER -->
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-[80vw] max-w-sm bg-white z-[60] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col lg:hidden">
+        <!-- Close Button -->
+        <div class="flex justify-end p-5">
+            <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-black focus:outline-none">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Links -->
+        <div class="flex-1 overflow-y-auto px-6 py-2 flex flex-col space-y-4">
+            <a href="index.php#beranda" onclick="toggleMobileMenu()" class="block text-lg font-semibold text-slate-600 hover:text-brand-accent pb-4 border-b border-slate-100 transition-colors">Beranda</a>
+            <a href="index.php#tentang" onclick="toggleMobileMenu()" class="block text-lg font-semibold text-slate-600 hover:text-brand-accent pb-4 border-b border-slate-100 transition-colors">Tentang Kami</a>
+            <a href="index.php#ekstra" onclick="toggleMobileMenu()" class="block text-lg font-semibold text-slate-600 hover:text-brand-accent pb-4 border-b border-slate-100 transition-colors">Ekstrakulikuler</a>
+            <a href="index.php#berita" onclick="toggleMobileMenu()" class="block text-lg font-semibold text-slate-600 hover:text-brand-accent pb-4 border-b border-slate-100 transition-colors">Berita</a>
+            <a href="../contact.php" onclick="toggleMobileMenu()" class="block text-lg font-semibold text-slate-600 hover:text-brand-accent pb-4 border-b border-slate-100 transition-colors">Kontak</a>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="p-6 space-y-4 mb-4 mt-auto">
+            <a href="pendaftaran.php" class="flex justify-center items-center w-full py-3.5 bg-[#ff7300] hover:bg-orange-600 text-white font-bold text-lg rounded-full shadow-md transition-colors">
+                Daftar
+            </a>
+            
+            <?php if (isset($_SESSION['username'])): ?>
+                <a href="backend/admin.php" class="flex justify-center items-center w-full py-3.5 bg-[#004aad] hover:bg-[#003882] text-white font-bold text-lg rounded-full shadow-md gap-2 transition-colors">
+                    <i class="fa-solid fa-user"></i> Dashboard
+                </a>
+            <?php else: ?>
+                <button onclick="toggleMobileMenu(); openLoginModal();" class="flex justify-center items-center w-full py-3.5 bg-[#004aad] hover:bg-[#003882] text-white font-bold text-lg rounded-full shadow-md gap-2 transition-colors">
+                    <i class="fa-solid fa-user"></i> Login
+                </button>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- MODAL: LOGIN SYSTEM -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            
+            <div class="text-center space-y-2 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-brand-navy text-white flex items-center justify-center text-xl font-bold mx-auto mb-3 shadow-md">
+                    <i class="fa-solid fa-school"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-slate-900">Portal Login Sekolah</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Silakan masuk menggunakan akun admin atau siswa SMPN Cimahi</p>
+            </div>
+
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span><?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></span>
+                </div>
+            <?php endif; ?>
+
+            <form action="config/process_login.php" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Username / NISN</label>
+                    <input type="text" name="username" required placeholder="Masukkan Username / NISN" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kata Sandi</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="loginPassword" required placeholder="Masukkan Kata Sandi" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none pr-10">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm">
+                            <i class="fa-solid fa-eye-slash" id="togglePasswordIcon"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div class="remember-me">
-                    <input type="checkbox" id="rememberMe" name="rememberMe">
-                    <label for="rememberMe">Ingat Saya</label>
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center gap-2 text-slate-600 cursor-pointer">
+                        <input type="checkbox" name="rememberMe" class="rounded text-brand-navy focus:ring-brand-blue">
+                        <span>Ingat Saya</span>
+                    </label>
                 </div>
 
-                <button type="submit" class="btn-login">Masuk</button>
+                <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-brand-blue text-white font-bold rounded-xl shadow transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                    <span>Masuk Ke Sistem</span>
+                </button>
             </form>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const hamburger = document.getElementById('hamburger');
-            const nav = document.getElementById('nav');
-            const header = document.getElementById('header');
-            const loader = document.getElementById('mainLoader');
-            const loginBtn = document.getElementById('loginBtn');
-            const loginModal = document.getElementById('loginModal');
-            const closeModal = document.getElementById('closeModal');
-            const loginForm = document.getElementById('loginForm');
-            
-            // ==================== BARU: SHOW/HIDE PASSWORD ====================
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('loginPassword');
-
-            // Pastikan elemennya ada sebelum menambahkan listener
-            if (togglePassword && passwordInput) {
-                togglePassword.addEventListener('click', function () {
-                    // Toggle tipe input
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    
-                    // Toggle ikon
-                    if (type === 'password') {
-                        // Jika tipe password (tersembunyi)
-                        this.classList.remove('fa-eye');
-                        this.classList.add('fa-eye-slash');
-                    } else {
-                        // Jika tipe text (terlihat)
-                        this.classList.remove('fa-eye-slash');
-                        this.classList.add('fa-eye');
-                    }
-                });
-            }
-            // ==================== AKHIR KODE BARU ====================
-
-
-            // ==================== LOGIN MODAL ====================
-            loginBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                loginModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-
-            closeModal.addEventListener('click', function () {
-                loginModal.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            // Close modal when clicking overlay
-            loginModal.addEventListener('click', function (e) {
-                if (e.target === loginModal) {
-                    loginModal.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-
-            // ==================== PENANGANAN LOGIN ERROR (SUDAH DIPERBAIKI) ====================
-            <?php
-            // Jika ada session error (dideteksi oleh PHP)
-            if (isset($_SESSION['error'])) {
-            
-                // PHP akan "mencetak" kode JavaScript ini
-                // untuk membuka modal secara otomatis
-                echo "loginModal.classList.add('active');\n";
-                echo "document.body.style.overflow = 'hidden';\n";
-                
-                // Setelah modal dipastikan terbuka, hapus session error
-                // agar tidak muncul lagi jika halaman di-refresh manual
-                unset($_SESSION['error']);
-            }
-            ?>
-            // ==================== AKHIR KODE BARU ====================
-            
-
-            // ==================== HAMBURGER MENU ====================
-            hamburger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                hamburger.classList.toggle('active');
-                nav.classList.toggle('active');
-                document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
-            });
-
-            document.addEventListener('click', function (e) {
-                if (nav.classList.contains('active') &&
-                    !nav.contains(e.target) &&
-                    !hamburger.contains(e.target)) {
-                    hamburger.classList.remove('active');
-                    nav.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-
-            const navLinks = nav.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function () {
-                    if (window.innerWidth <= 768) {
-                        hamburger.classList.remove('active');
-                        nav.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-            });
-
-            // ==================== SCROLL EFFECT ====================
-            window.addEventListener('scroll', function () {
-                if (window.scrollY > 20) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-
-            // ==================== ACTIVE NAV LINK ====================
-            const currentPage = window.location.pathname.split('/').pop() || 'index.php';
-            navLinks.forEach(link => {
-                const linkPage = link.getAttribute('href').split('#')[0];
-                if (linkPage === currentPage ||
-                    (currentPage === '' && linkPage === 'index.php')) {
-                    link.classList.add('active');
-                }
-            });
-
-            // ==================== LOADING SCREEN ====================
-            window.addEventListener('load', function () {
-                setTimeout(() => {
-                    loader.classList.add('hidden');
-                    setTimeout(() => loader.remove(), 500);
-                }, 500);
-            });
-
-            // ==================== RESIZE HANDLER ====================
-            window.addEventListener('resize', function () {
-                if (window.innerWidth > 768) {
-                    nav.classList.remove('active');
-                    hamburger.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        });
-
-        // ==================== SERVICE WORKER ====================
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('//service-worker.js')
-                    .then(registration => {
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    if (confirm('Versi baru tersedia. Update sekarang?')) {
-                                        newWorker.postMessage('skipWaiting');
-                                        window.location.reload();
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch(err => console.log('Service Worker registration failed:', err));
-            });
-        }
-    </script>
-</body>
-
-</html>

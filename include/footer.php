@@ -1,351 +1,250 @@
-<footer id="kontak" role="contentinfo">
-    <div class="footer-content">
-        <!-- Info Sekolah -->
-        <div class="footer-section">
-            <div class="footer-logo">
-                <img src="assets/logo.png" alt="Logo SMK" class="footer-logo-img">
-                <span><b>SMK TI Garuda Nusantara</b></span>
+    <!-- FOOTER SECTION (NAVY DARK THEME MATCHING MOCKUP) -->
+    <footer class="bg-brand-dark text-slate-300 pt-16 pb-12 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-slate-800">
+                
+                <!-- BRAND INFO -->
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-school text-lg"></i>
+                        </div>
+                        <span class="font-extrabold text-xl text-white tracking-tight">SMPN CIMAHI</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
+                        Sekolah Menengah Pertama unggulan Kota Cimahi yang mencetak generasi bertakwa, cerdas, kreatif, serta siap bersaing di era global.
+                    </p>
+                    <div class="flex items-center gap-3 text-slate-400 pt-2">
+                        <a href="https://www.facebook.com" target="_blank" aria-label="Facebook" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-accent hover:text-white flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" aria-label="Instagram" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-accent hover:text-white flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-instagram text-sm"></i>
+                        </a>
+                        <a href="https://www.youtube.com" target="_blank" aria-label="YouTube" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-brand-accent hover:text-white flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-youtube text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- TAUTAN UTAMA -->
+                <div class="md:col-span-3 space-y-3">
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">Tautan Utama</p>
+                    <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
+                        <li><a href="index.php#beranda" class="hover:text-white transition-colors">Beranda</a></li>
+                        <li><a href="index.php#tentang" class="hover:text-white transition-colors">Tentang Kami</a></li>
+                        <li><a href="index.php#ekstra" class="hover:text-white transition-colors">Ekstrakulikuler</a></li>
+                        <li><a href="pendaftaran.php" class="hover:text-white transition-colors">Pendaftaran PPDB</a></li>
+                    </ul>
+                </div>
+
+                <!-- KONTAK & ALAMAT -->
+                <div class="md:col-span-4 space-y-3">
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">Kontak & Alamat</p>
+                    <div class="space-y-2 text-xs sm:text-sm text-slate-400">
+                        <p class="flex items-start gap-2">
+                            <i class="fa-solid fa-location-dot mt-1 text-slate-500"></i>
+                            <span>Jl. Mahar Martanegara, Utama, Kec. Cimahi Selatan, Kota Cimahi, Jawa Barat 40533</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-slate-500"></i>
+                            <span>(022) 6654321</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-slate-500"></i>
+                            <span>info@smpncimahi.sch.id</span>
+                        </p>
+                    </div>
+                </div>
+
             </div>
-            <p>Sekolah Menengah Kejuruan unggulan di bidang Teknologi Informasi yang berkomitmen mencetak lulusan
-                berkualitas dan siap kerja.</p>
-            <div class="social-links">
-                <a href="https://www.instagram.com/smktigarudanusantara" target="_blank" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.youtube.com/@smktigarudanusantara" target="_blank" aria-label="YouTube">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://www.tiktok.com/@smktigarudanusantara" target="_blank" aria-label="TikTok">
-                    <i class="fab fa-tiktok"></i>
-                </a>
+
+            <!-- COPYRIGHT FOOTER -->
+            <div class="pt-8 text-center text-xs text-slate-500">
+                <p>© <?= date('Y') ?> SMPN Cimahi. Terakreditasi A • All Rights Reserved.</p>
             </div>
         </div>
+    </footer>
 
-        <!-- Kontak Kami -->
-        <div class="footer-section">
-            <h3>Kontak Kami</h3>
-            <ul>
-                <a href="https://maps.app.goo.gl/UtwVr95LEqjfE49z6">
-                    <li><i class="fas fa-map-marker-alt"></i> Jl. Sangkuriang No.34-36, Cipageran, Kec. Cimahi Utara,
-                        Kota Cimahi, Jawa Barat 40511</li>
-                </a>
-                <a href="https://api.whatsapp.com/">
-                    <li><i class="fas fa-phone"></i> +62 21 1234 5678</li>
-                </a>
-                <li><i class="fas fa-envelope"></i> info@smktigaruda.sch.id</li>
-            </ul>
-        </div>
+    <!-- MODAL: KONTAK KAMI -->
+    <div id="contact-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onclick="closeContactModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            
+            <div class="space-y-2 mb-6">
+                <h3 class="text-2xl font-extrabold text-slate-900">Hubungi SMPN Cimahi</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Silakan kirimkan pertanyaan atau permohonan informasi kepada layanan tata usaha sekolah.</p>
+            </div>
 
-        <!-- Link Cepat -->
-        <div class="footer-section">
-            <h3>Link Cepat</h3>
-            <ul>
-                <li><a href="//index.php"><i class="fas fa-angle-right"></i> Beranda</a></li>
-                <li><a href="//index.php#jurusan-program"><i class="fas fa-angle-right"></i> Jurusan</a></li>
-                <li><a href="//index.php#kontak"><i class="fas fa-angle-right"></i> Artikel</a></li>
-                <li><a href="//ppdb.php"><i class="fas fa-angle-right"></i> Pendaftaran</a></li>
-            </ul>
-        </div>
+            <form onsubmit="submitContactForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
+                    <input type="text" required placeholder="Nama Anda" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                </div>
 
-        <!-- Postingan Terbaru -->
-        <div class="footer-section">
-            <h3>Postingan Terbaru</h3>
-            <ul>
-                <li class="recent-post-item">
-                    <a href="//artikel.php">Siswa TKJ Raih Juara Nasional Kompetisi Jaringan</a>
-                    <span class="recent-post-date"><i class="far fa-calendar"></i> 10 Okt 2025</span>
-                </li>
-                <li class="recent-post-item">
-                    <a href="//artikel.php">Workshop Web Development bersama Industri IT</a>
-                    <span class="recent-post-date"><i class="far fa-calendar"></i> 5 Okt 2025</span>
-                </li>
-                <li class="recent-post-item">
-                    <a href="//artikel.php">Program di 50+ Perusahaan Partner</a>
-                    <span class="recent-post-date"><i class="far fa-calendar"></i> 1 Okt 2025</span>
-                </li>
-            </ul>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alamat Email / No. HP</label>
+                    <input type="text" required placeholder="email@domain.com atau 08xx" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pesan / Pertanyaan</label>
+                    <textarea required rows="3" placeholder="Tuliskan pesan Anda..." class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-brand-blue text-white font-bold rounded-xl shadow transition-colors">
+                    Kirim Pesan
+                </button>
+            </form>
         </div>
     </div>
 
-    <div class="footer-bottom">
-        <p>&copy; 2025 SMK TI Garuda Nusantara. All Rights Reserved.</p>
+    <!-- MODAL: NEWS PREVIEW DETAIL -->
+    <div id="news-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center z-10">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            
+            <div id="news-modal-content" class="space-y-4">
+                <!-- Populated via JavaScript -->
+            </div>
+        </div>
     </div>
-</footer>
 
-<!-- Loader (letakkan di footer agar muncul di semua halaman) -->
-<div class="loader-wrapper" id="globalLoader">
-    <div class="loader"></div>
-</div>
-
-<style>
-    :root {
-        --primary-orange: #ff8303;
-        --primary-blue: #00499d;
-        --dark-blue: #003366;
-        --text-dark: #222;
-        --text-gray: #555;
-        --border-gray: #e0e0e0;
-    }
-
-    footer {
-        background: linear-gradient(135deg, var(--dark-blue), #001a33);
-        color: white;
-        padding: 60px 0 30px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .footer-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr;
-        gap: 40px;
-        padding: 0 40px;
-    }
-
-    .footer-section {
-        text-align: left;
-        /* Ubah ke rata kiri */
-    }
-
-    .footer-section h3 {
-        color: white;
-        margin-bottom: 15px;
-        font-size: 20px;
-        text-align: left;
-
-    }
-
-    .footer-section p {
-        text-align: left;
-        margin-bottom: 20px;
-        line-height: 1.6;
-    }
-
-    .footer-section ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .footer-section ul li {
-        margin-bottom: 15px;
-        color: #e0e0e0;
-        font-size: 14px;
-        text-align: left;
-        /* Tambahkan rata kiri */
-    }
-
-    .footer-section ul li i {
-        margin-right: 10px;
-        color: var(--primary-orange);
-        margin-top: 4px;
-        /* Add small top margin to align icon with text */
-    }
-
-    .footer-section ul li a {
-        color: #e0e0e0;
-        text-decoration: none;
-        transition: color 0.3s;
-        display: inline-flex;
-        /* Change from flex to inline-flex */
-        align-items: center;
-        text-align: left;
-        gap: 10px;
-        /* Add gap between icon and text */
-    }
-
-    .footer-section ul li a:hover {
-        color: var(--primary-orange);
-    }
-
-    .footer-logo {
-        display: flex;
-        align-items: center;
-        /* Change from flex-start to center */
-        gap: 15px;
-        margin-bottom: 20px;
-        justify-content: flex-start;
-        text-align: left;
-        width: 100%;
-    }
-
-    .footer-logo span {
-        display: flex;
-        /* Change from block to flex */
-        align-items: center;
-        /* Add this to vertically center text */
-        height: 45px;
-        /* Match the height of the logo */
-        text-align: left;
-    }
-
-    .footer-logo-img {
-        width: 45px;
-        height: 45px;
-        transition: transform 0.3s;
-    }
-
-    .social-links {
-        display: flex;
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .social-links a {
-        color: white;
-        font-size: 20px;
-        transition: color 0.3s;
-    }
-
-    .social-links a:hover {
-        color: var(--primary-orange);
-    }
-
-    .footer-bottom {
-        text-align: center;
-        padding-top: 30px;
-        margin-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.8);
-    }
-
-    .recent-post-item {
-        text-align: left;
-        width: 100%;
-    }
-
-    .recent-post-item a {
-        display: block;
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
-    .recent-post-date {
-        display: block;
-        text-align: left;
-    }
-
-    .recent-post-date i {
-        margin-right: 5px;
-    }
-
-    /* Loader styles */
-    .loader-wrapper {
-        position: fixed;
-        inset: 0;
-        background: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        transition: opacity .3s ease, visibility .3s;
-    }
-
-    .loader-wrapper.hidden {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-
-    .loader {
-        width: 60px;
-        height: 60px;
-        border: 6px solid #eee;
-        border-top-color: var(--primary-orange);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    @media (max-width: 1024px) {
-        .footer-content {
-            grid-template-columns: 2fr 1fr 1fr;
-            padding: 0 30px;
+    <!-- GLOBAL JAVASCRIPT -->
+    <script>
+        // MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            if (menu) {
+                if (menu.classList.contains('translate-x-full')) {
+                    // Show menu
+                    if (overlay) {
+                        overlay.classList.remove('hidden');
+                        // Small delay to allow display:block to apply before changing opacity
+                        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                    }
+                    menu.classList.remove('translate-x-full');
+                    document.body.classList.add('overflow-hidden');
+                } else {
+                    // Hide menu
+                    if (overlay) {
+                        overlay.classList.add('opacity-0');
+                        setTimeout(() => overlay.classList.add('hidden'), 300);
+                    }
+                    menu.classList.add('translate-x-full');
+                    document.body.classList.remove('overflow-hidden');
+                }
+            }
         }
 
-        .footer-section:last-child {
-            grid-column: 1 / -1;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .footer-content {
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 0 20px;
+        // LOGIN MODAL
+        function openLoginModal() {
+            const modal = document.getElementById('login-modal');
+            if (modal) modal.classList.remove('hidden');
         }
 
-        .footer-section {
-            text-align: left;
-            /* Ubah ke rata kiri */
+        function closeLoginModal() {
+            const modal = document.getElementById('login-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
-        .footer-section:first-child {
-            grid-column: 1 / -1;
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('loginPassword');
+            const icon = document.getElementById('togglePasswordIcon');
+            if (passInput && icon) {
+                if (passInput.type === 'password') {
+                    passInput.type = 'text';
+                    icon.className = 'fa-solid fa-eye';
+                } else {
+                    passInput.type = 'password';
+                    icon.className = 'fa-solid fa-eye-slash';
+                }
+            }
         }
 
-        .footer-logo {
-            justify-content: flex-start;
-            /* Ubah ke rata kiri */
+        // CONTACT MODAL
+        function openContactModal() {
+            const modal = document.getElementById('contact-modal');
+            if (modal) modal.classList.remove('hidden');
         }
 
-        .footer-section ul li {
-            text-align: left;
-            /* Ubah ke rata kiri */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .footer-content {
-            grid-template-columns: 1fr;
-            gap: 35px;
+        function closeContactModal() {
+            const modal = document.getElementById('contact-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
-        .footer-section {
-            padding: 0 15px;
+        function submitContactForm(e) {
+            e.preventDefault();
+            alert('Pesan Anda berhasil terkirim. Terima kasih telah menghubungi SMPN Cimahi!');
+            closeContactModal();
+            e.target.reset();
         }
 
-        .footer-logo img {
-            width: 35px;
-            height: 35px;
+        // NEWS MODAL
+        function openNewsModal(title, category, date, content, imgUrl) {
+            const modal = document.getElementById('news-modal');
+            const modalContent = document.getElementById('news-modal-content');
+            if (modal && modalContent) {
+                modalContent.innerHTML = `
+                    <div class="relative h-64 sm:h-72 rounded-xl overflow-hidden mb-4 bg-slate-100">
+                        <img src="${imgUrl}" class="w-full h-full object-cover" alt="${title}">
+                        <span class="absolute top-3 left-3 bg-brand-navy text-white text-xs font-semibold px-3 py-1 rounded">${category}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">${date}</p>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-tight">${title}</h3>
+                    <div class="text-slate-600 text-sm leading-relaxed space-y-2">${content}</div>
+                    <div class="pt-4 flex justify-end">
+                        <button onclick="closeNewsModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">Tutup</button>
+                    </div>
+                `;
+                modal.classList.remove('hidden');
+            }
         }
-    }
-</style>
 
-<script>
-    // loader hide
-    (function () {
-        try {
-            var loader = document.getElementById('globalLoader') || document.querySelector('.loader-wrapper');
-            if (!loader) return;
-            document.addEventListener('DOMContentLoaded', function () { loader.classList.add('hidden'); });
-            window.addEventListener('load', function () { loader.classList.add('hidden'); });
-            setTimeout(function () { loader.classList.add('hidden'); }, 3000);
-        } catch (e) { try { document.querySelector('.loader-wrapper').classList.add('hidden'); } catch (e2) { } }
-    })();
+        function closeNewsModal() {
+            const modal = document.getElementById('news-modal');
+            if (modal) modal.classList.add('hidden');
+        }
 
-    // footer logo hover / click behavior
-    (function () {
-        if (window._footerInit) return;
-        window._footerInit = true;
-        var footerLogo = document.querySelector('.footer-logo-img');
-        if (!footerLogo) return;
-        footerLogo.addEventListener('mouseenter', function () {
-            footerLogo.style.transform = 'rotate(6deg) scale(1.05)';
-            footerLogo.style.transition = 'transform 0.25s ease';
+        // ANIMATED COUNTER ON SCROLL
+        const counters = document.querySelectorAll('.counter');
+        let counterAnimated = false;
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const duration = 1500;
+                const increment = target / (duration / 16);
+                let current = 0;
+
+                const updateCount = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current);
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCount();
+            });
+        };
+
+        window.addEventListener('scroll', () => {
+            const statsSection = document.querySelector('.counter');
+            if (statsSection && !counterAnimated) {
+                const position = statsSection.getBoundingClientRect();
+                if (position.top < window.innerHeight && position.bottom >= 0) {
+                    animateCounters();
+                    counterAnimated = true;
+                }
+            }
         });
-        footerLogo.addEventListener('mouseleave', function () {
-            footerLogo.style.transform = 'rotate(0deg) scale(1)';
-        });
-        footerLogo.addEventListener('click', function () {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    })();
-</script>
+    </script>
+</body>
+</html>

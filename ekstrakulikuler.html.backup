@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Ekstrakulikuler - SMPN 16 Cimahi</title>
+    <meta name="description" content="Halaman detail kegiatan ekstrakulikuler SMPN 16 Cimahi. Informasi pembimbing, jadwal, foto kegiatan, dan pencapaian prestasi siswa.">
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome 6 Free Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0F172A',
+                            dark: '#0A1128',
+                            blue: '#1E3A8A',
+                            accent: '#0284C7',
+                            lightBg: '#F8FAFC',
+                            softBlue: '#E0F2FE',
+                            mutedBlue: '#BAE6FD',
+                            grayText: '#475569'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        @keyframes top-ticker {
+            0% { transform: translateX(0); }
+            45% { transform: translateX(min(0px, calc(100vw - 100% - 24px))); }
+            50% { transform: translateX(min(0px, calc(100vw - 100% - 24px))); }
+            95% { transform: translateX(0); }
+            100% { transform: translateX(0); }
+        }
+
+        @media (max-width: 639px) {
+            .animate-ticker-mobile {
+                display: inline-flex !important;
+                white-space: nowrap !important;
+                animation: top-ticker 10s ease-in-out infinite;
+                width: max-content !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased selection:bg-brand-softBlue selection:text-brand-blue flex flex-col min-h-screen">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-brand-navy text-white text-xs py-2 px-3 border-b border-slate-800 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="animate-ticker-mobile flex items-center justify-between w-full gap-5 text-slate-200">
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="inline-flex items-center gap-1.5 text-brand-softBlue font-semibold">
+                        <i class="fa-solid fa-bullhorn text-xs"></i> PPDB Tahun Ajaran 2026/2027 Telah Dibuka!
+                    </span>
+                    <span class="text-slate-600">|</span>
+                    <span class="inline-flex items-center gap-1 text-slate-300 font-medium">
+                        <i class="fa-solid fa-graduation-cap text-xs"></i> Terakreditasi A Unggul
+                    </span>
+                </div>
+                <div class="flex items-center gap-3 shrink-0 text-slate-300 font-medium">
+                    <span class="text-slate-600">|</span>
+                    <a href="tel:0226654321" class="hover:text-white transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-phone text-[10px] text-brand-softBlue"></i> (022) 6654321
+                    </a>
+                    <span class="text-slate-600">|</span>
+                    <a href="mailto:info@smpn16cimahi.sch.id" class="hover:text-white transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-envelope text-[10px] text-brand-softBlue"></i> info@smpn16cimahi.sch.id
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- BRAND LOGO -->
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-brand-navy flex items-center justify-center text-white font-extrabold text-xl shadow-md group-hover:bg-brand-accent transition-colors duration-300">
+                        <i class="fa-solid fa-school text-lg"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 leading-none">
+                            SMPN 16 CIMAHI
+                        </span>
+                        <span class="text-[11px] text-slate-500 font-medium tracking-wide mt-1">Cerdas • Berkarakter • Unggul</span>
+                    </div>
+                </a>
+
+                <!-- DESKTOP NAV LINKS -->
+                <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-600">
+                    <a href="index.html#beranda" class="hover:text-brand-accent transition-colors py-1">Beranda</a>
+                    <a href="index.html#tentang" class="hover:text-brand-accent transition-colors py-1">Tentang</a>
+                    <a href="index.html#ekstra" class="text-brand-navy hover:text-brand-accent transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-navy">Ekstrakulikuler</a>
+                    <a href="index.html#berita" class="hover:text-brand-accent transition-colors py-1">Berita</a>
+                </nav>
+
+                <!-- HEADER ACTION BUTTONS: HIGHLIGHTED PPDB + KONTAK KAMI -->
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="pendaftaran.html" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs sm:text-sm font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 flex items-center gap-2 border border-amber-300/40">
+                        <i class="fa-solid fa-file-pen text-xs"></i>
+                        <span>PPDB ONLINE</span>
+                    </a>
+
+                    <button onclick="openContactModal()" class="px-5 py-2.5 bg-brand-navy hover:bg-brand-blue text-white text-xs sm:text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 flex items-center gap-2">
+                        <span>KONTAK KAMI</span>
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- MOBILE MENU HAMBURGER BUTTON -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Buka Menu" class="md:hidden p-2 text-slate-700 hover:text-brand-navy focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MOBILE NAV DRAWER -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-lg">
+            <a href="index.html#beranda" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md font-medium text-slate-600 hover:bg-slate-50">Beranda</a>
+            <a href="index.html#tentang" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md font-medium text-slate-600 hover:bg-slate-50">Tentang</a>
+            <a href="index.html#ekstra" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md font-medium text-brand-navy bg-slate-50">Ekstrakulikuler</a>
+            <a href="index.html#berita" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md font-medium text-slate-600 hover:bg-slate-50">Berita & Artikel</a>
+            <div class="pt-2 space-y-2">
+                <a href="pendaftaran.html" class="block w-full py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-extrabold rounded-lg shadow text-center text-sm">
+                    <i class="fa-solid fa-file-pen mr-1"></i> PPDB ONLINE 2026
+                </a>
+                <button onclick="toggleMobileMenu(); openContactModal();" class="w-full py-2.5 bg-brand-navy text-white text-sm font-semibold rounded-lg shadow text-center">
+                    KONTAK KAMI
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- HERO DETAIL SECTION MATCHING MOCKUP IMAGE -->
+        <section class="py-12 md:py-20 bg-white overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                    
+                    <!-- HERO LEFT TEXT -->
+                    <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                        <span id="ekskul-badge" class="inline-block px-3 py-1 bg-brand-softBlue text-brand-blue text-xs font-bold rounded-full uppercase tracking-wider">
+                            Kepemimpinan & Kedisiplinan
+                        </span>
+
+                        <h1 id="ekskul-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                            Ekstrakulikuler Paskibra
+                        </h1>
+
+                        <p id="ekskul-desc" class="text-base sm:text-lg text-slate-600 leading-relaxed">
+                            Wadah pengembangan bakat, minat, dan potensi siswa di luar jam pelajaran kurikuler. Bergabunglah dan temukan passion Anda bersama kami.
+                        </p>
+
+                        <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                            <button onclick="openPpdbModal()" class="w-full sm:w-auto px-8 py-3 bg-brand-navy hover:bg-brand-blue text-white font-bold text-sm rounded-xl shadow transition-all duration-200">
+                                Bergabung Sekarang
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- HERO RIGHT IMAGE -->
+                    <div class="lg:col-span-6 flex justify-center lg:justify-end">
+                        <div class="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-slate-100">
+                            <img id="ekskul-hero-img" 
+                                 src="https://images.unsplash.com/photo-1526976668912-1a811878dd37?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Ekstrakulikuler Paskibra SMPN 16 Cimahi" 
+                                 class="w-full h-[360px] sm:h-[420px] object-cover object-center transform hover:scale-105 transition-transform duration-500">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- GURU PEMBIMBING SECTION MATCHING MOCKUP IMAGE -->
+        <section class="py-16 md:py-24 bg-brand-lightBg border-y border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+                
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Guru pembimbing</h2>
+
+                <div class="flex flex-col items-center justify-center max-w-sm mx-auto space-y-4">
+                    <!-- INSTRUCTOR CUTOUT IMAGE CONTAINER -->
+                    <div class="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-white shadow-xl bg-slate-200">
+                        <img id="instructor-img" 
+                             src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" 
+                             alt="Susan S.T - Guru Pembimbing" 
+                             class="w-full h-full object-cover">
+                    </div>
+
+                    <div class="space-y-1">
+                        <h3 id="instructor-name" class="text-2xl sm:text-3xl font-extrabold text-slate-900">Susan S.T</h3>
+                        <p id="instructor-role" class="text-sm font-semibold text-slate-500">Pembina Ekstrakulikuler Paskibra</p>
+                        <p id="instructor-schedule" class="text-xs text-brand-blue font-bold pt-1">Jadwal Latihan: Setiap Selasa & Kamis (15:00 - 17:00 WIB)</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PRESTASI EKSTRAKULIKULER SECTION MATCHING MOCKUP IMAGE -->
+        <section class="py-16 md:py-24 bg-gradient-to-b from-white to-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Prestasi Ekstrakulikuler</h2>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Dedikasi dan kerja keras siswa-siswi kami dalam berbagai bidang ekstrakulikuler telah membuahkan hasil yang membanggakan di tingkat regional dan nasional.
+                    </p>
+                </div>
+
+                <!-- 3 CARDS MATCHING MOCKUP IMAGE -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- PRESTASI CARD 1 -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-md text-center space-y-4 hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between">
+                        <div class="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center text-xl shadow-md">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 id="prestasi-title-1" class="font-extrabold text-slate-900 text-lg sm:text-xl">Juara Umum Paskibra</h3>
+                            <p id="prestasi-desc-1" class="text-slate-500 text-xs sm:text-sm">Tingkat Provinsi Jawa Barat 2023</p>
+                        </div>
+                        <div class="w-12 h-1 bg-amber-500 rounded-full mt-2"></div>
+                    </div>
+
+                    <!-- PRESTASI CARD 2 -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-md text-center space-y-4 hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between">
+                        <div class="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center text-xl shadow-md">
+                            <i class="fa-solid fa-medal"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 id="prestasi-title-2" class="font-extrabold text-slate-900 text-lg sm:text-xl">Medali Emas Math Club</h3>
+                            <p id="prestasi-desc-2" class="text-slate-500 text-xs sm:text-sm">Olimpiade Sains Nasional 2023</p>
+                        </div>
+                        <div class="w-12 h-1 bg-amber-500 rounded-full mt-2"></div>
+                    </div>
+
+                    <!-- PRESTASI CARD 3 -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200/80 shadow-md text-center space-y-4 hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between">
+                        <div class="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center text-xl shadow-md">
+                            <i class="fa-solid fa-masks-theater"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 id="prestasi-title-3" class="font-extrabold text-slate-900 text-lg sm:text-xl">Grup Teater Terbaik</h3>
+                            <p id="prestasi-desc-3" class="text-slate-500 text-xs sm:text-sm">Festival Seni Pelajar Kota Cimahi</p>
+                        </div>
+                        <div class="w-12 h-1 bg-amber-500 rounded-full mt-2"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- KOLEKSI FOTO SECTION MATCHING MOCKUP IMAGE -->
+        <section class="py-16 md:py-24 bg-white border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 text-center tracking-tight">Koleksi Foto</h2>
+
+                <!-- ASYMMETRIC / GRID PHOTO GALLERY MATCHING MOCKUP -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="space-y-6">
+                        <div onclick="openPhotoModal(this)" class="rounded-2xl overflow-hidden shadow-md border border-slate-200 group cursor-pointer h-64 sm:h-72">
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80" alt="Foto Latihan 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div onclick="openPhotoModal(this)" class="rounded-2xl overflow-hidden shadow-md border border-slate-200 group cursor-pointer h-64 sm:h-72">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="Foto Latihan 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div onclick="openPhotoModal(this)" class="rounded-2xl overflow-hidden shadow-md border border-slate-200 group cursor-pointer h-44 sm:h-48">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80" alt="Foto Latihan 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div onclick="openPhotoModal(this)" class="rounded-2xl overflow-hidden shadow-md border border-slate-200 group cursor-pointer h-44 sm:h-48">
+                            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" alt="Foto Latihan 4" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div onclick="openPhotoModal(this)" class="rounded-2xl overflow-hidden shadow-md border border-slate-200 group cursor-pointer h-44 sm:h-48">
+                            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" alt="Foto Latihan 5" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LIHAT SEMUA BUTTON MATCHING MOCKUP -->
+                <div class="text-center pt-4">
+                    <button onclick="alert('Menampilkan seluruh koleksi galeri dokumentasi kegiatan ekstrakulikuler SMPN 16 Cimahi')" 
+                            class="px-8 py-3 bg-brand-softBlue hover:bg-brand-mutedBlue text-brand-blue font-bold text-sm rounded-full transition-colors inline-flex items-center gap-2">
+                        <span>Lihat semua =></span>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER SECTION MATCHING MOCKUP IMAGE & MAIN PAGE -->
+    <footer class="bg-brand-dark text-slate-300 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-slate-800">
+                
+                <!-- BRAND INFO -->
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-school text-lg"></i>
+                        </div>
+                        <span class="font-extrabold text-xl text-white tracking-tight">SMPN 16 Cimahi</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
+                        Membentuk generasi cerdas, berkarakter, dan berwawasan global melalui pendidikan berkualitas.
+                    </p>
+                </div>
+
+                <!-- TAUTAN PANTAS -->
+                <div class="md:col-span-3 space-y-3">
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">Tautan Pantas</p>
+                    <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
+                        <li><a href="index.html#tentang" class="hover:text-white transition-colors">Kurikulum</a></li>
+                        <li><a href="index.html#berita" class="hover:text-white transition-colors">Kalender Akademik</a></li>
+                        <li><a href="index.html" class="hover:text-white transition-colors">Perpustakaan Digital</a></li>
+                    </ul>
+                </div>
+
+                <!-- PORTAL -->
+                <div class="md:col-span-4 space-y-3">
+                    <p class="text-xs font-bold text-white uppercase tracking-wider">Portal</p>
+                    <ul class="space-y-2 text-xs sm:text-sm text-slate-400">
+                        <li><a href="index.html#ppdb" onclick="openPpdbModal(event)" class="hover:text-white transition-colors">E-Learning</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Alumni</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Peta Situs</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- COPYRIGHT FOOTER MATCHING MOCKUP -->
+            <div class="pt-8 text-center text-xs text-slate-500">
+                <p>© 2026 SMP Negeri 16 Cimahi. Terakreditasi A (Unggul)</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL PPDB -->
+    <div id="ppdb-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onclick="closePpdbModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            
+            <div class="space-y-2 mb-6">
+                <span class="px-2.5 py-1 bg-brand-softBlue text-brand-blue text-xs font-bold rounded">Pendaftaran</span>
+                <h3 class="text-2xl font-extrabold text-slate-900">Gabung Ekstrakulikuler</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Daftarkan diri Anda untuk mengikuti kegiatan ekstrakulikuler SMPN 16 Cimahi.</p>
+            </div>
+
+            <form onsubmit="submitPpdbForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" required placeholder="Contoh: Muhammad Rizky" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kelas</label>
+                        <input type="text" required placeholder="Contoh: VII-A" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">No. WhatsApp</label>
+                        <input type="tel" required placeholder="0812xxxx" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-brand-blue text-white font-bold rounded-xl shadow transition-colors">
+                    Kirim Pendaftaran
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL KONTAK -->
+    <div id="contact-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onclick="closeContactModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            
+            <div class="space-y-2 mb-6">
+                <h3 class="text-2xl font-extrabold text-slate-900">Hubungi Pembina Ekstrakulikuler</h3>
+                <p class="text-slate-500 text-xs sm:text-sm">Kirim pesan langsung ke koordinator kesiswaan dan pembina.</p>
+            </div>
+
+            <form onsubmit="submitContactForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
+                    <input type="text" required placeholder="Nama Anda" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pesan / Pertanyaan</label>
+                    <textarea required rows="3" placeholder="Tuliskan pertanyaan Anda..." class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-brand-blue focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-brand-navy hover:bg-brand-blue text-white font-bold rounded-xl shadow transition-colors">
+                    Kirim Pesan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PHOTO LIGHTBOX -->
+    <div id="photo-modal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closePhotoModal()">
+        <div class="max-w-4xl w-full relative">
+            <img id="photo-modal-img" src="" class="w-full max-h-[85vh] object-contain rounded-xl shadow-2xl" alt="Foto Galeri">
+            <p class="text-center text-white text-xs mt-3 font-medium">Klik di mana saja untuk menutup</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const dataEkskul = {
+            paskibra: {
+                title: "Ekstrakulikuler Paskibra",
+                badge: "Kepemimpinan & Kedisiplinan",
+                desc: "Wadah pengembangan bakat, minat, dan potensi siswa di luar jam pelajaran kurikuler. Bergabunglah dan temukan passion Anda bersama kami.",
+                heroImg: "https://images.unsplash.com/photo-1526976668912-1a811878dd37?auto=format&fit=crop&w=800&q=80",
+                instructorName: "Susan S.T",
+                instructorRole: "Pembina Ekstrakulikuler Paskibra",
+                instructorSchedule: "Jadwal Latihan: Setiap Selasa & Kamis (15:00 - 17:00 WIB)",
+                instructorImg: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
+                prestasi: [
+                    { title: "Juara Umum Paskibra", desc: "Tingkat Provinsi Jawa Barat 2023" },
+                    { title: "Medali Emas Math Club", desc: "Olimpiade Sains Nasional 2023" },
+                    { title: "Grup Teater Terbaik", desc: "Festival Seni Pelajar Kota Cimahi" }
+                ]
+            },
+            pramuka: {
+                title: "Ekstrakulikuler Pramuka",
+                badge: "Kepramukaan & Alam",
+                desc: "Membentuk karakter pemuda yang tangguh, mandiri, peduli sesama, dan mencintai kelestarian alam nusantara.",
+                heroImg: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=800&q=80",
+                instructorName: "Dra. Siti Rahma",
+                instructorRole: "Pembina Gudep Pramuka",
+                instructorSchedule: "Jadwal Latihan: Setiap Jumat (14:00 - 16:30 WIB)",
+                instructorImg: "https://images.unsplash.com/photo-1580894732468-9111ad068560?auto=format&fit=crop&w=600&q=80",
+                prestasi: [
+                    { title: "Juara 1 Jambore Kebangsaan", desc: "Tingkat Kota Cimahi 2023" },
+                    { title: "Regu Terbaik PBB & Pionering", desc: "Lomba Pramuka Penegak 2023" },
+                    { title: "Penghargaan Lingkungan Hidup", desc: "Pramuka Peduli Jabar 2023" }
+                ]
+            },
+            english: {
+                title: "English Club",
+                badge: "Seni & Bahasa Internasional",
+                desc: "Meningkatkan kepercayaan diri siswa dalam berbahasa Inggris melalui debat, pidato, drama, dan storytelling interaktif.",
+                heroImg: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+                instructorName: "Maya Indriani, M.Pd",
+                instructorRole: "Pembina English Club",
+                instructorSchedule: "Jadwal Latihan: Setiap Rabu (15:30 - 17:00 WIB)",
+                instructorImg: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
+                prestasi: [
+                    { title: "Juara 1 English Speech Contest", desc: "Tingkat Kota Cimahi 2023" },
+                    { title: "Runner-Up Storytelling", desc: "Festival Bahasa Jawa Barat 2023" },
+                    { title: "Best Debater Student", desc: "Inter-School Debate 2023" }
+                ]
+            },
+            pmr: {
+                title: "Palang Merah Remaja (PMR)",
+                badge: "Kesehatan & Kemanusiaan",
+                desc: "Memberikan pengetahuan pertolongan pertama, kesehatan remaja, dan jiwa kepedulian sosial bagi sesama.",
+                heroImg: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80",
+                instructorName: "drh. Anita Widyastuti",
+                instructorRole: "Pembina Unit PMR Wira",
+                instructorSchedule: "Jadwal Latihan: Setiap Sabtu (09:00 - 11:30 WIB)",
+                instructorImg: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+                prestasi: [
+                    { title: "Juara Umum Lomba Pertolongan Pertama", desc: "PMI Jawa Barat 2023" },
+                    { title: "Penghargaan Donor Darah Remaja", desc: "PMI Kota Cimahi 2023" },
+                    { title: "PMR Madya Terbaik", desc: "Jumpa Bakti Gembira 2023" }
+                ]
+            },
+            basket: {
+                title: "Bola Basket & Voli",
+                badge: "Olahraga & Kebugaran",
+                desc: "Melatih stamina, ketangkasan, dan kerjasama tim melalui kompetisi olahraga antar sekolah tingkat daerah.",
+                heroImg: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80",
+                instructorName: "Ahmad Hidayat, S.Pd",
+                instructorRole: "Pelatih Utama Olahraga",
+                instructorSchedule: "Jadwal Latihan: Setiap Senin & Kamis (15:30 - 17:30 WIB)",
+                instructorImg: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+                prestasi: [
+                    { title: "Juara 1 Basket SMP Cup", desc: "Tingkat Kota Cimahi 2023" },
+                    { title: "Medali Perak Voli Putra", desc: "O2SN SMP 2023" },
+                    { title: "Pemain Terbaik (MVP)", desc: "Turnamen Pelajar Cimahi 2023" }
+                ]
+            },
+            musik: {
+                title: "Seni Musik & Band",
+                badge: "Kreativitas & Seni Suara",
+                desc: "Mengembangkan bakat seni instrumen musik, vokal, dan grup musik pelajar untuk ajang pertunjukan dan perlombaan.",
+                heroImg: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80",
+                instructorName: "Rian Febrian, S.Sn",
+                instructorRole: "Pembina Seni Musik",
+                instructorSchedule: "Jadwal Latihan: Setiap Rabu & Sabtu (14:00 - 16:30 WIB)",
+                instructorImg: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+                prestasi: [
+                    { title: "Juara 1 FLS2N Gitar Duet", desc: "Tingkat Kota Cimahi 2023" },
+                    { title: "Grup Band Pelajar Terbaik", desc: "Pentas Seni Budaya 2023" },
+                    { title: "Penyanyi Solo Terbaik", desc: "Lomba Vokal SMP 2023" }
+                ]
+            }
+        };
+
+        function switchEkskul(key) {
+            const item = dataEkskul[key];
+            if (!item) return;
+
+            // Update UI elements
+            document.getElementById('ekskul-title').innerText = item.title;
+            document.getElementById('ekskul-badge').innerText = item.badge;
+            document.getElementById('ekskul-desc').innerText = item.desc;
+            document.getElementById('ekskul-hero-img').src = item.heroImg;
+
+            document.getElementById('instructor-name').innerText = item.instructorName;
+            document.getElementById('instructor-role').innerText = item.instructorRole;
+            document.getElementById('instructor-schedule').innerText = item.instructorSchedule;
+            document.getElementById('instructor-img').src = item.instructorImg;
+
+            document.getElementById('prestasi-title-1').innerText = item.prestasi[0].title;
+            document.getElementById('prestasi-desc-1').innerText = item.prestasi[0].desc;
+            document.getElementById('prestasi-title-2').innerText = item.prestasi[1].title;
+            document.getElementById('prestasi-desc-2').innerText = item.prestasi[1].desc;
+            document.getElementById('prestasi-title-3').innerText = item.prestasi[2].title;
+            document.getElementById('prestasi-desc-3').innerText = item.prestasi[2].desc;
+
+            // Update tabs styling
+            document.querySelectorAll('.ekskul-selector-btn').forEach(btn => {
+                btn.className = 'ekskul-selector-btn px-4 py-1.5 rounded-full bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-colors shrink-0';
+            });
+            const activeBtn = document.getElementById('tab-' + key);
+            if (activeBtn) {
+                activeBtn.className = 'ekskul-selector-btn px-4 py-1.5 rounded-full bg-brand-navy text-white font-semibold transition-colors shrink-0';
+            }
+        }
+
+        // READ URL PARAMETER IF ANY
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type') || 'paskibra';
+            if (dataEkskul[type]) {
+                switchEkskul(type);
+            }
+        });
+
+        // MOBILE MENU
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.className = 'fa-solid fa-bars text-2xl';
+            } else {
+                icon.className = 'fa-solid fa-xmark text-2xl';
+            }
+        }
+
+        // MODAL FUNCTIONS
+        function openPpdbModal(e) {
+            if (e) e.preventDefault();
+            document.getElementById('ppdb-modal').classList.remove('hidden');
+        }
+        function closePpdbModal() {
+            document.getElementById('ppdb-modal').classList.add('hidden');
+        }
+        function submitPpdbForm(e) {
+            e.preventDefault();
+            alert('Pendaftaran berhasil dikirim! Pembina akan menghubungi Anda melalui WhatsApp.');
+            closePpdbModal();
+            e.target.reset();
+        }
+
+        function openContactModal() {
+            document.getElementById('contact-modal').classList.remove('hidden');
+        }
+        function closeContactModal() {
+            document.getElementById('contact-modal').classList.add('hidden');
+        }
+        function submitContactForm(e) {
+            e.preventDefault();
+            alert('Pesan berhasil terkirim. Terima kasih telah menghubungi pembina.');
+            closeContactModal();
+            e.target.reset();
+        }
+
+        function openPhotoModal(container) {
+            const img = container.querySelector('img');
+            if (img) {
+                document.getElementById('photo-modal-img').src = img.src;
+                document.getElementById('photo-modal').classList.remove('hidden');
+            }
+        }
+        function closePhotoModal() {
+            document.getElementById('photo-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,2587 +1,739 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'config/koneksi.php';
+
+include 'include/nav.php';
 ?>
-<!DOCTYPE html>
-<html lang="id">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SMK TI Garuda Nusantara - Sekolah Unggulan Teknologi</title>
-    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="icons/favicon.svg" />
-    <link rel="shortcut icon" href="icons/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="SMK TI GNC" />
-    <link rel="manifest" href="/Web-sekolah/manifest.json">
-    <link rel="icon" type="image/png" sizes="32x32" href="/Web-sekolah/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/Web-sekolah/icons/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/Web-sekolah/icons/apple-touch-icon.png">
-    <meta name="theme-color" content="#00499D">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* CSS Variables */
-        :root {
-            --primary-orange: #ff8303;
-            --primary-blue: #00499d;
-            --text-dark: #0f1724;
-            --text-gray: #6b7280;
-        }
-
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            padding-top: 0;
-            /* Hapus padding-top */
-            overflow-x: hidden;
-            /* Add padding for fixed header */
-        }
-
-
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ========================================
-        HERO SECTION - PROFESSIONAL WHITE
-        ======================================== */
-        .hero {
-            position: relative;
-            width: 100vw;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            min-height: 100vh;
-            /* Ubah ke 100vh */
-            background: url('assets/c.jpeg') center/cover;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-dark);
-            text-align: center;
-            overflow: hidden;
-            border-bottom: 1px solid var(--border-gray);
-            padding: 80px 20px;
-            margin-top: -80px;
-            /* Tambahkan margin negative sebesar tinggi header */
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(180deg,
-                    #0A3C96 0%,
-                    #1557B0 50%,
-                    #1F75D8 100%);
-            opacity: 0.88;
-            z-index: 1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
-            font-weight: 800;
-            font-size: 56px;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
-            animation: fadeInUp 1s ease 0.2s both;
-            color: white;
-        }
-
-        .hero p {
-            font-weight: 400;
-            font-size: 20px;
-            margin: 15px auto 0;
-            max-width: 700px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
-            animation: fadeInUp 1s ease 0.4s both;
-            text-align: center;
-            line-height: 1.6;
-            padding: 0 20px;
-            color: white;
-
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-            animation: fadeInUp 1s ease 0.6s both;
-            justify-content: center;
-        }
-
-        .btn-hero {
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .btn-primary {
-            background: var(--primary-orange);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 131, 3, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 131, 3, 0.4);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-            box-shadow: 0 4px 15px rgba(0, 73, 157, 0.15);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-blue);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 73, 157, 0.25);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Floating Icons */
-        .floating-icon {
-            position: absolute;
-            font-size: 40px;
-            opacity: 0.05;
-            animation: float 6s ease-in-out infinite;
-            color: var(--primary-blue);
-        }
-
-        .floating-icon:nth-child(1) {
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-icon:nth-child(2) {
-            top: 20%;
-            right: 15%;
-            animation-delay: 2s;
-        }
-
-        .floating-icon:nth-child(3) {
-            bottom: 15%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        .floating-icon:nth-child(4) {
-            bottom: 20%;
-            right: 10%;
-            animation-delay: 3s;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        /* ========================================
-        STATS SECTION - WHITE THEME
-        ======================================== */
-        .stats {
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            display: flex;
-            justify-content: center;
-            gap: 80px;
-            padding: 50px 20px;
-            color: var(--text-dark);
-            border-top: 1px solid var(--border-gray);
-            border-bottom: 1px solid var(--border-gray);
-        }
-
-        .stat-item {
-            text-align: center;
-            position: relative;
-            padding: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-        }
-
-        .stat-item i {
-            font-size: 40px;
-            color: var(--primary-orange);
-            margin-bottom: 10px;
-        }
-
-        .stat-item .number {
-            display: block;
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-item .label {
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            color: var(--text-gray);
-        }
-
-        /* ========================================
-        MAIN CONTENT
-        ======================================== */
-        main {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .section-title {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin-bottom: 40px;
-            margin top: 50px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -10px;
-            width: 60px;
-            height: 5px;
-            background: var(--primary-orange);
-            border-radius: 3px;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            left: 70px;
-            bottom: -10px;
-            width: 30px;
-            height: 5px;
-            background: var(--primary-orange);
-            opacity: 0.5;
-            border-radius: 3px;
-        }
-
-        /* ========================================
-        ABOUT SECTION
-        ======================================== */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            margin-bottom: 60px;
-        }
-
-        .about-text p {
-            font-size: 16px;
-            color: var(--text-gray);
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-
-        .about-image {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .about-image img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .about-image:hover img {
-            transform: scale(1.1);
-        }
-
-        .about-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 73, 157, 0.3), rgba(255, 131, 3, 0.3));
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .about-image:hover::before {
-            opacity: 1;
-        }
-
-        /* ========================================
-        SAMBUTAN KEPALA SEKOLAH
-        ======================================== */
-        .sambutan-section {
-            background: linear-gradient(135deg, #f8f9fa, #ffffff);
-            padding: 60px;
-            border-radius: 20px;
-            margin-bottom: 80px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-gray);
-        }
-
-        .sambutan-container {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
-
-        .sambutan-img {
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .sambutan-img img {
-            width: 180px;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            border: 5px solid white;
-        }
-
-        .sambutan-badge {
-            position: absolute;
-            bottom: -15px;
-            right: -15px;
-            background: var(--primary-orange);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(255, 131, 3, 0.4);
-        }
-
-        .sambutan-content h3 {
-            font-size: 24px;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .sambutan-content p {
-            font-size: 15px;
-            color: var(--text-gray);
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .sambutan-signature {
-            margin-top: 20px;
-            font-weight: 600;
-            color: var(--primary-blue);
-        }
-
-        /* ========================================
-         JURUSAN SECTION - WHITE PROFESSIONAL
-        ======================================== */
-        .jurusan-program-section {
-            background: white;
-            /* Changed from gradient to solid white */
-            padding: 80px 0;
-            position: relative;
-            overflow: hidden;
-            margin: 0 -40px 80px -40px;
-            border-top: 1px solid var(--border-gray);
-            border-bottom: 1px solid var(--border-gray);
-        }
-
-        .jurusan-program-section::before {
-            content: '';
-            /* Removed the radial gradient background */
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            /* Removed background: radial-gradient(circle, rgba(0, 73, 157, 0.03), transparent); */
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .jurusan-program-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .jurusan-program-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .jurusan-program-title {
-            font-size: 42px;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin-bottom: 15px;
-            letter-spacing: -0.5px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .jurusan-program-title::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--primary-orange));
-            border-radius: 2px;
-        }
-
-        .jurusan-program-subtitle {
-            font-size: 18px;
-            color: #666;
-            font-weight: 400;
-            margin-top: 25px;
-            line-height: 1.6;
-        }
-
-        /* Slider Wrapper */
-        .jurusan-slider-wrapper {
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        /* Grid for Desktop */
-        .jurusan-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        /* Navigation Buttons */
-        .slider-nav {
-            display: none;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            f background: white;
-            border: 2px solid var(--border-gray);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            z-index: 10;
-            color: var(--primary-blue);
-            font-size: 20px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slider-nav:hover {
-            background: var(--primary-orange);
-            color: white;
-            border-color: var(--primary-orange);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .slider-nav:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .slider-nav.prev {
-            left: -25px;
-        }
-
-        .slider-nav.next {
-            right: -25px;
-        }
-
-        /* Slider Dots */
-        .slider-dots {
-            display: none;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
-        .slider-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(0, 73, 157, 0.2);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 0;
-        }
-
-        .slider-dot.active {
-            background: var(--primary-blue);
-            width: 30px;
-            border-radius: 6px;
-        }
-
-        /* Jurusan Card */
-        .jurusan-card {
-            background: #FFFFFF;
-            border-radius: 20px;
-            padding: 35px 25px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .jurusan-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 73, 157, 0.02), rgba(255, 131, 3, 0.02));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            border-radius: 20px;
-        }
-
-        .jurusan-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary-orange);
-        }
-
-        .jurusan-card:hover::before {
-            opacity: 1;
-        }
-
-        .jurusan-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.4s ease;
-        }
-
-        .jurusan-card:hover .jurusan-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .jurusan-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 5px 15px rgba(0, 73, 157, 0.2));
-        }
-
-        /* Jurusan Content */
-        .jurusan-content {
-            text-align: center;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .jurusan-content h3 {
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 12px;
-            line-height: 1.4;
-            position: relative;
-            z-index: 1;
-            transition: color 0.3s ease;
-            min-height: 50px;
-            width: 100%;
-        }
-
-        .jurusan-card:hover .jurusan-content h3 {
-            color: var(--dark-blue);
-        }
-
-        .jurusan-content p {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-            margin-bottom: 15px;
-            width: 100%;
-        }
-
-        .jurusan-content ul {
-            list-style: none;
-            padding: 0;
-            margin: 0 auto 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: center;
-            width: 100%;
-        }
-
-        .jurusan-content ul li {
-            position: relative;
-            padding-left: 25px;
-            color: #444;
-            font-size: 13px;
-            line-height: 1.5;
-            text-align: left;
-            width: 100%;
-            max-width: 200px;
-            display: block;
-        }
-
-        .jurusan-content ul li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            top: 0;
-            color: var(--primary-orange);
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .btn-detail {
-            background: linear-gradient(135deg, var(--primary-orange), #ff6b00);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            align-self: center;
-            box-shadow: 0 4px 15px rgba(255, 131, 3, 0.25);
-            margin-top: auto;
-        }
-
-        .btn-detail:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 131, 3, 0.35);
-        }
-
-        .jurusan-motivasi {
-            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-            color: #FFFFFF;
-            padding: 30px 40px;
-            border-radius: 20px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            line-height: 1.6;
-            box-shadow: 0 10px 30px rgba(0, 73, 157, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .jurusan-motivasi::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 131, 3, 0.1), transparent);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        .jurusan-motivasi p {
-            position: relative;
-            z-index: 1;
-            margin: 0;
-        }
-
-        .highlight-text {
-            color: var(--primary-orange);
-            font-weight: 800;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 0.3;
-            }
-
-            50% {
-                transform: scale(1.2) rotate(180deg);
-                opacity: 0.6;
-            }
-        }
-
-
-        /* ========== Ekstrakurikuler - full‑bleed update ========== */
-        .ekstrakurikuler-section {
-            /* full-bleed gray background that always matches viewport width */
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            width: 100vw;
-            background: #f3f6f9;
-            /* lembut abu muda */
-            padding: 80px 0;
-            overflow: hidden;
-            font-family: 'Poppins', Inter, sans-serif;
-            z-index: 0;
-        }
-
-        /* keep inner card centered within the full-bleed section */
-        .ekstrakurikuler-inner {
-            position: relative;
-            z-index: 2;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 14px 40px rgba(8, 30, 52, 0.06);
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* title sits above the card content, centered */
-        .ekstrakurikuler-title {
-            text-align: center;
-            color: #0A3C96;
-            /* biru tua */
-            font-size: 40px;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 0.6px;
-        }
-
-        .ekstrakurikuler-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            width: 100%;
-            align-items: center;
-            justify-items: center;
-            max-width: 960px;
-        }
-
-        /* LEFT - carousel */
-        .ekstrakurikuler-left {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-        }
-
-        .ekstrakurikuler-carousel {
-            position: relative;
-            width: 260px;
-            height: 260px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .ekskul-logo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(8, 30, 52, 0.08);
-            border: 6px solid rgba(2, 6, 23, 0.03);
-            transition: transform 0.35s ease;
-        }
-
-        .ekskul-logo img {
-            width: 88%;
-            height: 88%;
-            object-fit: contain;
-        }
-
-        /* Update class ekstrul-meta */
-        .ekskul-meta {
-            text-align: center;
-            margin-top: 2px;
-            /* Ubah nilai ini sesuai kebutuhan */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .ekskul-meta .name {
-            font-size: 16px;
-            font-weight: 800;
-            color: #0A3C96;
-            width: 100%;
-            text-align: center;
-
-        }
-
-        .ekskul-meta .subtitle {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 4px;
-            letter-spacing: 0.6px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .ekskul-more {
-            margin-top: 8px;
-            background: #16a34a;
-            /* hijau */
-            color: white;
-            border: none;
-            padding: 7px 12px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            box-shadow: 0 8px 18px rgba(22, 163, 74, 0.14);
-        }
-
-        /* navigation buttons placed close to logo (left/right) */
-        .ekstrakurikuler-carousel .ekstrakurikuler-nav {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            padding: 0 8px;
-            pointer-events: none;
-        }
-
-        .ekstrakurikuler-carousel .ekstrakurikuler-nav button {
-            pointer-events: all;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: #16a34a;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.18);
-            transition: transform 0.18s ease, background 0.18s ease;
-            font-size: 14px;
-        }
-
-        .ekstrakurikuler-carousel .ekstrakurikuler-nav button:hover {
-            transform: scale(1.05);
-        }
-
-        /* RIGHT - illustration */
-        .ekstrakurikuler-illustration {
-            max-width: 380px;
-            /* Reduced from 420px */
-            width: 100%;
-            height: 240px;
-            /* Reduced from 280px */
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(8, 30, 52, 0.06);
-            background: transparent;
-            display: block;
-            object-fit: contain;
-            /* Changed from cover to contain to maintain aspect ratio */
-        }
-
-        /* small tweaks for visual balance */
-        .ekstrakurikuler-content>* {
-            max-width: 520px;
-        }
-
-        /* Responsive */
-        @media (max-width: 980px) {
-            .ekstrakurikuler-inner {
-                padding: 20px;
-            }
-
-            .ekstrakurikuler-content {
-                grid-template-columns: 1fr;
-                gap: 18px;
-            }
-
-            .ekstrakurikuler-carousel {
-                margin: 0 auto;
-            }
-
-            .ekstrakurikuler-section {
-                padding: 50px 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .ekstrakurikuler-content {
-                display: flex;
-                flex-direction: column-reverse;
-                align-items: center;
-                gap: 18px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .ekstrakurikuler-inner {
-                padding: 16px;
-                border-radius: 18px;
-            }
-
-            .ekstrakurikuler-title {
-                font-size: 30px;
-            }
-
-            .ekskul-logo {
-                width: 110px;
-                height: 110px;
-            }
-
-            .ekstrakurikuler-illustration {
-                max-width: 320px;
-            }
-        }
-
-        /* ========== end Ekstrakurikuler styles ========== */
-
-        /* ========================================
-        ARTIKEL SECTION
-        ======================================== */
-        .artikel-container {
-            position: relative;
-            margin-bottom: 100px;
-            margin-top: 50px;
-        }
-
-        .artikel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .btn-view-all {
-            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(0, 73, 157, 0.25);
-        }
-
-        .btn-view-all:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 73, 157, 0.35);
-        }
-
-        .artikel-slider {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .artikel-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid var(--border-gray);
-        }
-
-        .artikel-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .artikel-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .artikel-card:hover img {
-            transform: scale(1.1);
-        }
-
-        .artikel-content {
-            padding: 25px;
-        }
-
-        .artikel-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-
-        .artikel-meta span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .artikel-content h3 {
-            font-size: 18px;
-            color: var(--primary-blue);
-            margin-bottom: 10px;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-
-        .artikel-content p {
-            font-size: 14px;
-            color: var(--text-gray);
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .artikel-link {
-            color: var(--primary-orange);
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: gap 0.3s ease;
-        }
-
-        .artikel-link:hover {
-            gap: 10px;
-        }
-
-        /* ========================================
-        FOOTER - DARK PROFESSIONAL
-        ======================================== */
-        footer {
-            background: linear-gradient(135deg, var(--dark-blue), #001a33);
-            color: white;
-            padding: 60px 20px 30px;
-            /* Kurangi padding horizontal */
-            width: 100vw;
-            /* Full viewport width */
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-            padding: 0 20px;
-            /* Tambah padding untuk konten */
-        }
-
-        .footer-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* Center content */
-            text-align: center;
-        }
-
-        .footer-section h3 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: var(--primary-orange);
-            text-align: center;
-            /* Center headings */
-        }
-
-        .footer-section p {
-            font-size: 14px;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.8);
-            text-align: center;
-            /* Center paragraphs */
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Center logo and text */
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .footer-section ul {
-            list-style: none;
-            width: 100%;
-            text-align: center;
-            /* Center list items */
-        }
-
-        .footer-section ul li {
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .footer-section ul li a {
-            justify-content: center;
-            /* Center link content */
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-section.footer-contact ul li a {
-            justify-content: center;
-            /* Center contact info */
-        }
-
-        /* Keep social links left-aligned */
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            /* Remove justify-content: center to keep social icons left-aligned */
-        }
-
-        .recent-post-item {
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .recent-post-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .recent-post-item a {
-            display: block;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 13px;
-            line-height: 1.5;
-            transition: all 0.3s ease;
-        }
-
-        .recent-post-item a:hover {
-            color: var(--primary-orange);
-            padding-left: 5px;
-        }
-
-        .recent-post-date {
-            display: block;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            font-size: 18px;
-        }
-
-        .social-links a:hover {
-            background: var(--primary-orange);
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-
-        /* ========================================
-        SCROLL TO TOP BUTTON
-        ======================================== */
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--primary-orange);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(255, 131, 3, 0.4);
-            z-index: 999;
-        }
-
-        .scroll-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(255, 131, 3, 0.5);
-        }
-
-        /* ========================================
-        UTILITY CLASSES
-        ======================================== */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        button,
-        .btn-detail {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        /* ========================================
-        RESPONSIVE DESIGN
-        ======================================== */
-        @media (max-width: 1024px) {
-            header {
-                padding: 20px 30px;
-            }
-
-            .logo {
-                font-size: 16px;
-            }
-
-            .logo-img {
-                width: 45px;
-                height: 45px;
-            }
-
-            .footer-content {
-                grid-template-columns: 2fr 1fr 1fr;
-            }
-
-            .footer-section:last-child {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            .logo {
-                font-size: 14px;
-                gap: 10px;
-            }
-
-            .logo-img {
-                width: 38px;
-                height: 38px;
-            }
-
-            header nav {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 70%;
-                height: 100vh;
-                background: #ffffff;
-                padding: 80px 30px 30px;
-                transition: right 0.3s ease;
-                box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
-                overflow-y: auto;
-            }
-
-            header nav.active {
-                right: 0;
-            }
-
-            header nav ul {
-                flex-direction: column;
-                gap: 25px;
-            }
-
-            header nav ul li a {
-                font-size: 18px;
-                color: var(--text-dark);
-            }
-
-            .btn-register {
-                display: none;
-            }
-
-            .mobile-register-btn {
-                display: block;
-            }
-
-            .hero {
-                min-height: 500px;
-                padding: 60px 20px;
-            }
-
-            .hero-content {
-                padding: 0 15px;
-            }
-
-            .hero h1 {
-                font-size: 32px;
-            }
-
-            .hero p {
-                font-size: 15px;
-                line-height: 1.6;
-                padding: 0 10px;
-                margin: 15px auto 0;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                width: 100%;
-                max-width: 280px;
-                margin: 25px auto 0;
-            }
-
-            .btn-hero {
-                width: 100%;
-                padding: 14px 30px;
-                font-size: 14px;
-            }
-
-            .stats {
-                flex-direction: row;
-                gap: 20px;
-                padding: 40px 15px;
-                justify-content: space-around;
-            }
-
-            .stat-item {
-                padding: 10px 5px;
-                flex: 1;
-            }
-
-            .stat-item i {
-                font-size: 28px;
-                margin-bottom: 8px;
-            }
-
-            .stat-item .number {
-                font-size: 32px;
-                margin-bottom: 3px;
-            }
-
-            .stat-item .label {
-                font-size: 11px;
-                letter-spacing: 0.3px;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .about-image img {
-                height: 300px;
-            }
-
-            .sambutan-container {
-                flex-direction: column;
-                text-align: center;
-                align-items: center;
-            }
-
-            .sambutan-section {
-                padding: 30px 20px;
-            }
-
-            .sambutan-img img {
-                width: 150px;
-                height: 180px;
-            }
-
-            .sambutan-content h3 {
-                font-size: 20px;
-            }
-
-            .sambutan-content p {
-                font-size: 14px;
-            }
-
-            .artikel-header {
-                flex-direction: column;
-                gap: 20px;
-                align-items: flex-start;
-            }
-
-            .artikel-slider {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .artikel-card img {
-                height: 200px;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 35px;
-            }
-
-            .footer-section {
-                text-align: center;
-            }
-
-            .footer-logo {
-                justify-content: center;
-            }
-
-            .footer-logo-img {
-                width: 35px;
-                height: 35px;
-            }
-
-            .footer-logo span {
-                font-size: 16px;
-            }
-
-            .social-links {
-                justify-content: center;
-            }
-
-            .footer-section ul li {
-                text-align: center;
-            }
-
-            .footer-section ul li a {
-                justify-content: center;
-            }
-
-            main {
-                padding: 40px 20px;
-            }
-
-            .section-title {
-                font-size: 28px;
-            }
-
-            .jurusan-program-section {
-                padding: 60px 0;
-                margin: 0 -20px 60px -20px;
-            }
-
-            .jurusan-program-container {
-                padding: 0 20px;
-            }
-
-            .jurusan-program-title {
-                font-size: 28px;
-            }
-
-            .jurusan-program-subtitle {
-                font-size: 15px;
-                padding: 0 10px;
-            }
-
-            .jurusan-slider-wrapper {
-                position: relative;
-                padding: 0 10px;
-                display: flex;
-                justify-content: center;
-            }
-
-            .jurusan-grid {
-                display: flex;
-                flex-direction: row;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                scroll-behavior: smooth;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                gap: 20px;
-                padding: 20px 5px;
-                margin: 0 auto;
-                justify-content: center;
-            }
-
-            .jurusan-grid::-webkit-scrollbar {
-                display: none;
-            }
-
-            .jurusan-card {
-                min-width: calc(100% - 40px);
-                max-width: calc(100% - 40px);
-                flex-shrink: 0;
-                scroll-snap-align: center;
-                padding: 30px 20px;
-                margin: 0 auto;
-            }
-
-            .jurusan-content h3 {
-                font-size: 17px;
-                min-height: auto;
-            }
-
-            .jurusan-content p {
-                font-size: 13px;
-                padding: 0 10px;
-            }
-
-            .jurusan-content ul {
-                gap: 6px;
-                padding: 0 5px;
-            }
-
-            .jurusan-content ul li {
-                font-size: 12px;
-                max-width: 180px;
-            }
-
-            .btn-detail {
-                font-size: 12px;
-                padding: 10px 20px;
-            }
-
-            .slider-nav {
-                display: flex;
-            }
-
-            .slider-nav.prev {
-                left: 10px;
-            }
-
-            .slider-nav.next {
-                right: 10px;
-            }
-
-            .slider-dots {
-                display: flex;
-            }
-
-            .jurusan-motivasi {
-                font-size: 16px;
-                padding: 25px 20px;
-                margin-top: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                min-height: 450px;
-                padding: 50px 15px;
-            }
-
-            .hero h1 {
-                font-size: 28px;
-            }
-
-            .hero p {
-                font-size: 14px;
-            }
-
-            .stats {
-                gap: 10px;
-                padding: 35px 10px;
-            }
-
-            .stat-item i {
-                font-size: 24px;
-            }
-
-            .stat-item .number {
-                font-size: 28px;
-            }
-
-            .stat-item .label {
-                font-size: 10px;
-            }
-
-            .section-title {
-                font-size: 24px;
-            }
-
-            .jurusan-program-title {
-                font-size: 24px;
-            }
-
-            .jurusan-card {
-                min-width: calc(100% - 30px);
-                max-width: calc(100% - 30px);
-                padding: 25px 18px;
-            }
-
-            .slider-nav {
-                width: 44px;
-                height: 44px;
-                font-size: 18px;
-            }
-
-            .slider-nav.prev {
-                left: 5px;
-            }
-
-            .slider-nav.next {
-                right: 5px;
-            }
-
-            .jurusan-motivasi {
-                font-size: 15px;
-                padding: 20px 15px;
-            }
-        }
-    </style>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // ganti '/Web-Sekolah/service-worker.js' jika project ada di subfolder,
-                // atau pakai '/service-worker.js' jika di root
-                navigator.serviceWorker.register('/Web-Sekolah/service-worker.js', { scope: '/Web-Sekolah/' })
-                    .then(reg => console.log('ServiceWorker registered with scope:', reg.scope))
-                    .catch(err => console.error('ServiceWorker registration failed:', err));
-            });
-        }
-    </script>
-</head>
-
-<body>
-    <?php include 'include/nav.php'; ?>
-
-
-
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero" id="beranda">
-
-
-            <div class="hero-content">
-                <h1>SMK TI GARUDA NUSANTARA</h1>
-                <p>Sekolah Unggulan di bidang Teknologi Informasi dan Komunikasi<br>Membangun Generasi Digital yang
-                    Kompeten
-                    dan Berkarakter</p>
-                <div class="hero-buttons">
-                    <button class="btn-hero btn-primary" onclick="window.location.href='pendaftaran.php'">
-                        <i class="fas fa-rocket"></i> Daftar Sekarang
-                    </button>
-                    <button class="btn-hero btn-secondary"
-                        onclick="document.getElementById('profil').scrollIntoView({behavior: 'smooth'})">
-                        <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
-                    </button>
-                </div>
+<main class="flex-grow">
+    <!-- HERO SECTION (CLASSIC/TRADITIONAL SCHOOL STYLE) -->
+    <section id="beranda"
+        class="relative pt-16 pb-24 md:pt-36 md:pb-40 overflow-hidden bg-slate-800 flex items-center justify-center min-h-[75vh] md:min-h-[85vh] border-b-4 border-blue-800">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80"
+                alt="Lingkungan SMPN Cimahi" class="w-full h-full object-cover object-center opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-800/40 to-slate-900/80"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+
+            <!-- School Logo / Crest Placeholder -->
+            <div
+                class="mb-4 md:mb-6 bg-white/10 p-3 md:p-5 rounded-full backdrop-blur-sm border border-white/20 shadow-lg">
+                <i class="fa-solid fa-school-flag text-3xl md:text-5xl text-white"></i>
             </div>
-        </section>
 
-        <!-- Stats Section -->
-        <section class="stats">
-            <div class="stat-item fade-in">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span class="number" data-target="25" data-plus="true">0</span>
-                <span class="label">Guru Profesional</span>
+            <!-- Accreditation Badge -->
+            <div
+                class="inline-flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1 md:py-1.5 rounded-full bg-blue-700/80 border border-blue-500 text-white text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 md:mb-6 shadow-sm">
+                <i class="fa-solid fa-award"></i> Akreditasi A Unggul
             </div>
-            <div class="stat-item fade-in">
-                <i class="fas fa-book-reader"></i>
-                <span class="number" data-target="900" data-plus="true">0</span>
-                <span class="label">Siswa Aktif</span>
-            </div>
-            <div class="stat-item fade-in">
-                <i class="fas fa-graduation-cap"></i>
-                <span class="number" data-target="6">0</span>
-                <span class="label">Jurusan</span>
-            </div>
-        </section>
 
-        <!-- Other sections -->
-        <!-- About Section -->
-        <section id="profil" class="fade-in">
-            <h2 class="section-title">Tentang Sekolah</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p><strong>SMK TI Garuda Nusantara</strong> adalah Sekolah Menengah Kejuruan yang berfokus pada
-                        pendidikan Teknologi Informasi dengan visi menciptakan lulusan yang unggul, kompeten, dan siap
-                        bersaing di era digital.</p>
-                    <p>Kami berkomitmen untuk memberikan pendidikan berkualitas dengan fasilitas modern, tenaga pengajar
-                        profesional, dan kurikulum yang sesuai dengan kebutuhan industri. Setiap siswa kami dibimbing
-                        untuk menjadi pribadi yang berkarakter, inovatif, dan mampu menghadapi tantangan masa depan.</p>
-                    <p>Dengan pengalaman lebih dari 15 tahun dalam bidang pendidikan kejuruan, kami telah menghasilkan
-                        ribuan alumni yang sukses berkarir di berbagai perusahaan teknologi terkemuka.</p>
-                </div>
-                <div class="about-image fade-in">
-                    <img src="assets/tnt.png" alt="SMK TI Garuda Nusantara">
-                </div>
-            </div>
-        </section>
+            <!-- Welcome Text -->
+            <p
+                class="text-blue-200 font-semibold tracking-widest uppercase text-xs sm:text-base mb-2 md:mb-3 drop-shadow-md">
+                Selamat Datang di Portal Resmi
+            </p>
 
-        <!-- Sambutan Kepala Sekolah -->
-        <section class="sambutan-section fade-in">
-            <div class="sambutan-container">
-                <div class="sambutan-img">
-                    <img src="assets/kepsek.jpg" alt="Kepala Sekolah">
-                    <div class="sambutan-badge">Kepala Sekolah</div>
-                </div>
-                <div class="sambutan-content">
-                    <h3>Sambutan Kepala Sekolah</h3>
-                    <p><strong>Assalamualaikum Wr. Wb.</strong></p>
-                    <p>Salam sejahtera bagi kita semua.</p>
-                    <p>Selamat datang di website resmi SMK TI Garuda Nusantara. Sebagai Kepala Sekolah, saya merasa
-                        bangga dan bersyukur dapat memimpin lembaga pendidikan yang telah dipercaya oleh masyarakat
-                        dalam mencetak generasi muda yang cerdas, terampil, dan berakhlak mulia.</p>
-                    <p>Di era digital ini, kami berkomitmen penuh untuk terus berinovasi dalam metode pembelajaran,
-                        meningkatkan kualitas fasilitas, dan menjalin kerjasama dengan industri untuk memberikan
-                        pengalaman belajar yang terbaik bagi siswa-siswi kami.</p>
-                    <p>Kami mengundang Anda untuk bergabung bersama kami dalam membangun masa depan yang gemilang
-                        melalui pendidikan berkualitas.</p>
-                    <div class="sambutan-signature">
-                        <p><strong>Drs. Ridho, M.Pd</strong><br>Kepala Sekolah SMK TI Garuda Nusantara</p>
+            <!-- Formal Headline -->
+            <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight mb-4 md:mb-6 drop-shadow-lg"
+                style="font-family: 'Poppins', sans-serif;">
+                SMP Negeri Cimahi
+            </h1>
+
+            <!-- Formal Description -->
+            <p
+                class="text-sm sm:text-xl text-slate-200 max-w-3xl mx-auto leading-relaxed mb-8 md:mb-10 font-medium drop-shadow-md px-2 md:px-0">
+                Mewujudkan generasi penerus bangsa yang unggul dalam prestasi akademik, tangguh dalam iman dan takwa,
+                serta berwawasan lingkungan dan global.
+            </p>
+
+            <!-- Classic CTA Buttons -->
+            <div
+                class="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 w-full sm:w-auto px-4 sm:px-0">
+                <a href="pendaftaran.php"
+                    class="w-full sm:w-auto px-6 py-2.5 md:px-8 md:py-3.5 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs md:text-sm rounded-full shadow-md border-b-4 border-blue-900 transition-all active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2 uppercase tracking-wide">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Pendaftaran Siswa Baru</span>
+                </a>
+
+                <a href="#tentang"
+                    class="w-full sm:w-auto px-6 py-2.5 md:px-8 md:py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs md:text-sm rounded-full shadow-sm border border-white/50 backdrop-blur-sm transition-all flex items-center justify-center gap-2 uppercase tracking-wide">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span>Profil Sekolah</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS COUNTER BAR -->
+    <section class="bg-white border-y border-slate-200 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x-0 md:divide-x divide-slate-200">
+
+                <div class="p-2 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        <span class="counter" data-target="300">0</span>+
+                    </div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Siswa/Siswi
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Section Jurusan -->
-        <section id="jurusan-program" class="jurusan-program-section fade-in">
-            <div class="jurusan-program-container">
-                <div class="jurusan-program-header">
-                    <h2 class="jurusan-program-title">Jurusan SMK TI Garuda Nusantara</h2>
-                    <p class="jurusan-program-subtitle">Temukan jurusan yang sesuai dengan minat dan bakatmu</p>
+                <div class="p-2 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">A</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Akreditasi</div>
                 </div>
 
-                <div class="jurusan-slider-wrapper">
-                    <button class="slider-nav prev" id="jurusanPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="jurusan-grid" id="jurusanGrid">
-                        <!-- Card 1 - TKJ -->
-                        <div class="jurusan-card">
-                            <div class="jurusan-icon">
-                                <img src="assets/tkj.png" alt="TKJ Icon">
-                            </div>
-                            <div class="jurusan-content">
-                                <h3>Teknik Komputer dan Jaringan (TKJ)</h3>
-                                <p>Belajar merancang, mengelola, dan memperbaiki jaringan komputer.</p>
-                                <ul>
-                                    <li>Jaringan LAN/WAN</li>
-                                    <li>Server & Infrastruktur</li>
-                                    <li>Keamanan Jaringan</li>
-                                </ul>
-                                <button class="btn-detail" onclick="window.location.href='jurusan-tkj.php'">
-                                    Detail <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
+                <div class="p-2 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        <span class="counter" data-target="50">0</span>+
+                    </div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Guru/Staf</div>
+                </div>
+
+                <div class="p-2 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        <span class="counter" data-target="6">0</span>
+                    </div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Ekstrakulikuler
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TENTANG KAMI SECTION -->
+    <section id="tentang" class="py-16 md:py-24 bg-brand-lightBg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- SECTION HEADER -->
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Tentang Kami</h2>
+                <p class="text-brand-grayText text-base sm:text-lg leading-relaxed">
+                    SMPN Cimahi senantiasa berkomitmen menciptakan lingkungan belajar yang kondusif, berteknologi, serta
+                    membentuk karakter siswa yang mandiri, cerdas, dan santun.
+                </p>
+            </div>
+
+            <!-- CONTENT GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+
+                <!-- LEFT COLUMN (DESKTOP LEFT, MOBILE ALL-IN-ONE WITH ORDER) -->
+                <div class="lg:col-span-6 flex flex-col space-y-6">
+
+                    <!-- 1. BADGE & TITLE -->
+                    <div class="order-1 space-y-3 text-center lg:text-left">
+                        <div
+                            class="inline-block px-3 py-1 bg-slate-200 text-slate-700 text-xs font-semibold rounded uppercase tracking-wider">
+                            Visi & Misi
                         </div>
 
-                        <!-- Card 2 - MP -->
-                        <div class="jurusan-card">
-                            <div class="jurusan-icon">
-                                <img src="assets/mp.png" alt="MP Icon">
-                            </div>
-                            <div class="jurusan-content">
-                                <h3>Manajemen Perkantoran (MP)</h3>
-                                <p>Fokus pada administrasi modern dan teknologi perkantoran digital.</p>
-                                <ul>
-                                    <li>Administrasi Digital</li>
-                                    <li>Manajemen Dokumen</li>
-                                    <li>Teknologi Perkantoran</li>
-                                </ul>
-                                <button class="btn-detail" onclick="window.location.href='jurusan-mp.php'">
-                                    Detail <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
+                            Mewujudkan Generasi Cerdas Berkarakter
+                        </h3>
+                    </div>
 
-                        <!-- Card 3 - Animasi -->
-                        <div class="jurusan-card">
-                            <div class="jurusan-icon">
-                                <img src="assets/animasi.png" alt="Animasi Icon">
+                    <!-- 2. FEATURE IMAGE (MOBILE ONLY: order-2) -->
+                    <div class="order-2 lg:hidden my-2 w-full">
+                        <div class="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200 group">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"
+                                alt="Fasilitas dan Lingkungan Belajar SMPN Cimahi"
+                                class="w-full h-[300px] sm:h-[380px] object-cover">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent">
                             </div>
-                            <div class="jurusan-content">
-                                <h3>Animasi</h3>
-                                <p>Membuat animasi 2D dan 3D kreatif untuk media dan hiburan digital.</p>
-                                <ul>
-                                    <li>Animasi 2D/3D</li>
-                                    <li>Desain Karakter</li>
-                                    <li>Multimedia Kreatif</li>
-                                </ul>
-                                <button class="btn-detail" onclick="window.location.href='jurusan-animasi.php'">
-                                    Detail <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Card 4 - RPL -->
-                        <div class="jurusan-card">
-                            <div class="jurusan-icon">
-                                <img src="assets/rpl.png" alt="RPL Icon">
-                            </div>
-                            <div class="jurusan-content">
-                                <h3>Rekayasa Perangkat Lunak (RPL)</h3>
-                                <p>Mengembangkan aplikasi dan sistem berbasis web maupun mobile.</p>
-                                <ul>
-                                    <li>Pemrograman Web/Mobile</li>
-                                    <li>Database & Backend</li>
-                                    <li>UI/UX Design</li>
-                                </ul>
-                                <button class="btn-detail" onclick="window.location.href='jurusan-rpl.php'">
-                                    Detail <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Card 5 - TJAT -->
-                        <div class="jurusan-card">
-                            <div class="jurusan-icon">
-                                <img src="assets/tjat.png" alt="TJAT Icon">
-                            </div>
-                            <div class="jurusan-content">
-                                <h3>Teknik Jaringan Akses Telekomunikasi (TJAT)</h3>
-                                <p>Mempelajari sistem komunikasi jaringan dan teknologi telekomunikasi.</p>
-                                <ul>
-                                    <li>Jaringan Fiber Optik</li>
-                                    <li>Teknologi Wireless</li>
-                                    <li>Komunikasi Data</li>
-                                </ul>
-                                <button class="btn-detail" onclick="window.location.href='jurusan-tjat.php'">
-                                    Detail <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Card 6 - DKV -->
-                        <div class="jurusan-card">
-                            <div class="jurusan-icon">
-                                <img src="assets/dkv.png" alt="DKV Icon">
-                            </div>
-                            <div class="jurusan-content">
-                                <h3>Desain Komunikasi Visual (DKV)</h3>
-                                <p>Mengasah kreativitas dalam desain grafis, branding, dan multimedia visual.</p>
-                                <ul>
-                                    <li>Desain Grafis</li>
-                                    <li>Branding & Identitas</li>
-                                    <li>Multimedia Visual</li>
-                                </ul>
-                                <button class="btn-detail" onclick="window.location.href='jurusan-dkv.php'">
-                                    Detail <i class="fas fa-arrow-right"></i>
-                                </button>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white space-y-1">
+                                <p class="text-xs font-semibold uppercase tracking-wider text-brand-softBlue">Fasilitas
+                                    Sekolah</p>
+                                <p class="text-base sm:text-lg font-bold">Lingkungan belajar yang asri, bersih, dan
+                                    berteknologi tinggi.</p>
                             </div>
                         </div>
                     </div>
-                    <button class="slider-nav next" id="jurusanNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
 
-                <div class="slider-dots" id="sliderDots"></div>
+                    <!-- 3. DESCRIPTION -->
+                    <p class="order-3 text-slate-600 leading-relaxed text-sm sm:text-base text-center lg:text-left">
+                        Kami menyelenggarakan pendidikan menengah yang tidak hanya berfokus pada prestasi akademik,
+                        tetapi juga pada penguatan nilai karakter moral, keterampilan sosial, serta kesiapan dalam
+                        menghadapi era digital.
+                    </p>
 
-                <div class="jurusan-motivasi">
-                    <p>Bersama <span class="highlight-text">SMK TI Garuda Nusantara</span>, wujudkan masa depanmu di
-                        bidang
-                        teknologi dan kreativitas!</p>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- About Section -->
-        <section class="ekstrakurikuler-section" aria-labelledby="ekskulTitle">
-            <div class="ekstrakurikuler-inner">
-                <h2 id="ekskulTitle" class="ekstrakurikuler-title">Ekstrakurikuler</h2>
-
-                <div class="ekstrakurikuler-content">
-                    <!-- LEFT: carousel with logo + nav -->
-                    <div class="ekstrakurikuler-left">
-                        <div class="ekstrakurikuler-carousel" aria-hidden="false">
-                            <div class="ekstrakurikuler-nav" aria-hidden="true">
-                                <button id="ekskulPrev" aria-label="Sebelumnya"><i
-                                        class="fas fa-chevron-left"></i></button>
-                                <button id="ekskulNext" aria-label="Berikutnya"><i
-                                        class="fas fa-chevron-right"></i></button>
+                    <!-- 4. CHECKLIST ITEMS -->
+                    <div class="order-4 space-y-4 pt-2">
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 mt-0.5 text-xs">
+                                <i class="fa-solid fa-check"></i>
                             </div>
-
-                            <div class="ekskul-logo" id="ekskulLogoWrap">
-                                <img src="assets/pmr.jpg" alt="Logo pmr" id="ekskulLogo">
-                            </div>
-                        </div>
-
-                        <div class="ekskul-meta" role="status" aria-live="polite">
-                            <div class="name" id="ekskulName">PMR</div>
-                            <div class="subtitle" id="ekskulSubtitle">ADHI WIRA BHAKTI</div>
-
-
-                        </div>
-                    </div>
-
-                    <!-- RIGHT: illustration -->
-                    <div class="ekstrakurikuler-right">
-                        <img class="ekstrakurikuler-illustration" src="assets/ekskul.jpg">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Kembali ke Main -->
-        <!-- Artikel Section -->
-        <section id="artikel" class="artikel-container fade-in">
-            <div class="artikel-header">
-                <h2 class="section-title">Artikel & Berita Terbaru</h2>
-                <button class="btn-view-all" onclick="window.location.href='article.php'">
-                    View All Articles <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-            <div class="artikel-slider">
-                <?php
-                $query = "SELECT * FROM berita ORDER BY tanggal DESC LIMIT 3";
-                $result = mysqli_query($db, $query);
-                while ($berita = mysqli_fetch_assoc($result)):
-                    ?>
-                    <article class="artikel-card">
-                        <img src="berita/<?= htmlspecialchars($berita['gambar']) ?>"
-                            alt="<?= htmlspecialchars($berita['judul']) ?>">
-                        <div class="artikel-content">
-                            <div class="artikel-meta">
-                                <span><i class="far fa-calendar"></i>
-                                    <?= date('d F Y', strtotime($berita['tanggal'])) ?></span>
-                                <span><i class="far fa-user"></i> <?= htmlspecialchars($berita['penulis']) ?></span>
-                            </div>
-                            <h3><?= htmlspecialchars($berita['judul']) ?></h3>
-                            <p>
-                                <?php
-                                $isi = $berita['isi'];
-                                $isi_bersih = preg_replace('/^##.*$/m', '', $isi);
-                                $isi_bersih = str_replace(["\r", "\n"], ' ', $isi_bersih);
-                                $excerpt = mb_strimwidth(trim($isi_bersih), 0, 120, '...');
-                                echo htmlspecialchars($excerpt);
-                                ?>
+                            <p class="text-sm font-medium text-slate-700">
+                                Menyelenggarakan pembelajaran unggul berbasis kurikulum nasional yang inovatif.
                             </p>
-                            <a href="artikel-detail.php?id=<?= $berita['id'] ?>" class="artikel-link">
-                                Baca Selengkapnya <i class="fas fa-arrow-right"></i>
-                            </a>
                         </div>
-                    </article>
-                <?php endwhile; ?>
+
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 mt-0.5 text-xs">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-700">
+                                Menyediakan laboratorium komputer, perpustakaan modern, dan sarana olahraga lengkap.
+                            </p>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 mt-0.5 text-xs">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-700">
+                                Mengembangkan potensi peserta didik melalui kegiatan ekstrakulikuler berprestasi.
+                            </p>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 mt-0.5 text-xs">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-700">
+                                Membina kedisiplinan, toleransi, dan nilai-nilai keagamaan dalam kehidupan sehari-hari.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN (DESKTOP ONLY FEATURE IMAGE) -->
+                <div class="hidden lg:block lg:col-span-6 w-full">
+                    <div class="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200 group">
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"
+                            alt="Fasilitas dan Lingkungan Belajar SMPN Cimahi"
+                            class="w-full h-[420px] object-cover group-hover:scale-105 transition-transform duration-500">
+
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent">
+                        </div>
+
+                        <div class="absolute bottom-0 left-0 right-0 p-6 text-white space-y-1">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-brand-softBlue">Fasilitas
+                                Sekolah</p>
+                            <p class="text-base sm:text-lg font-bold">Lingkungan belajar yang asri, bersih, dan
+                                berteknologi tinggi.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EKSTRAKULIKULER SECTION -->
+    <section id="ekstra" class="py-16 md:py-24 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- SECTION HEADER -->
+            <div class="text-center max-w-3xl mx-auto mb-10 space-y-3">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Ekstrakulikuler</h2>
+                <p class="text-brand-grayText text-base leading-relaxed">
+                    Wadah pengembangan bakat, minat, serta karakter kepemimpinan dan kreativitas siswa SMPN Cimahi.
+                </p>
+            </div>
+
+
+            <!-- CARDS CONTAINER (MOBILE: 1 ROW SLIDER | DESKTOP: 3 COLUMNS GRID) -->
+            <div id="ekstra-grid"
+                class="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 pb-4 md:pb-0 scrollbar-none">
+
+                <!-- CARD 1: PASKIBRA -->
+                <div onclick="window.location.href='ekstrakulikuler.php?type=paskibra'"
+                    class="ekstra-item leadership w-[85vw] max-w-[320px] md:max-w-none md:w-full shrink-0 snap-center bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1526976668912-1a811878dd37?auto=format&fit=crop&w=600&q=80"
+                                alt="Paskibra"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span
+                                class="absolute top-3 left-3 bg-brand-navy/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded">Kepemimpinan</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <h3
+                                class="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors flex items-center justify-between">
+                                <span>Paskibra</span>
+                                <i
+                                    class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition-all"></i>
+                            </h3>
+                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                Membentuk kedisiplinan, ketahanan fisik, serta jiwa patriotisme melalui latihan
+                                baris-berbaris dan upacara.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-slate-400"></i>
+                            <span>Setiap Selasa & Kamis • 15:00 WIB</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-user text-slate-400"></i>
+                            <span>Pembina: Susan S.T</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: PRAMUKA -->
+                <div onclick="window.location.href='ekstrakulikuler.php?type=pramuka'"
+                    class="ekstra-item leadership w-[85vw] max-w-[320px] md:max-w-none md:w-full shrink-0 snap-center bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=600&q=80"
+                                alt="Pramuka"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span
+                                class="absolute top-3 left-3 bg-amber-700/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded">Kepemimpinan</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <h3
+                                class="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors flex items-center justify-between">
+                                <span>Pramuka</span>
+                                <i
+                                    class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition-all"></i>
+                            </h3>
+                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                Melatih kemandirian, kecintaan pada alam, kebersamaan, dan keterampilan kepanduan yang
+                                solid.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-slate-400"></i>
+                            <span>Setiap Jumat • 14:00 WIB</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-user text-slate-400"></i>
+                            <span>Pembina: Dra. Siti Rahma</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: ENGLISH CLUB -->
+                <div onclick="window.location.href='ekstrakulikuler.php?type=english'"
+                    class="ekstra-item arts w-[85vw] max-w-[320px] md:max-w-none md:w-full shrink-0 snap-center bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80"
+                                alt="English Club"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span
+                                class="absolute top-3 left-3 bg-indigo-600/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded">Seni
+                                & Bahasa</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <h3
+                                class="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors flex items-center justify-between">
+                                <span>English Club</span>
+                                <i
+                                    class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition-all"></i>
+                            </h3>
+                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                Wadah berkomunikasi bahasa Inggris melalui speech, storytelling, debate, dan publikasi
+                                berbahasa asing.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-slate-400"></i>
+                            <span>Setiap Rabu • 15:30 WIB</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-user text-slate-400"></i>
+                            <span>Pembina: Maya Indriani, M.Pd</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4: PMR -->
+                <div onclick="window.location.href='ekstrakulikuler.php?type=pmr'" class="ekstra-item leadership w-[85vw] max-w-[320px] md:max-w-none md:w-full shrink-0 snap-center bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                        <div>
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80" alt="PMR" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-red-600/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded">Kepemimpinan</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors flex items-center justify-between">
+                                    <span>Palang Merah Remaja</span>
+                                    <i class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition-all"></i>
+                                </h3>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Edukasi pertolongan pertama, kesehatan remaja, dan kepedulian sosial kemanusiaan bagi sesama.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-clock text-slate-400"></i>
+                                <span>Setiap Sabtu • 09:00 WIB</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-user text-slate-400"></i>
+                                <span>Pembina: drh. Anita Widyastuti</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 5: BASKET -->
+                    <div onclick="window.location.href='ekstrakulikuler.php?type=basket'" class="ekstra-item sports w-[85vw] max-w-[320px] md:max-w-none md:w-full shrink-0 snap-center bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                        <div>
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80" alt="Basket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-emerald-600/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded">Olahraga</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors flex items-center justify-between">
+                                    <span>Bola Basket & Voli</span>
+                                    <i class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition-all"></i>
+                                </h3>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Latihan strategi permainan, ketangkasan fisik, serta sportivitas kompetisi antar sekolah.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-clock text-slate-400"></i>
+                                <span>Setiap Senin & Kamis • 15:30 WIB</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-user text-slate-400"></i>
+                                <span>Pembina: Ahmad Hidayat, S.Pd</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 6: SENI MUSIK -->
+                    <div onclick="window.location.href='ekstrakulikuler.php?type=musik'" class="ekstra-item arts w-[85vw] max-w-[320px] md:max-w-none md:w-full shrink-0 snap-center bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                        <div>
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" alt="Seni Musik" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-purple-600/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded">Seni & Bahasa</span>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-accent transition-colors flex items-center justify-between">
+                                    <span>Seni Musik & Band</span>
+                                    <i class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover:text-brand-accent group-hover:translate-x-1 transition-all"></i>
+                                </h3>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Pengembangan bakat bermusik (gitar, vokal, keyboard, drum) untuk perlombaan seni dan pentas sekolah.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-clock text-slate-400"></i>
+                                <span>Setiap Rabu & Sabtu • 14:00 WIB</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-regular fa-user text-slate-400"></i>
+                                <span>Pembina: Rian Febrian, S.Sn</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- MOBILE SWIPE DOTS (MOBILE ONLY) -->
+                <div class="md:hidden flex justify-center mt-6">
+                    <div id="ekstra-dots" class="flex items-center gap-1.5"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BERITA & ARTIKEL SECTION -->
+        <section id="berita" class="py-16 md:py-24 bg-brand-lightBg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- SECTION HEADER -->
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Berita</h2>
+                    <p class="text-brand-grayText text-base">
+                        Informasi terbaru seputar kegiatan, prestasi, dan pengumuman resmi SMPN Cimahi.
+                    </p>
+                </div>
+
+                <!-- NEWS CARDS GRID -->
+                <div id="berita-grid" class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none scroll-smooth">
+                    <?php
+                    $has_berita = false;
+                    if (isset($db)) {
+                        $query_berita = "SELECT * FROM berita ORDER BY tanggal DESC LIMIT 6";
+                        $result_berita = @mysqli_query($db, $query_berita);
+                        if ($result_berita && mysqli_num_rows($result_berita) > 0) {
+                            $has_berita = true;
+                            $index = 0;
+                            while ($berita = mysqli_fetch_assoc($result_berita)):
+                                $judul = htmlspecialchars($berita['judul']);
+                                $kategori = !empty($berita['tags']) ? htmlspecialchars(explode(',', $berita['tags'])[0]) : (!empty($berita['kategori']) ? htmlspecialchars($berita['kategori']) : 'Kegiatan');
+                                $tanggal = date('d M Y', strtotime($berita['tanggal']));
+
+                                $raw_gambar = $berita['gambar'];
+                                if (strpos($raw_gambar, 'http') === 0) {
+                                    $gambar = htmlspecialchars($raw_gambar);
+                                } else if (!empty($raw_gambar)) {
+                                    $gambar = 'berita/' . htmlspecialchars($raw_gambar);
+                                } else {
+                                    $gambar = 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80';
+                                }
+
+                                $isi_raw = $berita['isi'];
+                                $isi_bersih = preg_replace('/^##.*$/m', '', $isi_raw);
+                                $isi_bersih = str_replace(["\r", "\n"], ' ', $isi_bersih);
+                                $excerpt = mb_strimwidth(trim($isi_bersih), 0, 110, '...');
+
+                                ?>
+                                <a href="artikel-detail.php?id=<?= $berita['id'] ?>" 
+                                         class="berita-item shrink-0 snap-center w-[85vw] sm:w-[320px] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between h-full">
+                                    <div>
+                                        <div class="relative h-48 overflow-hidden bg-slate-100">
+                                            <img src="<?= $gambar ?>" 
+                                                 alt="<?= htmlspecialchars($judul) ?>" 
+                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                            <span class="absolute top-3 left-3 bg-brand-navy text-white text-[11px] font-semibold px-2.5 py-1 rounded"><?= htmlspecialchars($kategori) ?></span>
+                                        </div>
+                                        <div class="p-6 space-y-2 flex-grow">
+                                            <p class="text-xs text-slate-400 font-medium"><?= $tanggal ?></p>
+                                            <h3 class="font-bold text-slate-900 text-base sm:text-lg group-hover:text-brand-accent transition-colors line-clamp-2">
+                                                <?= htmlspecialchars($judul) ?>
+                                            </h3>
+                                            <p class="text-slate-600 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+                                                <?= htmlspecialchars($excerpt) ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 pt-0">
+                                        <div class="flex items-center text-brand-navy text-sm font-bold group-hover:text-brand-blue transition-colors">
+                                            <span>Baca detail</span>
+                                            <i class="fa-solid fa-arrow-right ml-1 text-xs transition-transform group-hover:translate-x-1"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                                <?php
+                                $index++;
+                            endwhile;
+                        }
+                    }
+
+                    if (!$has_berita):
+                        ?>
+                        <!-- FALLBACK STATIC NEWS CONTENT -->
+                        <article onclick="openNewsModal('Implementasi Kurikulum Merdeka Terpadu Partisipasi Siswa', 'Akademik', '12 Mei <?= date('Y') ?>', 'SMPN Cimahi secara aktif mengimplementasikan Kurikulum Merdeka dengan fokus pada Projek Penguatan Profil Pelajar Pancasila (P5). Kegiatan ini melibatkan partisipasi penuh seluruh siswa.', 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80')" 
+                                 class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" 
+                                         alt="Berita Kurikulum Merdeka" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <span class="absolute top-3 left-3 bg-brand-navy text-white text-[11px] font-semibold px-2.5 py-1 rounded">Akademik</span>
+                                </div>
+                                <div class="p-6 space-y-2">
+                                    <p class="text-xs text-slate-400 font-medium">12 Mei <?= date('Y') ?></p>
+                                    <h3 class="font-bold text-slate-900 text-base sm:text-lg group-hover:text-brand-accent transition-colors line-clamp-2">
+                                        Implementasi Kurikulum Merdeka Terpadu Partisipasi Siswa
+                                    </h3>
+                                    <p class="text-slate-600 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+                                        Projek Penguatan Profil Pelajar Pancasila (P5) sukses dilaksanakan dengan pameran karya siswa.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <span class="text-xs font-bold text-brand-blue group-hover:text-brand-accent flex items-center gap-1">
+                                    Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </span>
+                            </div>
+                        </article>
+
+                        <article onclick="openNewsModal('Semarak Jalan Karya RS Hingga Potensi Budaya Lokal', 'Kegiatan', '08 Mei <?= date('Y') ?>', 'Dalam rangka menyambut peka seni, SMPN Cimahi menggelar jalan santai dan karnaval busana adat nusantara. Kegiatan ini bertujuan mengenalkan kekayaan budaya Indonesia.', 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80')" 
+                                 class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=600&q=80" 
+                                         alt="Berita Semarak Jalan Karya" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <span class="absolute top-3 left-3 bg-brand-navy text-white text-[11px] font-semibold px-2.5 py-1 rounded">Kegiatan</span>
+                                </div>
+                                <div class="p-6 space-y-2">
+                                    <p class="text-xs text-slate-400 font-medium">08 Mei <?= date('Y') ?></p>
+                                    <h3 class="font-bold text-slate-900 text-base sm:text-lg group-hover:text-brand-accent transition-colors line-clamp-2">
+                                        Semarak Jalan Karya RS Hingga Potensi Budaya Lokal
+                                    </h3>
+                                    <p class="text-slate-600 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+                                        Karnaval kebudayaan dan karya seni tari daerah memeriahkan peringatan pekan seni sekolah.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <span class="text-xs font-bold text-brand-blue group-hover:text-brand-accent flex items-center gap-1">
+                                    Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </span>
+                            </div>
+                        </article>
+
+                        <article onclick="openNewsModal('Siswa SMPN Cimahi Meraih Medali FLS2N Tingkat Kota', 'Prestasi', '02 Mei <?= date('Y') ?>', 'Prestasi membanggakan kembali diraih oleh kontingen Festival dan Lomba Seni Siswa Nasional (FLS2N) SMPN Cimahi. Ananda Rian dan tim berhasil meraih Juara 1 cabang Lomba Gitar Duet.', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80')" 
+                                 class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col justify-between">
+                            <div>
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80" 
+                                         alt="Berita Prestasi FLS2N" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <span class="absolute top-3 left-3 bg-brand-navy text-white text-[11px] font-semibold px-2.5 py-1 rounded">Prestasi</span>
+                                </div>
+                                <div class="p-6 space-y-2">
+                                    <p class="text-xs text-slate-400 font-medium">02 Mei <?= date('Y') ?></p>
+                                    <h3 class="font-bold text-slate-900 text-base sm:text-lg group-hover:text-brand-accent transition-colors line-clamp-2">
+                                        Siswa SMPN Cimahi Meraih Medali FLS2N Tingkat Kota
+                                    </h3>
+                                    <p class="text-slate-600 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+                                        Perwakilan seni musik instrumen akustik berhasil membawa pulang piala kejuaraan FLS2N.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <span class="text-xs font-bold text-brand-blue group-hover:text-brand-accent flex items-center gap-1">
+                                    Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </span>
+                            </div>
+                        </article>
+                    <?php endif; ?>
+                </div>
+
+                <!-- ALL NEWS BUTTON -->
+                <div class="mt-12 text-center">
+                    <a href="article.php" 
+                       class="px-8 py-3 bg-brand-softBlue hover:bg-brand-mutedBlue text-brand-blue font-bold text-sm rounded-full transition-colors inline-flex items-center gap-2">
+                        <span>Lihat Semua Berita</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-
-
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top" id="scrollTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
     <script>
-        // ========================================
-        // LOADING SCREEN
-        // ========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('ekstra-grid');
+        const dotsContainer = document.getElementById('ekstra-dots');
+        if (!container || !dotsContainer) return;
 
-        // ========================================
-        // HEADER SCROLL EFFECT
-        // ========================================
-        window.addEventListener('scroll', () => {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+        const cards = container.querySelectorAll('.ekstra-item');
+        const totalCards = cards.length;
+        if (totalCards === 0) return;
+
+        let currentSlide = 0;
+        let autoplayTimer = null;
+
+        // Render dots
+        dotsContainer.innerHTML = '';
+        cards.forEach((_, idx) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.setAttribute('aria-label', `Ekstra Slide ${idx + 1}`);
+            dot.className = idx === 0 
+                ? 'w-4 h-2 rounded-full bg-brand-navy transition-all duration-300' 
+                : 'w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300';
+            dot.onclick = () => scrollToSlide(idx);
+            dotsContainer.appendChild(dot);
         });
 
-        // ========================================
-        // ACTIVE NAVIGATION LINK
-        // ========================================
-        const sections = document.querySelectorAll('section[id], footer[id]'); // Tambahkan footer[id]
-        const navLinks = document.querySelectorAll('header nav ul li a');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-
-                // Perbaiki logika deteksi section yang aktif
-                if (scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            // Perbaiki penanganan active state
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // ========================================
-        // COUNTER ANIMATION
-        // ========================================
-        function animateCounter(element) {
-            const target = parseInt(element.getAttribute('data-target'));
-            const hasPlus = element.getAttribute('data-plus') === 'true';
-            const duration = 2000;
-            const increment = target / (duration / 16);
-            let current = 0;
-
-            const updateCounter = () => {
-                current += increment;
-                if (current < target) {
-                    element.textContent = Math.floor(current) + (hasPlus ? '+' : '');
-                    requestAnimationFrame(updateCounter);
+        function updateDots(activeIdx) {
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === activeIdx) {
+                    dots[i].className = 'w-4 h-2 rounded-full bg-brand-navy transition-all duration-300';
                 } else {
-                    element.textContent = target + (hasPlus ? '+' : '');
+                    dots[i].className = 'w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300';
                 }
-            };
-            updateCounter();
+            }
         }
 
-        // ========================================
-        // INTERSECTION OBSERVER
-        // ========================================
-        const observerOptions = {
-            threshold: 0.2,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        function scrollToSlide(index) {
+            if (window.innerWidth >= 768) return;
+            currentSlide = (index + totalCards) % totalCards;
+            const targetCard = cards[currentSlide];
+            if (targetCard) {
+                container.scrollTo({
+                    left: targetCard.offsetLeft - container.offsetLeft - 16,
+                    behavior: 'smooth'
+                });
+                updateDots(currentSlide);
+            }
+        }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        container.addEventListener('scroll', function() {
+            if (window.innerWidth >= 768) return;
+            const scrollLeft = container.scrollLeft;
+            const cardWidth = cards[0].offsetWidth + 20;
+            const activeIndex = Math.round(scrollLeft / cardWidth);
+            if (activeIndex >= 0 && activeIndex < totalCards && activeIndex !== currentSlide) {
+                currentSlide = activeIndex;
+                updateDots(currentSlide);
+            }
+        }, { passive: true });
 
-                    // Animate counters when stats section is visible
-                    if (entry.target.classList.contains('stat-item')) {
-                        const number = entry.target.querySelector('.number');
-                        if (number && !number.classList.contains('animated')) {
-                            animateCounter(number);
-                            number.classList.add('animated');
-                        }
+        function startAutoplay() {
+            if (autoplayTimer) clearInterval(autoplayTimer);
+            autoplayTimer = setInterval(function() {
+                if (window.innerWidth < 768) {
+                    currentSlide = (currentSlide + 1) % totalCards;
+                    scrollToSlide(currentSlide);
+                }
+            }, 15000);
+        }
+
+        startAutoplay();
+
+        // BERITA CAROUSEL AUTOPLAY
+        const beritaContainer = document.getElementById('berita-grid');
+        if (beritaContainer) {
+            const beritaCards = beritaContainer.querySelectorAll('.berita-item');
+            const totalBerita = beritaCards.length;
+            if (totalBerita > 0) {
+                let currentBeritaSlide = 0;
+                let beritaAutoplayTimer = null;
+
+                function scrollToBeritaSlide(index) {
+                    currentBeritaSlide = index % totalBerita;
+                    const targetCard = beritaCards[currentBeritaSlide];
+                    if (targetCard) {
+                        beritaContainer.scrollTo({
+                            left: targetCard.offsetLeft - beritaContainer.offsetLeft - 16,
+                            behavior: 'smooth'
+                        });
                     }
                 }
-            });
-        }, observerOptions);
 
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in, .stat-item').forEach(el => {
-            observer.observe(el);
-        });
-
-        // ========================================
-        // SCROLL TO TOP BUTTON
-        // ========================================
-        const scrollTopBtn = document.getElementById('scrollTop');
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollTopBtn.classList.add('visible');
-            } else {
-                scrollTopBtn.classList.remove('visible');
-            }
-        });
-
-        scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // ========================================
-        // RIPPLE EFFECT ON BUTTONS
-        // ========================================
-        function createRipple(event) {
-            const button = event.currentTarget;
-            const ripple = document.createElement('span');
-            const rect = button.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-
-            button.appendChild(ripple);
-
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        }
-
-        // Add ripple effect to all buttons
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', createRipple);
-        });
-
-        // ========================================
-        // SMOOTH SCROLL
-        // ========================================
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                function startBeritaAutoplay() {
+                    if (beritaAutoplayTimer) clearInterval(beritaAutoplayTimer);
+                    beritaAutoplayTimer = setInterval(function() {
+                        currentBeritaSlide = (currentBeritaSlide + 1) % totalBerita;
+                        scrollToBeritaSlide(currentBeritaSlide);
+                    }, 15000);
                 }
-            });
-        });
 
-        // ========================================
-        // LOGO ANIMATION
-        // ========================================
-        document.querySelector('.logo').addEventListener('mouseenter', function () {
-            this.querySelector('.logo-img').style.transform = 'rotate(360deg) scale(1.1)';
-            this.querySelector('.logo-img').style.transition = 'transform 0.6s ease';
-        });
-
-        document.querySelector('.logo').addEventListener('mouseleave', function () {
-            this.querySelector('.logo-img').style.transform = 'rotate(0deg) scale(1)';
-        });
-
-        // ========================================
-        // JURUSAN SLIDER - IMPROVED
-        // ========================================
-        let jurusanCurrentIndex = 0;
-        const jurusanGrid = document.getElementById('jurusanGrid');
-        const jurusanCards = Array.from(jurusanGrid.querySelectorAll('.jurusan-card'));
-        const jurusanPrev = document.getElementById('jurusanPrev');
-        const jurusanNext = document.getElementById('jurusanNext');
-        const dotsContainer = document.getElementById('sliderDots');
-
-        function getCardsPerView() {
-            if (window.innerWidth <= 480) return 1;
-            if (window.innerWidth <= 768) return 1;
-            if (window.innerWidth <= 1024) return 2;
-            return 3;
-        }
-
-        function getTotalSlides() {
-            const perView = getCardsPerView();
-            return Math.ceil(jurusanCards.length / perView);
-        }
-
-        function showJurusanSlide(slideIndex) {
-            const perView = getCardsPerView();
-            const startIndex = slideIndex * perView;
-
-            jurusanCards.forEach((card, i) => {
-                if (i >= startIndex && i < startIndex + perView) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            updateDots(slideIndex);
-            updateNavigationButtons();
-        }
-
-        function updateDots(activeIndex) {
-            const totalSlides = getTotalSlides();
-            dotsContainer.innerHTML = '';
-
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.classList.add('slider-dot');
-                if (i === activeIndex) dot.classList.add('active');
-                dot.addEventListener('click', () => {
-                    jurusanCurrentIndex = i;
-                    showJurusanSlide(jurusanCurrentIndex);
-                });
-                dotsContainer.appendChild(dot);
-            }
-
-            // Show dots only on mobile
-            const isMobile = window.innerWidth <= 768;
-            dotsContainer.style.display = isMobile ? 'flex' : 'none';
-        }
-
-        function updateNavigationButtons() {
-            const totalSlides = getTotalSlides();
-            const showNav = totalSlides > 1;
-
-            jurusanPrev.style.display = showNav ? 'flex' : 'none';
-            jurusanNext.style.display = showNav ? 'flex' : 'none';
-
-            // Disable prev button on first slide
-            jurusanPrev.disabled = jurusanCurrentIndex === 0;
-            jurusanPrev.style.opacity = jurusanCurrentIndex === 0 ? '0.5' : '1';
-
-            // Disable next button on last slide
-            jurusanNext.disabled = jurusanCurrentIndex === totalSlides - 1;
-            jurusanNext.style.opacity = jurusanCurrentIndex === totalSlides - 1 ? '0.5' : '1';
-        }
-
-        jurusanPrev.addEventListener('click', () => {
-            if (jurusanCurrentIndex > 0) {
-                jurusanCurrentIndex--;
-                showJurusanSlide(jurusanCurrentIndex);
-            }
-        });
-
-        jurusanNext.addEventListener('click', () => {
-            const totalSlides = getTotalSlides();
-            if (jurusanCurrentIndex < totalSlides - 1) {
-                jurusanCurrentIndex++;
-                showJurusanSlide(jurusanCurrentIndex);
-            }
-        });
-
-        // Handle window resize
-
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                jurusanCurrentIndex = 0;
-                showJurusanSlide(jurusanCurrentIndex);
-            }, 250);
-        });
-
-        // Initialize slider
-        showJurusanSlide(jurusanCurrentIndex);
-
-        // Touch/Swipe support for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        jurusanGrid.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        jurusanGrid.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diff = touchStartX - touchEndX;
-
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0) {
-                    // Swipe left - next
-                    jurusanNext.click();
-                } else {
-                    // Swipe right - prev
-                    jurusanPrev.click();
-                }
+                startBeritaAutoplay();
+                
+                // Pause on hover
+                beritaContainer.addEventListener('mouseenter', () => clearInterval(beritaAutoplayTimer));
+                beritaContainer.addEventListener('mouseleave', startBeritaAutoplay);
             }
         }
-
-        // ========================================
-        // PREVENT FORM RESUBMISSION
-        // ========================================
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
-        }
-
-        // ========================================
-
-        // ========================================
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            });
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
-        } else {
-            // Fallback for browsers without IntersectionObserver
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-            });
-
-        }
-
-
-        // Simple carousel logic for Ekstrakurikuler logos (left/right navigation)
-        (function () {
-            const slides = [
-                { src: 'assets/pmr.jpg', name: 'PMR', subtitle: 'ADHI WIRA BHAKTI' },
-                { src: 'assets/osis.jpg', name: 'OSIS', subtitle: 'KOMUNITAS SISWA' },
-                { src: 'assets/gnc.jpg', name: 'Robotics', subtitle: 'TIM INOVASI' }
-            ];
-
-            let idx = 0;
-            const imgEl = document.getElementById('ekskulLogo');
-            const nameEl = document.getElementById('ekskulName');
-            const subtitleEl = document.getElementById('ekskulSubtitle');
-            const prevBtn = document.getElementById('ekskulPrev');
-            const nextBtn = document.getElementById('ekskulNext');
-
-            function render() {
-                const s = slides[idx];
-                imgEl.src = s.src;
-                imgEl.alt = s.name + ' logo';
-                nameEl.textContent = s.name;
-                subtitleEl.textContent = s.subtitle;
-            }
-
-            prevBtn.addEventListener('click', function () {
-                idx = (idx - 1 + slides.length) % slides.length;
-                render();
-            });
-
-            nextBtn.addEventListener('click', function () {
-                idx = (idx + 1) % slides.length;
-                render();
-            });
-
-            // keyboard accessibility
-            prevBtn.addEventListener('keyup', e => e.key === 'Enter' && prevBtn.click());
-            nextBtn.addEventListener('keyup', e => e.key === 'Enter' && nextBtn.click());
-
-            // init
-            render();
-        })();
-
-        // Update existing carousel logic to include illustration images
-        (function () {
-            const slides = [
-                {
-                    src: 'assets/pmr.jpg',
-                    name: 'PMR',
-                    subtitle: 'ADHI WIRA BHAKTI',
-                    illustration: 'assets/pmr.jpg'
-                },
-                {
-                    src: 'assets/osis.jpg',
-                    name: 'OSIS',
-                    subtitle: 'KOMUNITAS SISWA',
-                    illustration: 'assets/osis.jpg'
-                },
-                {
-                    src: 'assets/basket.jpg',
-                    name: 'BASKET',
-                    subtitle: 'TIM INOVASI',
-                    illustration: 'assets/basket.jpg'
-                }
-            ];
-
-            let idx = 0;
-            const imgEl = document.getElementById('ekskulLogo');
-            const nameEl = document.getElementById('ekskulName');
-            const subtitleEl = document.getElementById('ekskulSubtitle');
-            const prevBtn = document.getElementById('ekskulPrev');
-            const nextBtn = document.getElementById('ekskulNext');
-            const illustrationEl = document.querySelector('.ekstrakurikuler-illustration');
-
-            // Add fade transition class
-            illustrationEl.style.transition = 'opacity 0.3s ease-in-out';
-
-            function render() {
-                const s = slides[idx];
-                imgEl.src = s.src;
-                imgEl.alt = s.name + ' logo';
-                nameEl.textContent = s.name;
-                subtitleEl.textContent = s.subtitle;
-
-                // Fade out current illustration
-                illustrationEl.style.opacity = '0';
-
-                // Change illustration after fade out
-                setTimeout(() => {
-                    illustrationEl.src = s.illustration;
-                    illustrationEl.alt = `Ilustrasi ${s.name}`;
-                    // Fade in new illustration
-                    illustrationEl.style.opacity = '1';
-                }, 300);
-            }
-
-            prevBtn.addEventListener('click', function () {
-                idx = (idx - 1 + slides.length) % slides.length;
-                render();
-            });
-
-            nextBtn.addEventListener('click', function () {
-                idx = (idx + 1) % slides.length;
-                render();
-            });
-
-            // Handle "Selengkapnya" button click
-            const moreBtn = document.querySelector('.ekskul-more');
-            moreBtn.addEventListener('click', function () {
-                const currentSlide = slides[idx];
-                // You can add additional logic here before redirecting
-                // For example, passing the current ekskul data to the detail page
-                window.location.href = `ekstrakurikuler.php?ekskul=${currentSlide.name.toLowerCase()}`;
-            });
-
-            // keyboard accessibility
-            prevBtn.addEventListener('keyup', e => e.key === 'Enter' && prevBtn.click());
-            nextBtn.addEventListener('keyup', e => e.key === 'Enter' && nextBtn.click());
-
-            // init
-            render();
-        })();
-
+    });
     </script>
 
-    <?php include 'include/footer.php'; ?>
-</body>
-
-</html>
-<?php if (isset($_SESSION['error'])): ?>
-    <div class="alert alert-danger"><?= $_SESSION['error'];
-    unset($_SESSION['error']); ?></div>
-<?php endif; ?>
+<?php include 'include/footer.php'; ?>
